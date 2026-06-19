@@ -1,0 +1,528 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo — Librería Chichi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --magenta: #e8007d; --magenta-dark: #b5005f;
+            --violet: #7c3aed; --violet-light: #a855f7;
+            --gold: #f59e0b; --green: #10b981; --green-dark: #059669;
+            --bg: #0d0d14; --surface: #13131f; --surface2: #1a1a2e;
+            --border: rgba(255,255,255,0.07); --text: #f0f0f8; --text-muted: #8888aa;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+        .ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; background: radial-gradient(ellipse 70% 50% at 15% 10%, rgba(232,0,125,0.13) 0%, transparent 70%), radial-gradient(ellipse 60% 60% at 85% 90%, rgba(124,58,237,0.1) 0%, transparent 70%); }
+
+        /* ── NAVBAR ── */
+        .navbar-chichi { position: sticky; top: 0; z-index: 1000; background: rgba(13,13,20,0.92); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); }
+        .navbar-inner { max-width: 1400px; margin: 0 auto; padding: 13px 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .brand { display: flex; align-items: center; gap: 13px; text-decoration: none; flex-shrink: 0; }
+        .brand-logo-wrap { width: 50px; height: 50px; border-radius: 14px; background: linear-gradient(135deg, var(--magenta), var(--violet)); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 0 24px rgba(232,0,125,0.45); overflow: hidden; position: relative; flex-shrink: 0; }
+        .brand-logo-wrap::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 60%); border-radius: inherit; }
+        .brand-logo-wrap img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+        .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+        .brand-name { font-family: 'Playfair Display', serif; font-size: 1.45rem; font-weight: 900; background: linear-gradient(90deg, #fff 0%, var(--magenta) 55%, var(--violet-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .brand-tagline { font-size: 0.62rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
+        .nav-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .btn-nav { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.85rem; padding: 8px 18px; border-radius: 100px; border: 1.5px solid rgba(255,255,255,0.15); background: transparent; color: var(--text); cursor: pointer; text-decoration: none; transition: all 0.2s; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-nav:hover { background: rgba(255,255,255,0.08); color: #fff; }
+        .btn-nav-accent { background: linear-gradient(135deg, var(--magenta), var(--violet)); border: none; box-shadow: 0 4px 15px rgba(232,0,125,0.3); font-weight: 700; color: #fff !important; }
+        .btn-nav-accent:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(232,0,125,0.45); }
+        .btn-admin { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.4); color: #c4b5fd; border-radius: 100px; padding: 7px 16px; font-size: 0.82rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+        .btn-admin:hover { background: rgba(124,58,237,0.28); color: #fff; }
+        .btn-nav.btn-login { border-color: rgba(59,130,246,0.5); color: #93c5fd; }
+        .btn-nav.btn-login:hover { background: rgba(59,130,246,0.18); color: #fff; }
+        .btn-nav.btn-salir { border-color: rgba(239,68,68,0.45); color: #fca5a5; }
+        .btn-nav.btn-salir:hover { background: rgba(239,68,68,0.18); color: #fff; }
+        .user-pill { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 100px; padding: 5px 14px 5px 6px; font-size: 0.85rem; }
+        .user-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, var(--magenta), var(--violet)); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; }
+        .user-name { color: var(--gold); font-weight: 700; }
+
+        /* ── HERO ── */
+        .hero { position: relative; z-index: 1; text-align: center; padding: 60px 24px 30px; max-width: 800px; margin: 0 auto; }
+        .hero h1 { font-family: 'Playfair Display', serif; font-size: 3.4rem; font-weight: 900; line-height: 1.05; margin-bottom: 12px; color: #fff; }
+        .hero h1 span { background: linear-gradient(135deg, var(--magenta) 30%, var(--violet-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { font-size: 1rem; color: var(--text-muted); line-height: 1.6; }
+
+        /* ── PILLS DE FILTRO ── */
+        .nav-pills-container { position: sticky; top: 77px; z-index: 990; background: rgba(13,13,20,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); padding: 10px 0; }
+        .pills-wrapper { max-width: 1400px; margin: 0 auto; padding: 0 28px; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+        .pills-wrapper::-webkit-scrollbar { display: none; }
+        .pill-btn { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.82rem; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); padding: 7px 16px; border-radius: 100px; cursor: pointer; white-space: nowrap; transition: all 0.2s ease; }
+        .pill-btn:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
+        .pill-btn.active { background: rgba(232,0,125,0.1); border-color: var(--magenta); color: var(--magenta); font-weight: 700; }
+
+        /* ── CATÁLOGO ── */
+        .catalog-container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 40px 28px 80px; display: flex; flex-direction: column; gap: 55px; }
+        .seccion-wrapper { scroll-margin-top: 140px; }
+        .section-title-wrap { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .section-title { font-family: 'Playfair Display', serif; font-size: 1.65rem; font-weight: 900; color: #fff; white-space: nowrap; }
+        .section-divider { height: 1px; background: linear-gradient(90deg, var(--border) 0%, transparent 100%); width: 100%; }
+        .prod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+        .prod-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px; transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; }
+        .prod-card:hover { transform: translateY(-4px); border-color: rgba(232,0,125,0.22); box-shadow: 0 16px 36px rgba(0,0,0,0.4); }
+        .prod-img-wrap { width: 100%; height: 220px; border-radius: 14px; background: var(--surface2); overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); }
+        .prod-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+        .prod-card:hover .prod-img-wrap img { transform: scale(1.05); }
+        .prod-img-placeholder { font-size: 4rem; opacity: 0.5; }
+        .prod-meta { display: flex; flex-direction: column; gap: 6px; }
+        .prod-name { font-size: 1.12rem; font-weight: 700; color: #fff; line-height: 1.3; }
+        .stock-badge { font-size: 0.76rem; font-weight: 700; padding: 4px 10px; border-radius: 50px; display: inline-flex; align-items: center; gap: 5px; }
+        .stock-badge.available { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); color: #34d399; }
+        .stock-badge.out-of-stock { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); color: #f87171; }
+        .prod-purchase-block { display: flex; flex-direction: column; gap: 14px; }
+        .prod-price { font-size: 1.4rem; font-weight: 700; color: #fff; }
+        .prod-price span { font-size: 0.9rem; color: var(--text-muted); font-weight: 400; margin-right: 1px; }
+        .cart-form { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+
+        /* Selector de cantidad con botones +/- */
+        .qty-selector { display: flex; align-items: center; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 4px 8px; justify-content: space-between; gap: 8px; }
+        .qty-label { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+        .qty-controls { display: flex; align-items: center; gap: 6px; }
+        .qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; transition: all 0.2s; line-height: 1; }
+        .qty-btn:hover:not(:disabled) { background: var(--magenta); border-color: var(--magenta); color: #fff; }
+        .input-cantidad { background: transparent; border: none; color: #fff; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1rem; width: 36px; text-align: center; outline: none; -moz-appearance: textfield; }
+        .input-cantidad::-webkit-inner-spin-button,
+        .input-cantidad::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+        .btn-action { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.85rem; padding: 10px 16px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; transition: all 0.2s ease; border: none; }
+        .btn-add { background: transparent; border: 1.5px solid rgba(255,255,255,0.15); color: var(--text); }
+        .btn-add:hover:not(:disabled) { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.3); color: #fff; }
+        .btn-buy { background: linear-gradient(135deg, var(--magenta), var(--violet)); color: #fff; box-shadow: 0 4px 14px rgba(232,0,125,0.2); }
+        .btn-buy:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(232,0,125,0.35); }
+        .btn-action:disabled { background: rgba(255,255,255,0.02) !important; border: 1px solid var(--border) !important; color: rgba(255,255,255,0.15) !important; cursor: not-allowed; box-shadow: none !important; transform: none !important; }
+
+        /* Carrito flotante igual al de base.html */
+        .carrito-flotante { position: fixed; bottom: 36px; left: 50%; transform: translateX(-50%); z-index: 999; }
+        .carrito-btn { width: 78px; height: 78px; border-radius: 50%; background: linear-gradient(135deg, var(--green), #34d399); border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: #fff; box-shadow: 0 0 0 6px rgba(16,185,129,0.15), 0 0 0 12px rgba(16,185,129,0.07), 0 8px 32px rgba(16,185,129,0.4); transition: all 0.3s ease; animation: carrito-pulse 3s ease-in-out infinite; }
+        .carrito-btn:hover { transform: scale(1.1); color: #fff; }
+        .carrito-btn i { font-size: 1.5rem; }
+        .carrito-label { font-size: 0.58rem; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
+        @keyframes carrito-pulse {
+            0%,100% { box-shadow: 0 0 0 6px rgba(16,185,129,0.15), 0 0 0 12px rgba(16,185,129,0.07), 0 8px 32px rgba(16,185,129,0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(16,185,129,0.2), 0 0 0 20px rgba(16,185,129,0.06), 0 10px 36px rgba(16,185,129,0.5); }
+        }
+
+        .alert-chichi { background: linear-gradient(135deg, rgba(232,0,125,0.15), rgba(124,58,237,0.15)); border: 1px solid rgba(232,0,125,0.3); color: #fff; border-radius: 12px; font-weight: 600; backdrop-filter: blur(10px); }
+        .alerts-wrap { max-width: 1400px; margin: 24px auto -10px; padding: 0 28px; position: relative; z-index: 1; }
+
+        @media (max-width: 768px) {
+            .navbar-inner { padding: 12px 20px; }
+            .hero h1 { font-size: 2.4rem; }
+            .catalog-container { padding: 20px 20px 80px; gap: 40px; }
+            .prod-grid { grid-template-columns: 1fr; }
+            .brand-tagline { display: none; }
+        }
+    </style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar-chichi">
+    <div class="navbar-inner">
+        <a class="brand" href="{% url 'inicio' %}">
+            <div class="brand-logo-wrap">
+                <img src="{% static 'imagenes/logo.png' %}" alt="Logo" onerror="this.parentElement.innerHTML='📚'">
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">Librería Chichi</span>
+                <span class="brand-tagline">Tu espacio creativo</span>
+            </div>
+        </a>
+        <div class="nav-actions">
+            {% if user.is_staff or user.is_superuser %}
+                <a href="{% url 'panel_admin' %}" class="btn-admin">
+                    <i class="fa-solid fa-sliders"></i> Gestión
+                </a>
+            {% endif %}
+            {% if user.is_authenticated %}
+                <div class="user-pill">
+                    <div class="user-avatar">{{ user.first_name|default:user.username|first|upper }}</div>
+                    <span class="user-name">{{ user.first_name|default:user.username }}</span>
+                </div>
+                <a href="{% url 'logout' %}" class="btn-nav btn-salir" title="Cerrar sesión">
+                    <i class="fa-solid fa-right-from-bracket"></i> Salir
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn-nav btn-login"><i class="fa-solid fa-user"></i> Ingresar</a>
+                <a href="{% url 'registro' %}" class="btn-nav btn-nav-accent"><i class="fa-solid fa-user-plus"></i> Registrarse</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+{% if messages %}
+<div class="alerts-wrap">
+    {% for message in messages %}
+    <div class="alert alert-chichi alert-dismissible fade show mb-3" role="alert">
+        {% if 'success' in message.tags %}
+            <i class="fa-solid fa-circle-check me-2"></i>
+        {% else %}
+            <i class="fa-solid fa-circle-exclamation me-2"></i>
+        {% endif %}
+        {{ message }}
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<header class="hero">
+    <h1>Nuestro <span>Catálogo</span></h1>
+    <p>Materiales artísticos, útiles escolares y todo para tus proyectos creativos.</p>
+</header>
+
+<!-- BUSCADOR CON LUPA -->
+<div style="max-width:560px;margin:0 auto 8px;padding:0 28px;position:relative;z-index:995;">
+    <form method="GET" action="{% url 'catalogo' %}" style="display:flex;gap:10px;">
+        <div style="position:relative;flex:1;">
+            <i class="fa-solid fa-magnifying-glass"
+               style="position:absolute;left:16px;top:50%;transform:translateY(-50%);color:#8888aa;"></i>
+            <input type="text" name="q" value="{{ busqueda }}"
+                   id="buscarCatalogo" oninput="onBuscarCatalogo()" onfocus="onBuscarCatalogo()" autocomplete="off"
+                   placeholder="Buscar producto por nombre..."
+                   style="width:100%;padding:13px 16px 13px 44px;border-radius:100px;
+                          background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.12);
+                          color:#fff;font-family:'DM Sans',sans-serif;font-size:0.95rem;outline:none;">
+            <div id="sugerenciasCatalogo"
+                 style="display:none;position:absolute;top:100%;left:0;right:0;z-index:999;margin-top:8px;
+                        background:var(--surface2);border:1px solid var(--border);border-radius:16px;
+                        max-height:300px;overflow-y:auto;overflow-x:hidden;
+                        box-shadow:0 20px 50px rgba(0,0,0,0.6), 0 0 0 1px rgba(232,0,125,0.08);"></div>
+        </div>
+        <button type="submit"
+                style="border:none;border-radius:100px;padding:0 22px;cursor:pointer;color:#fff;font-weight:700;
+                       background:linear-gradient(135deg,#e8007d,#7c3aed);">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        {% if busqueda %}
+        <a href="{% url 'catalogo' %}"
+           style="display:flex;align-items:center;padding:0 16px;border-radius:100px;text-decoration:none;
+                  color:#fff;border:1.5px solid rgba(255,255,255,0.15);">
+            <i class="fa-solid fa-xmark"></i>
+        </a>
+        {% endif %}
+    </form>
+    {% if busqueda %}
+    <p style="text-align:center;color:#8888aa;font-size:0.85rem;margin-top:10px;">
+        Resultados para: <strong style="color:#fff;">{{ busqueda }}</strong>
+    </p>
+    {% endif %}
+</div>
+
+<!-- PILLS: solo "Ver Todo" + categorías reales de la BD -->
+<div class="nav-pills-container">
+    <div class="pills-wrapper">
+        <button class="pill-btn active" onclick="filtrar('ALL', this)" id="pill-ALL">✨ Ver Todo</button>
+        {% for categoria, productos in productos_por_seccion.items %}
+            <button class="pill-btn" onclick="filtrar('{{ categoria|upper|escapejs }}', this)">
+                {{ categoria|default:"Otros" }}
+            </button>
+        {% endfor %}
+    </div>
+</div>
+
+<main class="catalog-container">
+    {% for categoria, productos in productos_por_seccion.items %}
+    <section id="cat-{{ forloop.counter }}"
+             class="seccion-wrapper target-seccion"
+             data-category="{{ categoria|upper }}">
+        <div class="section-title-wrap">
+            <h3 class="section-title">{{ categoria|default:"Otros" }}</h3>
+            <div class="section-divider"></div>
+        </div>
+        <div class="prod-grid">
+            {% for prod in productos %}
+            <div class="prod-card" data-nombre="{{ prod.nombre_producto }}">
+                <div class="prod-img-wrap">
+                    {% if prod.imagen %}
+                        <img src="{{ prod.imagen.url }}" alt="{{ prod.nombre_producto }}">
+                    {% else %}
+                        <div class="prod-img-placeholder">📚</div>
+                    {% endif %}
+                </div>
+                <div class="prod-meta">
+                    <h4 class="prod-name">{{ prod.nombre_producto }}</h4>
+                    <div class="prod-stock">
+                        {% if prod.stock_disponible is not None %}
+                            {% if prod.stock_disponible > 0 %}
+                                <span class="stock-badge available">
+                                    <i class="fa-solid fa-box-open"></i> {{ prod.stock_disponible }} unidades
+                                </span>
+                            {% else %}
+                                <span class="stock-badge out-of-stock">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Sin stock
+                                </span>
+                            {% endif %}
+                        {% else %}
+                            <span class="stock-badge out-of-stock">Sin stock registrado</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="prod-purchase-block">
+                    <div class="prod-price"><span>$</span>{{ prod.precio|floatformat:0 }}</div>
+                    <form action="{% url 'agregar_al_carrito' prod.id_producto %}" method="POST" class="cart-form">
+                        {% csrf_token %}
+                        <div class="qty-selector">
+                            <span class="qty-label">Cantidad</span>
+                            <div class="qty-controls">
+                                <button type="button" class="qty-btn"
+                                        onclick="cambiarCantidad(this, -1)"
+                                        {% if prod.stock_disponible is not None and prod.stock_disponible <= 0 %}disabled{% endif %}>−</button>
+                                <input type="number" name="cantidad" value="1" min="1"
+                                       max="{{ prod.stock_disponible|default:1 }}"
+                                       class="input-cantidad"
+                                       {% if prod.stock_disponible is not None and prod.stock_disponible <= 0 %}disabled{% endif %}
+                                       required>
+                                <button type="button" class="qty-btn"
+                                        onclick="cambiarCantidad(this, 1)"
+                                        {% if prod.stock_disponible is not None and prod.stock_disponible <= 0 %}disabled{% endif %}>+</button>
+                            </div>
+                        </div>
+                        <button type="submit" name="accion" value="carrito" class="btn-action btn-add"
+                                {% if prod.stock_disponible is not None and prod.stock_disponible <= 0 %}disabled{% endif %}>
+                            <i class="fa-solid fa-cart-plus"></i> Al Carrito
+                        </button>
+                        <button type="submit" name="accion" value="comprar" class="btn-action btn-buy"
+                                {% if prod.stock_disponible is not None and prod.stock_disponible <= 0 %}disabled{% endif %}>
+                            <i class="fa-solid fa-bolt"></i> Compra Rápida
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% empty %}
+    <div class="text-center py-5" style="color:var(--text-muted);">No hay productos disponibles.</div>
+    {% endfor %}
+</main>
+
+<!-- Carrito flotante -->
+<div class="carrito-flotante">
+    <a href="{% url 'ver_carrito' %}" class="carrito-btn">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span class="carrito-label">Carrito</span>
+    </a>
+</div>
+
+
+<script>
+    // ── Filtrado por pills ────────────────────────────────────────────────
+    function filtrar(categoria, elemento) {
+        document.querySelectorAll('.pill-btn').forEach(p => p.classList.remove('active'));
+        if (elemento) elemento.classList.add('active');
+        document.querySelectorAll('.target-seccion').forEach(sec => {
+            sec.style.display = (categoria === 'ALL' || sec.dataset.category === categoria) ? '' : 'none';
+        });
+        document.querySelector('.catalog-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.bundle.min.js"></script>
+<script>
+    // ── Filtrado por pills ────────────────────────────────────────────────
+    function filtrar(categoria, elemento) {
+        document.querySelectorAll('.pill-btn').forEach(p => p.classList.remove('active'));
+        if (elemento) elemento.classList.add('active');
+        document.querySelectorAll('.target-seccion').forEach(sec => {
+            if (categoria === 'ALL') {
+                sec.style.display = '';
+            } else {
+                const catSec = sec.dataset.category.trim().toUpperCase();
+                const catFiltro = categoria.trim().toUpperCase();
+                sec.style.display = catSec === catFiltro ? '' : 'none';
+            }
+        });
+        document.querySelector('.catalog-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ── Botones +/- cantidad ──────────────────────────────────────────────
+    function mostrarAviso(form, texto) {
+        let aviso = form.querySelector('.aviso-stock');
+        if (!aviso) {
+            aviso = document.createElement('div');
+            aviso.className = 'aviso-stock';
+            aviso.style.cssText = 'color:#f87171;font-size:0.78rem;font-weight:600;margin-top:6px;display:flex;align-items:center;gap:5px;';
+            const sel = form.querySelector('.qty-selector');
+            sel.insertAdjacentElement('afterend', aviso);
+        }
+        aviso.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ' + texto;
+        aviso.style.display = 'flex';
+    }
+    function limpiarAviso(form) {
+        const aviso = form.querySelector('.aviso-stock');
+        if (aviso) aviso.style.display = 'none';
+    }
+
+    function cambiarCantidad(btn, delta) {
+        const form  = btn.closest('.cart-form');
+        const input = btn.parentElement.querySelector('.input-cantidad');
+        const max   = parseInt(input.max) || 99;
+        let val = parseInt(input.value) || 1;
+        val = val + delta;
+        if (val < 1) val = 1;
+        if (val > max) {
+            // No rellenamos al total: avisamos que supera el stock.
+            mostrarAviso(form, 'Solo hay ' + max + ' unidades disponibles.');
+            return;
+        }
+        limpiarAviso(form);
+        input.value = val;
+    }
+
+    document.querySelectorAll('.input-cantidad').forEach(input => {
+        const form = input.closest('.cart-form');
+
+        // Bloquear letras "e", "E", "+", "-", "." al escribir
+        input.addEventListener('keydown', function(e) {
+            if (['e', 'E', '+', '-', '.', ','].includes(e.key)) e.preventDefault();
+        });
+
+        // Al escribir: si supera el stock, avisar (NO autocompletar al máximo)
+        input.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            const max = parseInt(this.max) || 99;
+            const val = parseInt(this.value);
+            if (!isNaN(val) && val > max) {
+                mostrarAviso(form, 'Supera el stock: solo hay ' + max + ' unidades.');
+            } else {
+                limpiarAviso(form);
+            }
+        });
+
+        input.addEventListener('focus', function() { this.select(); });
+    });
+
+    // Validar al enviar: si la cantidad supera el stock, NO enviar y avisar
+    document.querySelectorAll('.cart-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const input = form.querySelector('.input-cantidad');
+            const max = parseInt(input.max) || 99;
+            const val = parseInt(input.value);
+            if (isNaN(val) || val < 1) {
+                e.preventDefault();
+                mostrarAviso(form, 'Ingresa una cantidad válida (mínimo 1).');
+            } else if (val > max) {
+                e.preventDefault();
+                mostrarAviso(form, 'No puedes pedir más de ' + max + ' unidades disponibles.');
+            }
+        });
+    });
+
+    // ── Coincidencia por INICIO del nombre (como autocompletar de Google) ──
+    // "cua" coincide con "Cuadernos"; "d" NO trae "Acrílicos de" (no empieza con d).
+    function coincidePalabra(nombre, texto) {
+        return (nombre || '').toLowerCase().startsWith(texto);
+    }
+
+    function filtrarCatalogoVivo() {
+        const inputEl = document.getElementById('buscarCatalogo');
+        if (!inputEl) return;
+        const texto = inputEl.value.trim().toLowerCase();
+        document.querySelectorAll('.target-seccion').forEach(sec => {
+            let visiblesEnSeccion = 0;
+            sec.querySelectorAll('.prod-card').forEach(card => {
+                if (texto === '' || coincidePalabra(card.dataset.nombre, texto)) {
+                    card.style.display = '';
+                    visiblesEnSeccion++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            sec.style.display = (visiblesEnSeccion === 0 && texto !== '') ? 'none' : '';
+        });
+    }
+
+    // ── Ventana emergente de sugerencias (tipo Google) ──
+    function onBuscarCatalogo() {
+        const inputEl = document.getElementById('buscarCatalogo');
+        const cont = document.getElementById('sugerenciasCatalogo');
+        const texto = inputEl.value.trim().toLowerCase();
+
+        // Filtra la grilla en vivo
+        filtrarCatalogoVivo();
+
+        cont.innerHTML = '';
+        if (texto === '') { cont.style.display = 'none'; return; }
+
+        // Nombres únicos que coincidan por inicio de palabra
+        const vistos = new Set();
+        let n = 0;
+        document.querySelectorAll('.prod-card').forEach(card => {
+            const nombre = card.dataset.nombre || '';
+            const clave = nombre.toLowerCase();
+            if (coincidePalabra(nombre, texto) && !vistos.has(clave)) {
+                vistos.add(clave);
+                if (n >= 8) return;
+                n++;
+                const fila = document.createElement('div');
+                fila.style.cssText = 'padding:12px 18px;cursor:pointer;color:var(--text);border-bottom:1px solid var(--border);font-size:0.92rem;font-weight:500;transition:background 0.15s;display:flex;align-items:center;gap:11px;';
+                fila.onmouseover = () => { fila.style.background = 'rgba(232,0,125,0.12)'; fila.style.color = '#fff'; };
+                fila.onmouseout = () => { fila.style.background = 'transparent'; fila.style.color = 'var(--text)'; };
+                fila.innerHTML = '<i class="fa-solid fa-magnifying-glass" style="color:var(--magenta);font-size:0.8rem;"></i><span>' + nombre + '</span>';
+                fila.onclick = () => {
+                    inputEl.value = nombre;
+                    cont.style.display = 'none';
+                    filtrarCatalogoVivo();
+                };
+                cont.appendChild(fila);
+            }
+        });
+
+        cont.style.display = n > 0 ? 'block' : 'none';
+    }
+
+    // Cerrar el dropdown al hacer clic fuera
+    document.addEventListener('click', function(e) {
+        const cont = document.getElementById('sugerenciasCatalogo');
+        const inputEl = document.getElementById('buscarCatalogo');
+        if (cont && inputEl && !cont.contains(e.target) && e.target !== inputEl) {
+            cont.style.display = 'none';
+        }
+    });
+
+    // ── Activar filtro si venimos de base.html con ?cat= ─────────────────
+    (function() {
+        const params = new URLSearchParams(window.location.search);
+        const cat = params.get('cat');
+        if (cat) {
+            const catUpper = decodeURIComponent(cat).trim().toUpperCase();
+            let encontrado = false;
+            document.querySelectorAll('.target-seccion').forEach(sec => {
+                const catSec = sec.dataset.category.trim().toUpperCase();
+                if (catSec === catUpper) {
+                    sec.style.display = '';
+                    encontrado = true;
+                } else {
+                    sec.style.display = 'none';
+                }
+            });
+            // Activar el pill correspondiente
+            document.querySelectorAll('.pill-btn').forEach(pill => {
+                const onclick = pill.getAttribute('onclick') || '';
+                if (onclick.includes(catUpper)) {
+                    pill.classList.add('active');
+                }
+            });
+            // Si no encontró nada mostrar todo
+            if (!encontrado) {
+                document.querySelectorAll('.target-seccion').forEach(sec => {
+                    sec.style.display = '';
+                });
+                document.getElementById('pill-ALL').classList.add('active');
+            }
+        } else {
+            document.getElementById('pill-ALL').classList.add('active');
+        }
+    })();
+</script>
+</body>
+</html>

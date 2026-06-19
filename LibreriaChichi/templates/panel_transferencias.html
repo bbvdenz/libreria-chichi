@@ -1,0 +1,177 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transferencias — Librería Chichi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --magenta:#e8007d; --violet:#7c3aed; --violet-light:#a855f7;
+            --gold:#f59e0b; --green:#10b981; --blue:#3b82f6; --red:#ef4444;
+            --bg:#0d0d14; --surface:#13131f; --surface2:#1a1a2e;
+            --border:rgba(255,255,255,0.08); --text:#f0f0f8; --text-muted:#8888aa;
+        }
+        * { box-sizing:border-box; margin:0; padding:0; }
+        body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+        .ambient { position:fixed; inset:0; pointer-events:none; z-index:0; background:radial-gradient(ellipse 70% 50% at 15% 10%, rgba(232,0,125,0.1) 0%, transparent 70%); }
+        .navbar-chichi { position:sticky; top:0; z-index:1000; background:rgba(13,13,20,0.92); backdrop-filter:blur(24px); border-bottom:1px solid var(--border); }
+        .navbar-inner { max-width:1400px; margin:0 auto; padding:13px 28px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+        .brand { display:flex; align-items:center; gap:13px; text-decoration:none; }
+        .brand-logo-wrap { width:50px; height:50px; border-radius:14px; background:linear-gradient(135deg,var(--magenta),var(--violet)); display:flex; align-items:center; justify-content:center; font-size:1.4rem; box-shadow:0 0 24px rgba(232,0,125,0.45); }
+        .brand-text { display:flex; flex-direction:column; line-height:1.1; }
+        .brand-name { font-family:'Playfair Display',serif; font-size:1.45rem; font-weight:900; background:linear-gradient(90deg,#fff 0%,var(--magenta) 55%,var(--violet-light) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .brand-tagline { font-size:0.62rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--text-muted); }
+        .nav-actions { display:flex; align-items:center; gap:10px; }
+        .btn-nav { font-weight:600; font-size:0.85rem; padding:8px 18px; border-radius:100px; border:1.5px solid rgba(255,255,255,0.15); background:transparent; color:var(--text); cursor:pointer; text-decoration:none; transition:all 0.2s; display:inline-flex; align-items:center; gap:6px; }
+        .btn-nav:hover { background:rgba(255,255,255,0.08); color:#fff; }
+        .btn-nav.nav-panel { border-color:rgba(124,58,237,0.5); color:#c4b5fd; }
+        .btn-nav.nav-vender { border-color:rgba(16,185,129,0.5); color:#6ee7b7; }
+        .btn-nav.nav-pedidos { border-color:rgba(59,130,246,0.55); color:#93c5fd; }
+        .btn-nav.nav-ventas { border-color:rgba(245,158,11,0.55); color:#fcd34d; }
+        .btn-nav.nav-salir { border-color:rgba(239,68,68,0.45); color:#fca5a5; }
+        .wrap { position:relative; z-index:1; max-width:1400px; margin:0 auto; padding:40px 28px 80px; }
+        .title { font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:900; color:#fff; margin-bottom:8px; }
+        .title span { background:linear-gradient(90deg,var(--magenta),var(--violet-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .sub { color:var(--text-muted); margin-bottom:28px; }
+        .tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px; }
+        .tab { padding:8px 16px; border-radius:100px; border:1.5px solid var(--border); background:var(--surface); color:var(--text-muted); text-decoration:none; font-size:0.85rem; font-weight:600; display:inline-flex; align-items:center; gap:7px; transition:all 0.2s; }
+        .tab:hover { color:#fff; }
+        .tab.active { background:linear-gradient(135deg,var(--magenta),var(--violet)); color:#fff; border-color:transparent; }
+        .tab .count { background:rgba(255,255,255,0.15); border-radius:100px; padding:1px 8px; font-size:0.72rem; }
+        .card { background:var(--surface); border:1px solid var(--border); border-radius:18px; overflow:hidden; }
+        table { width:100%; border-collapse:collapse; }
+        th, td { padding:14px 16px; text-align:left; font-size:0.88rem; border-bottom:1px solid var(--border); }
+        th { color:var(--text-muted); text-transform:uppercase; font-size:0.72rem; letter-spacing:1px; }
+        td.mono { font-family:monospace; }
+        .estado { padding:4px 12px; border-radius:100px; font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; }
+        .e-pendiente { background:rgba(245,158,11,0.13); color:var(--gold); border:1px solid rgba(245,158,11,0.3); }
+        .e-validada { background:rgba(16,185,129,0.13); color:#34d399; border:1px solid rgba(16,185,129,0.3); }
+        .e-rechazada { background:rgba(239,68,68,0.13); color:#fca5a5; border:1px solid rgba(239,68,68,0.3); }
+        .match-ok { color:#34d399; font-weight:700; }
+        .match-no { color:#fca5a5; font-weight:700; }
+        .btn-aprobar { background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.35); border-radius:8px; padding:6px 12px; cursor:pointer; font-weight:700; font-size:0.8rem; }
+        .btn-rechazar { background:rgba(239,68,68,0.12); color:#fca5a5; border:1px solid rgba(239,68,68,0.35); border-radius:8px; padding:6px 12px; cursor:pointer; font-weight:700; font-size:0.8rem; margin-left:6px; }
+        .vacio { text-align:center; padding:50px; color:var(--text-muted); }
+    </style>
+</head>
+<body>
+    <div class="ambient"></div>
+    <nav class="navbar-chichi">
+        <div class="navbar-inner">
+            <a href="{% url 'panel_admin' %}" class="brand">
+                <div class="brand-logo-wrap">📚</div>
+                <div class="brand-text">
+                    <span class="brand-name">Librería Chichi</span>
+                    <span class="brand-tagline">Transferencias</span>
+                </div>
+            </a>
+            <div class="nav-actions">
+                {% if permisos.puede_gestionar_inventario %}
+                <a href="{% url 'panel_admin' %}" class="btn-nav nav-panel"><i class="fa-solid fa-gauge-high"></i> Panel</a>
+                {% endif %}
+                {% if permisos.puede_usar_pos %}
+                <a href="{% url 'panel_pos' %}" class="btn-nav nav-vender"><i class="fa-solid fa-cash-register"></i> Vender</a>
+                {% endif %}
+                {% if permisos.puede_gestionar_pedidos %}
+                <a href="{% url 'panel_pedidos' %}" class="btn-nav nav-pedidos"><i class="fa-solid fa-truck"></i> Pedidos</a>
+                {% endif %}
+                {% if permisos.puede_ver_reportes %}
+                <a href="{% url 'panel_ventas' %}" class="btn-nav nav-ventas"><i class="fa-solid fa-chart-line"></i> Ventas</a>
+                {% endif %}
+                <a href="{% url 'logout' %}" class="btn-nav nav-salir"><i class="fa-solid fa-right-from-bracket"></i> Salir</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="wrap">
+        <h1 class="title">Validar <span>Transferencias</span></h1>
+        <p class="sub">Revisa los comprobantes informados por los clientes y apruébalos o recházalos.</p>
+
+        <div class="tabs">
+            <a href="?estado=pendiente" class="tab {% if filtro == 'pendiente' %}active{% endif %}">
+                <i class="fa-regular fa-clock"></i> Pendientes <span class="count">{{ conteos.pendiente }}</span>
+            </a>
+            <a href="?estado=validada" class="tab {% if filtro == 'validada' %}active{% endif %}">
+                <i class="fa-solid fa-check"></i> Validadas <span class="count">{{ conteos.validada }}</span>
+            </a>
+            <a href="?estado=rechazada" class="tab {% if filtro == 'rechazada' %}active{% endif %}">
+                <i class="fa-solid fa-xmark"></i> Rechazadas <span class="count">{{ conteos.rechazada }}</span>
+            </a>
+        </div>
+
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pedido</th><th>Banco</th><th>N° Operación</th><th>RUT</th>
+                        <th>Monto / Esperado</th><th>Fecha</th><th>Estado</th><th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transferencias %}
+                    <tr id="fila-{{ t.id }}">
+                        <td class="mono">#{{ t.pedido_id }}</td>
+                        <td>{{ t.banco }}</td>
+                        <td class="mono">{{ t.numero_operacion }}</td>
+                        <td class="mono">{{ t.rut_pagador }}</td>
+                        <td>
+                            ${{ t.monto }}
+                            {% if t.coincide_monto %}
+                                <span class="match-ok">✔ coincide</span>
+                            {% else %}
+                                <span class="match-no">✗ esperaba ${{ t.monto_esperado }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ t.fecha }}</td>
+                        <td><span class="estado e-{{ t.estado }}">{{ t.estado }}</span></td>
+                        <td>
+                            {% if t.estado == 'pendiente' %}
+                                <button class="btn-aprobar" onclick="validar({{ t.id }}, 'aprobar')">Aprobar</button>
+                                <button class="btn-rechazar" onclick="validar({{ t.id }}, 'rechazar')">Rechazar</button>
+                            {% elif t.estado == 'rechazada' %}
+                                <span style="color:var(--text-muted);font-size:0.82rem;">{{ t.motivo_rechazo }}</span>
+                            {% else %}
+                                <span style="color:var(--text-muted);">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" class="vacio">No hay transferencias en este estado.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function validar(id, decision) {
+            let motivo = "";
+            if (decision === "rechazar") {
+                motivo = prompt("Motivo del rechazo:");
+                if (motivo === null || motivo.trim() === "") return;
+            } else {
+                if (!confirm("¿Aprobar esta transferencia? El pedido quedará confirmado.")) return;
+            }
+            try {
+                const resp = await fetch(`/api/v1/transferencias/${id}/validar/`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ decision: decision, motivo: motivo }),
+                });
+                const data = await resp.json();
+                if (data.ok) {
+                    alert(data.mensaje || "Listo.");
+                    location.reload();
+                } else {
+                    alert("Error: " + (data.error || "no se pudo procesar."));
+                }
+            } catch (e) {
+                alert("Error de conexión: " + e);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,842 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Gestión — Librería Chichi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --magenta:#e8007d; --violet:#7c3aed; --violet-light:#a855f7;
+            --gold:#f59e0b; --green:#10b981;
+            --bg:#0d0d14; --surface:#13131f; --surface2:#1a1a2e;
+            --border:rgba(255,255,255,0.08); --text:#f0f0f8; --text-muted:#8888aa;
+        }
+        * { box-sizing:border-box; margin:0; padding:0; }
+        body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+        .ambient { position:fixed; inset:0; pointer-events:none; z-index:0; background:radial-gradient(ellipse 70% 50% at 15% 10%, rgba(232,0,125,0.1) 0%, transparent 70%); }
+        .navbar-chichi { position:sticky; top:0; z-index:1000; background:rgba(13,13,20,0.92); backdrop-filter:blur(24px); border-bottom:1px solid var(--border); }
+        .navbar-inner { max-width:1400px; margin:0 auto; padding:13px 28px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+        .brand { display:flex; align-items:center; gap:13px; text-decoration:none; flex-shrink:0; }
+        .brand-logo-wrap { width:50px; height:50px; border-radius:14px; background:linear-gradient(135deg,var(--magenta),var(--violet)); display:flex; align-items:center; justify-content:center; font-size:1.4rem; box-shadow:0 0 24px rgba(232,0,125,0.45); overflow:hidden; position:relative; flex-shrink:0; }
+        .brand-logo-wrap::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,0.18),transparent 60%); border-radius:inherit; }
+        .brand-logo-wrap img { width:100%; height:100%; object-fit:cover; border-radius:inherit; }
+        .brand-text { display:flex; flex-direction:column; line-height:1.1; }
+        .brand-name { font-family:'Playfair Display',serif; font-size:1.45rem; font-weight:900; background:linear-gradient(90deg,#fff 0%,var(--magenta) 55%,var(--violet-light) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .brand-tagline { font-size:0.62rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--text-muted); }
+        .nav-actions { display:flex; align-items:center; gap:10px; }
+        .btn-nav { font-family:'DM Sans',sans-serif; font-weight:600; font-size:0.85rem; padding:8px 18px; border-radius:100px; border:1.5px solid rgba(255,255,255,0.15); background:transparent; color:var(--text); cursor:pointer; text-decoration:none; transition:all 0.2s; display:inline-flex; align-items:center; gap:6px; }
+        .btn-nav:hover { background:rgba(255,255,255,0.08); color:#fff; }
+        .btn-nav.nav-panel { border-color:rgba(124,58,237,0.5); color:#c4b5fd; }
+        .btn-nav.nav-panel:hover { background:rgba(124,58,237,0.18); color:#fff; }
+        .btn-nav.nav-vender { border-color:rgba(16,185,129,0.5); color:#6ee7b7; }
+        .btn-nav.nav-vender:hover { background:rgba(16,185,129,0.18); color:#fff; }
+        .btn-nav.nav-pedidos { border-color:rgba(59,130,246,0.55); color:#93c5fd; }
+        .btn-nav.nav-pedidos:hover { background:rgba(59,130,246,0.18); color:#fff; }
+        .btn-nav.nav-ventas { border-color:rgba(245,158,11,0.55); color:#fcd34d; }
+        .btn-nav.nav-ventas:hover { background:rgba(245,158,11,0.20); color:#fff; }
+        .btn-nav.nav-tienda { border-color:rgba(6,182,212,0.55); color:#67e8f9; }
+        .btn-nav.nav-tienda:hover { background:rgba(6,182,212,0.20); color:#fff; }
+        .btn-nav.nav-salir { border-color:rgba(239,68,68,0.45); color:#fca5a5; }
+        .btn-nav.nav-salir:hover { background:rgba(239,68,68,0.18); color:#fff; }
+        .admin-wrap { position:relative; z-index:1; max-width:1400px; margin:0 auto; padding:40px 28px 80px; }
+        .admin-title { font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:900; color:#fff; margin-bottom:8px; }
+        .admin-title span { background:linear-gradient(90deg,var(--magenta),var(--violet-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .admin-sub { color:var(--text-muted); margin-bottom:40px; }
+        .alerts-wrap { margin-bottom:24px; }
+        .alert-ok { background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); color:#34d399; border-radius:12px; font-weight:600; padding:12px 16px; margin-bottom:8px; display:flex; align-items:center; gap:10px; }
+        .alert-err { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#fca5a5; border-radius:12px; font-weight:600; padding:12px 16px; margin-bottom:8px; display:flex; align-items:center; gap:10px; }
+        .alert-warn { background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.3); color:var(--gold); border-radius:12px; font-weight:600; padding:12px 16px; margin-bottom:8px; display:flex; align-items:center; gap:10px; }
+        .section-card { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:28px; margin-bottom:28px; }
+        .section-card h3 { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:#fff; margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+        .field-row { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:14px; margin-bottom:16px; }
+        .field-group { display:flex; flex-direction:column; gap:6px; }
+        .field-label { font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-muted); }
+        .field-input, .field-select { background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; padding:10px 12px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.9rem; transition:border-color 0.2s; }
+        .field-input:focus, .field-select:focus { outline:none; border-color:var(--magenta); }
+        .field-select option { background:#1a1a2e; }
+        .field-input[type="file"] { padding:8px 12px; }
+        .table-wrap { overflow-x:auto; border-radius:14px; border:1px solid var(--border); }
+        table { width:100%; border-collapse:collapse; }
+        thead th { background:rgba(255,255,255,0.03); padding:12px 16px; text-align:left; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); border-bottom:1px solid var(--border); white-space:nowrap; }
+        tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+        tbody tr:last-child { border-bottom:none; }
+        tbody tr:hover { background:rgba(255,255,255,0.02); }
+        tbody td { padding:14px 16px; font-size:0.88rem; vertical-align:middle; }
+        .prod-name-cell { font-weight:600; color:#fff; }
+        .cat-badge { background:rgba(124,58,237,0.15); border:1px solid rgba(124,58,237,0.3); color:var(--violet-light); padding:3px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; }
+        .stock-ok { font-weight:700; color:#34d399; }
+        .stock-low { font-weight:700; color:#f87171; }
+        .action-btns { display:flex; gap:6px; flex-wrap:wrap; }
+        .btn-edit { background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.3); color:var(--gold); padding:5px 12px; border-radius:8px; font-size:0.8rem; font-weight:600; cursor:pointer; transition:all 0.2s; text-decoration:none; display:inline-flex; align-items:center; gap:5px; }
+        .btn-edit:hover { background:rgba(245,158,11,0.2); color:var(--gold); }
+        .btn-del { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.25); color:#f87171; padding:5px 12px; border-radius:8px; font-size:0.8rem; font-weight:600; cursor:pointer; transition:all 0.2s; text-decoration:none; display:inline-flex; align-items:center; gap:5px; }
+        .btn-del:hover { background:rgba(239,68,68,0.2); color:#fca5a5; }
+        .btn-submit-sm { background:linear-gradient(135deg,var(--magenta),var(--violet)); color:#fff; border:none; border-radius:10px; padding:10px 20px; font-family:'DM Sans',sans-serif; font-weight:700; font-size:0.88rem; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:all 0.2s; }
+        .btn-submit-sm:hover { transform:translateY(-1px); }
+        .btn-green { background:linear-gradient(135deg,var(--green),#34d399) !important; color:#000 !important; }
+        .admin-item { display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; margin-bottom:8px; }
+        .admin-rol { margin-left:auto; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:6px; }
+        .rol-super { background:rgba(245,158,11,0.1); color:var(--gold); }
+        .rol-admin { background:rgba(255,255,255,0.06); color:var(--text-muted); }
+        .mi-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; padding:20px; }
+        .mi-modal-overlay.activo { display:flex; }
+        .mi-modal-box { background:var(--surface); border:1px solid var(--border); border-radius:20px; width:100%; max-width:500px; max-height:90vh; overflow-y:auto; box-shadow:0 32px 80px rgba(0,0,0,0.6); animation:fadeUp 0.3s ease both; }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        .mi-modal-header { display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid var(--border); }
+        .mi-modal-header h5 { font-family:'Playfair Display',serif; font-weight:700; color:#fff; margin:0; display:flex; align-items:center; gap:8px; }
+        .mi-modal-body { padding:24px; }
+        .mi-modal-footer { padding:16px 24px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end; }
+        .btn-cerrar-modal { background:transparent; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer; padding:4px; line-height:1; transition:color 0.2s; }
+        .btn-cerrar-modal:hover { color:#fff; }
+        .campo-bloqueado { opacity:0.35; cursor:not-allowed; }
+        .aviso-sin-permiso { font-size:0.75rem; color:#f87171; margin-top:4px; display:flex; align-items:center; gap:5px; }
+        @media(max-width:768px) { .field-row { grid-template-columns:1fr; } }
+    </style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<nav class="navbar-chichi">
+    <div class="navbar-inner">
+        <a class="brand" href="{% url 'inicio' %}">
+            <div class="brand-logo-wrap">
+                <img src="{% static 'imagenes/logo.png' %}" alt="Logo" onerror="this.parentElement.innerHTML='📚'">
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">Librería Chichi</span>
+                <span class="brand-tagline">Panel de Gestión</span>
+            </div>
+        </a>
+        <div class="nav-actions">
+            {% if not es_bodeguero %}
+            <a href="{% url 'panel_pos' %}" class="btn-nav nav-vender"><i class="fa-solid fa-cash-register"></i> Vender</a>
+            <a href="{% url 'panel_pedidos' %}" class="btn-nav nav-pedidos"><i class="fa-solid fa-truck"></i> Pedidos</a>
+            {% endif %}
+            {% if permisos.puede_validar_transferencias %}
+            <a href="{% url 'panel_transferencias' %}" class="btn-nav nav-pedidos"><i class="fa-solid fa-building-columns"></i> Transferencias</a>
+            {% endif %}
+            {% if permisos.puede_ver_reportes %}
+            <a href="{% url 'panel_ventas' %}" class="btn-nav nav-ventas"><i class="fa-solid fa-chart-line"></i> Ventas</a>
+            {% endif %}
+            <a href="{% url 'catalogo' %}" class="btn-nav nav-tienda"><i class="fa-solid fa-store"></i> Ver Tienda</a>
+            <a href="{% url 'logout' %}" class="btn-nav nav-salir"><i class="fa-solid fa-right-from-bracket"></i> Salir</a>
+        </div>
+    </div>
+</nav>
+
+<div class="admin-wrap">
+    <h1 class="admin-title">Panel de <span>Gestión</span></h1>
+    <p class="admin-sub">
+        Bienvenido, {{ user.first_name|default:user.username }}.
+        {% if es_bodeguero %}
+            <span style="color:#f87171;font-size:0.85rem;">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                Modo Bodeguero — Solo puedes ingresar productos nuevos. Los precios y el stock los gestiona un administrador.
+            </span>
+        {% endif %}
+    </p>
+
+    {% if messages %}
+    <div class="alerts-wrap">
+        {% for message in messages %}
+            {% if 'success' in message.tags %}
+                <div class="alert-ok"><i class="fa-solid fa-circle-check"></i> {{ message }}</div>
+            {% elif 'warning' in message.tags %}
+                <div class="alert-warn"><i class="fa-solid fa-triangle-exclamation"></i> {{ message }}</div>
+            {% else %}
+                <div class="alert-err"><i class="fa-solid fa-circle-exclamation"></i> {{ message }}</div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- AGREGAR PRODUCTO -->
+    {% if permisos.puede_gestionar_productos %}
+    <div class="section-card">
+        <h3><i class="fa-solid fa-plus" style="color:var(--green);"></i> Agregar Nuevo Producto</h3>
+        <form action="{% url 'admin_agregar_producto' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="field-row">
+                <div class="field-group">
+                    <label class="field-label">Nombre *</label>
+                    <input type="text" name="nombre_producto" class="field-input" placeholder="Ej: Lápiz HB Faber" required>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">SKU (automático)</label>
+                    <input type="text" id="agregarSku" class="field-input" readonly tabindex="-1"
+                           style="text-transform:uppercase;background:rgba(255,255,255,0.04);cursor:not-allowed;
+                                  color:var(--violet-light);font-family:monospace;font-weight:700;">
+                    <p style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;">
+                        Se genera solo según la categoría. No es editable.
+                    </p>
+                </div>
+                {% if permisos.puede_ver_precio_stock %}
+                <div class="field-group">
+                    <label class="field-label">Precio ($) *</label>
+                    <input type="number" name="precio" class="field-input" placeholder="1990" min="0" step="0.01" required>
+                </div>
+                {% endif %}
+                <div class="field-group">
+                    <label class="field-label">Categoría *</label>
+                    <select name="categoria" id="categoriaAgregar" class="field-select" onchange="actualizarSkuPreview()">
+                        <option value="PINTURA Y COLOR">Pintura y Color</option>
+                        <option value="PAPEL Y CARTULINA">Papel y Cartulina</option>
+                        <option value="CUADERNOS Y FORROS">Cuadernos y Forros</option>
+                        <option value="LAPICES Y ESCRITURA">Lápices y Escritura</option>
+                        <option value="GEOMETRIA">Geometría</option>
+                        <option value="ADHESIVOS Y PEGAMENTOS">Adhesivos y Pegamentos</option>
+                        <option value="MANUALIDADES">Manualidades</option>
+                        <option value="CARPETERIA">Carpetería</option>
+                        <option value="OTROS">Otros</option>
+                    </select>
+                </div>
+                {% if permisos.puede_ver_precio_stock %}
+                <div class="field-group">
+                    <label class="field-label">Stock entrante</label>
+                    <input type="number" name="stock_inicial" class="field-input num-entero" placeholder="0" min="0" value="0">
+                </div>
+                {% endif %}
+                <div class="field-group">
+                    <label class="field-label">Imagen (opcional)</label>
+                    <input type="file" name="imagen" class="field-input" accept="image/*">
+                </div>
+            </div>
+            <button type="submit" class="btn-submit-sm btn-green">
+                <i class="fa-solid fa-plus"></i> Agregar Producto
+            </button>
+        </form>
+        {{ siguientes_sku|json_script:"skus-siguientes" }}
+    </div>
+    {% endif %}
+
+    <!-- ACTUALIZAR / REABASTECER (solo admins, no bodeguero) -->
+    {% if permisos.puede_ver_precio_stock %}
+    <div class="section-card" style="position:relative;z-index:30;">
+        <h3><i class="fa-solid fa-rotate" style="color:var(--violet-light);"></i> Actualizar / Reabastecer Producto</h3>
+        <p style="color:var(--text-muted);font-size:0.85rem;margin-top:-12px;margin-bottom:18px;">
+            Busca el producto por su SKU. Se suma el stock entrante y, si indicas un precio de compra,
+            se recalcula el precio con <strong>promedio ponderado</strong>.
+        </p>
+
+        <!-- Buscador de SKU en vivo -->
+        <div class="field-group" style="position:relative;max-width:520px;margin-bottom:18px;">
+            <label class="field-label">Buscar por SKU o nombre</label>
+            <div style="position:relative;">
+                <i class="fa-solid fa-magnifying-glass" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);"></i>
+                <input type="text" id="buscarSku" class="field-input" placeholder="Empieza a escribir el SKU..."
+                       autocomplete="off" oninput="filtrarSku()" onfocus="filtrarSku()" style="padding-left:38px;width:100%;">
+            </div>
+            <div id="sugerenciasSku"
+                 style="display:none;position:absolute;top:100%;left:0;right:0;z-index:999;margin-top:6px;
+                        background:var(--surface2);border:1px solid var(--border);border-radius:14px;
+                        max-height:280px;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,0.6), 0 0 0 1px rgba(124,58,237,0.1);"></div>
+        </div>
+
+        <form action="{% url 'admin_actualizar_producto' %}" method="POST" id="formActualizar">
+            {% csrf_token %}
+            <input type="hidden" name="sku" id="actSku">
+            <div id="actSeleccionado"
+                 style="display:none;background:var(--surface2);border:1px solid var(--border);
+                        border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+                <div style="font-weight:700;color:#fff;font-size:1rem;" id="actNombre">—</div>
+                <div style="color:var(--text-muted);font-size:0.85rem;margin-top:4px;">
+                    SKU: <span style="font-family:monospace;" id="actSkuTexto">—</span> ·
+                    Stock actual: <strong id="actStockActual">—</strong> ·
+                    Precio actual: <strong id="actPrecioActual">—</strong>
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field-group">
+                    <label class="field-label">Cantidad entrante *</label>
+                    <input type="number" name="stock_inicial" id="actCantidad" oninput="previewPonderado()" class="field-input num-entero" min="1" placeholder="Ej: 20">
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Precio de compra (opcional)</label>
+                    <input type="number" name="precio" id="actPrecioCompra" oninput="previewPonderado()" class="field-input" min="0" step="0.01" placeholder="Si lo dejas vacío, no cambia el precio">
+                </div>
+            </div>
+            <div id="actPreview"
+                 style="display:none;background:rgba(124,58,237,0.10);border:1px solid rgba(124,58,237,0.35);
+                        border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:0.9rem;color:#fff;"></div>
+            <button type="submit" class="btn-submit-sm" id="btnActualizar" disabled style="opacity:0.5;">
+                <i class="fa-solid fa-rotate"></i> Actualizar producto
+            </button>
+        </form>
+
+        <!-- Lista oculta para el filtro en vivo (no se inyectan números en JS) -->
+        <div id="listaProductosUpd" style="display:none;">
+            {% for p in productos_actualizar %}
+            <div class="prod-upd-item"
+                 data-sku="{{ p.sku }}"
+                 data-nombre="{{ p.nombre }}"
+                 data-precio="{{ p.precio }}"
+                 data-stock="{{ p.stock }}"></div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- INVENTARIO -->
+    <div class="section-card">
+        <h3><i class="fa-solid fa-boxes-stacked" style="color:var(--gold);"></i> Inventario de Productos</h3>
+
+        <!-- BUSCADOR CON LUPA -->
+        <form method="GET" action="{% url 'panel_admin' %}" style="margin-bottom:18px;">
+            <div style="display:flex;gap:10px;max-width:480px;">
+                <div style="position:relative;flex:1;">
+                    <i class="fa-solid fa-magnifying-glass"
+                       style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);"></i>
+                    <input type="text" name="q" value="{{ busqueda }}"
+                           id="buscarInventario" oninput="filtrarInventario()"
+                           class="field-input" placeholder="Buscar por nombre o SKU..."
+                           autocomplete="off"
+                           style="width:100%;padding-left:38px;">
+                </div>
+                <button type="submit" class="btn-submit-sm">
+                    <i class="fa-solid fa-magnifying-glass"></i> Buscar
+                </button>
+                {% if busqueda %}
+                <a href="{% url 'panel_admin' %}" class="btn-nav nav-panel"><i class="fa-solid fa-xmark"></i></a>
+                {% endif %}
+            </div>
+        </form>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        {% if permisos.puede_ver_precio_stock %}
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        {% endif %}
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prod in productos %}
+                    <tr class="fila-inventario"
+                        data-sku="{{ prod.sku|default:'' }}"
+                        data-nombre="{{ prod.nombre_producto }}"
+                        data-cat="{{ prod.categoria }}">
+                        <td style="color:var(--text-muted);font-family:monospace;">{{ prod.sku|default:"—" }}</td>
+                        <td class="prod-name-cell">{{ prod.nombre_producto }}</td>
+                        <td><span class="cat-badge">{{ prod.categoria }}</span></td>
+                        {% if permisos.puede_ver_precio_stock %}
+                        <td>${{ prod.precio|floatformat:0 }}</td>
+                        <td>
+                            {% if prod.stock_actual is None %}
+                                <span class="stock-low">—</span>
+                            {% elif prod.stock_actual > 5 %}
+                                <span class="stock-ok">{{ prod.stock_actual }}</span>
+                            {% else %}
+                                <span class="stock-low">{{ prod.stock_actual }}</span>
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                        <td>
+                            <div class="action-btns">
+                                {% if permisos.puede_editar %}
+                                <button class="btn-edit"
+                                        data-id="{{ prod.id_producto }}"
+                                        data-nombre="{{ prod.nombre_producto }}"
+                                        data-sku="{{ prod.sku|default:'' }}"
+                                        data-precio="{{ prod.precio|stringformat:'d' }}"
+                                        data-categoria="{{ prod.categoria }}"
+                                        data-stock="{{ prod.stock_actual|default:0 }}"
+                                        onclick="abrirEditarDesde(this)">
+                                    <i class="fa-solid fa-pencil"></i> Editar
+                                </button>
+                                {% endif %}
+                                {% if permisos.puede_eliminar %}
+                                <button class="btn-del"
+                                        data-id="{{ prod.id_producto }}"
+                                        data-nombre="{{ prod.nombre_producto }}"
+                                        onclick="confirmarEliminarDesde(this)">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align:center;color:var(--text-muted);padding:32px;">
+                            {% if busqueda %}No se encontraron productos para "{{ busqueda }}".{% else %}No hay productos registrados.{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- CREAR SUBADMIN -->
+    {% if permisos.puede_gestionar_admins %}
+    <div class="section-card">
+        <h3><i class="fa-solid fa-user-shield" style="color:var(--magenta);"></i> Crear Administrador con Permisos Limitados</h3>
+        <form action="{% url 'admin_crear_subadmin' %}" method="POST">
+            {% csrf_token %}
+            <div class="field-row">
+                <div class="field-group">
+                    <label class="field-label">Nombre de usuario *</label>
+                    <input type="text" name="username" class="field-input" placeholder="bodeguero1" required>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Correo</label>
+                    <input type="email" name="email" class="field-input" placeholder="bodeguero@chichi.cl">
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Contraseña *</label>
+                    <input type="password" name="password" class="field-input" placeholder="••••••••" required minlength="8">
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Confirmar contraseña *</label>
+                    <input type="password" name="password_confirm" class="field-input" placeholder="••••••••" required minlength="8">
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Rol</label>
+                    <select name="rol" class="field-select">
+                        <option value="bodeguero">Bodeguero — solo ingresar productos (sin precio ni stock)</option>
+                        <option value="cajero">Cajero — punto de venta y validar transferencias (sin editar catálogo)</option>
+                        <option value="admin_completo">Administrador — catálogo, pedidos, ventas y transferencias (sin crear admins)</option>
+                        <option value="super_admin">Super Admin — control total (incluye crear admins)</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn-submit-sm">
+                <i class="fa-solid fa-user-plus"></i> Crear Administrador
+            </button>
+        </form>
+        <div style="margin-top:24px;">
+            <p style="font-size:0.82rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">
+                Administradores actuales
+            </p>
+            {% for admin in admins %}
+            <div class="admin-item">
+                <i class="fa-solid fa-user-tie" style="color:{% if admin.is_superuser %}var(--gold){% else %}var(--text-muted){% endif %};"></i>
+                <span style="font-weight:600;color:#fff;">{{ admin.username }}</span>
+                <span style="font-size:0.82rem;color:var(--text-muted);">{{ admin.email }}</span>
+                <span class="admin-rol {% if admin.is_superuser %}rol-super{% else %}rol-admin{% endif %}">
+                    {{ admin.rol_legible }}
+                </span>
+                <button type="button" title="Editar perfil"
+                        onclick="editarAdmin({{ admin.id }}, '{{ admin.username|escapejs }}', '{{ admin.email|escapejs }}', '{{ admin.rol_key }}')"
+                        style="background:rgba(245,158,11,0.12);color:var(--gold);border:1px solid rgba(245,158,11,0.3);
+                               border-radius:8px;padding:6px 12px;cursor:pointer;font-weight:700;font-size:0.8rem;
+                               display:inline-flex;align-items:center;gap:6px;">
+                    <i class="fa-solid fa-pen"></i> Editar
+                </button>
+                {% if admin.id == request.user.id %}
+                <span style="font-size:0.74rem;color:var(--text-muted);font-style:italic;">tú</span>
+                {% else %}
+                <form method="POST" action="{% url 'admin_eliminar_subadmin' admin.id %}"
+                      onsubmit="return confirm('¿Eliminar el perfil «{{ admin.username|escapejs }}»? Esta acción no se puede deshacer.');">
+                    {% csrf_token %}
+                    <button type="submit" title="Eliminar perfil"
+                            style="background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.3);
+                                   border-radius:8px;padding:6px 12px;cursor:pointer;font-weight:700;font-size:0.8rem;
+                                   display:inline-flex;align-items:center;gap:6px;">
+                        <i class="fa-solid fa-trash"></i> Eliminar
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- MODAL EDITAR PRODUCTO -->
+<div class="mi-modal-overlay" id="modalEditar">
+    <div class="mi-modal-box">
+        <div class="mi-modal-header">
+            <h5><i class="fa-solid fa-pencil" style="color:var(--gold);"></i> Editar Producto</h5>
+            <button class="btn-cerrar-modal" onclick="cerrarModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <form id="formEditar" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mi-modal-body">
+                <div style="display:flex; flex-direction:column; gap:14px;">
+                    <div class="field-group">
+                        <label class="field-label">Nombre del producto</label>
+                        <input type="text" name="nombre_producto" id="editNombre" class="field-input">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">SKU (código)</label>
+                        <input type="text" id="editSku" class="field-input" readonly tabindex="-1"
+                               style="text-transform:uppercase;background:rgba(255,255,255,0.04);cursor:not-allowed;
+                                      color:var(--violet-light);font-family:monospace;font-weight:700;">
+                    </div>
+                    <div class="field-group" id="grupoPrecio">
+                        <label class="field-label">Precio ($)</label>
+                        <input type="number" name="precio" id="editPrecio" class="field-input" step="0.01" min="0">
+                        <p class="aviso-sin-permiso" id="avisoPrecio" style="display:none;">
+                            <i class="fa-solid fa-ban"></i> Sin permiso para modificar precios
+                        </p>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Categoría</label>
+                        <select name="categoria" id="editCategoria" class="field-select">
+                            <option value="PINTURA Y COLOR">Pintura y Color</option>
+                            <option value="PAPEL Y CARTULINA">Papel y Cartulina</option>
+                            <option value="CUADERNOS Y FORROS">Cuadernos y Forros</option>
+                            <option value="LAPICES Y ESCRITURA">Lápices y Escritura</option>
+                            <option value="GEOMETRIA">Geometría</option>
+                            <option value="ADHESIVOS Y PEGAMENTOS">Adhesivos y Pegamentos</option>
+                            <option value="MANUALIDADES">Manualidades</option>
+                            <option value="CARPETERIA">Carpetería</option>
+                            <option value="OTROS">Otros</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Stock actual</label>
+                        <input type="number" name="stock" id="editStock" class="field-input" min="0">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Nueva imagen (opcional)</label>
+                        <input type="file" name="imagen" class="field-input" accept="image/*">
+                    </div>
+                </div>
+            </div>
+            <div class="mi-modal-footer">
+                <button type="button" class="btn-nav" onclick="cerrarModal()">Cancelar</button>
+                <button type="submit" class="btn-submit-sm">
+                    <i class="fa-solid fa-save"></i> Guardar cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL EDITAR PERFIL (ADMINISTRADOR) -->
+<div class="mi-modal-overlay" id="modalEditarAdmin">
+    <div class="mi-modal-box">
+        <div class="mi-modal-header">
+            <h5><i class="fa-solid fa-user-pen" style="color:var(--gold);"></i> Editar Perfil</h5>
+            <button class="btn-cerrar-modal" onclick="cerrarModalAdmin()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <form id="formEditarAdmin" method="POST">
+            {% csrf_token %}
+            <div class="mi-modal-body">
+                <div style="display:flex; flex-direction:column; gap:14px;">
+                    <div class="field-group">
+                        <label class="field-label">Usuario</label>
+                        <input type="text" id="editAdminUsername" class="field-input" readonly tabindex="-1"
+                               style="background:rgba(255,255,255,0.04);cursor:not-allowed;color:var(--text-muted);">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Correo</label>
+                        <input type="email" name="email" id="editAdminEmail" class="field-input" placeholder="correo@chichi.cl">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Rol</label>
+                        <select name="rol" id="editAdminRol" class="field-select">
+                            <option value="bodeguero">Bodeguero — solo ingresar productos</option>
+                            <option value="cajero">Cajero — punto de venta y validar transferencias</option>
+                            <option value="admin_completo">Administrador — catálogo, pedidos, ventas y transferencias</option>
+                            <option value="super_admin">Super Admin — control total</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Nueva contraseña <small style="color:var(--text-muted);">(opcional)</small></label>
+                        <input type="password" name="password" id="editAdminPass" class="field-input"
+                               placeholder="Dejar en blanco para no cambiarla" minlength="8">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Confirmar nueva contraseña</label>
+                        <input type="password" name="password_confirm" id="editAdminPass2" class="field-input"
+                               placeholder="Repite la nueva contraseña" minlength="8">
+                    </div>
+                </div>
+            </div>
+            <div class="mi-modal-footer">
+                <button type="button" class="btn-nav" onclick="cerrarModalAdmin()">Cancelar</button>
+                <button type="submit" class="btn-submit-sm">
+                    <i class="fa-solid fa-save"></i> Guardar cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<form id="formEliminar" method="POST" style="display:none;">
+    {% csrf_token %}
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.bundle.min.js"></script>
+<script>
+    function abrirEditarDesde(btn) {
+        const id        = btn.dataset.id;
+        const nombre    = btn.dataset.nombre || '';
+        const sku       = btn.dataset.sku || '';
+        const precio    = btn.dataset.precio || '0';
+        const categoria = btn.dataset.categoria || '';
+        const stock     = btn.dataset.stock || '0';
+
+        document.getElementById('formEditar').action = '/gestion/producto/editar/' + id + '/';
+        document.getElementById('editNombre').value = nombre;
+        document.getElementById('editSku').value = sku;
+        document.getElementById('editPrecio').value = parseInt(precio, 10) || 0;
+        document.getElementById('editStock').value = parseInt(stock, 10) || 0;
+
+        const sel = document.getElementById('editCategoria');
+        for (let i = 0; i < sel.options.length; i++) {
+            sel.options[i].selected = (sel.options[i].value === String(categoria));
+        }
+
+        document.getElementById('modalEditar').classList.add('activo');
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalEditar').classList.remove('activo');
+    }
+
+    document.getElementById('modalEditar').addEventListener('click', function(e) {
+        if (e.target === this) cerrarModal();
+    });
+
+    // ── Editar perfil de administrador ──
+    function editarAdmin(id, username, email, rol) {
+        document.getElementById('formEditarAdmin').action = '/gestion/admin/' + id + '/editar/';
+        document.getElementById('editAdminUsername').value = username;
+        document.getElementById('editAdminEmail').value = email || '';
+        document.getElementById('editAdminPass').value = '';
+        document.getElementById('editAdminPass2').value = '';
+        const sel = document.getElementById('editAdminRol');
+        for (let i = 0; i < sel.options.length; i++) {
+            sel.options[i].selected = (sel.options[i].value === String(rol));
+        }
+        document.getElementById('modalEditarAdmin').classList.add('activo');
+    }
+
+    function cerrarModalAdmin() {
+        document.getElementById('modalEditarAdmin').classList.remove('activo');
+    }
+
+    document.getElementById('modalEditarAdmin').addEventListener('click', function(e) {
+        if (e.target === this) cerrarModalAdmin();
+    });
+
+    // Validación: la confirmación de contraseña debe coincidir
+    document.getElementById('formEditarAdmin').addEventListener('submit', function(e) {
+        const p1 = document.getElementById('editAdminPass').value;
+        const p2 = document.getElementById('editAdminPass2').value;
+        if (p1 !== p2) {
+            e.preventDefault();
+            alert('Las contraseñas no coinciden.');
+        }
+    });
+
+    function confirmarEliminarDesde(btn) {
+        const id = btn.dataset.id;
+        const nombre = btn.dataset.nombre || '';
+        if (confirm('¿Seguro que quieres eliminar "' + nombre + '"?\nEsta acción no se puede deshacer.')) {
+            const form = document.getElementById('formEliminar');
+            form.action = '/gestion/producto/eliminar/' + id + '/';
+            form.submit();
+        }
+    }
+
+    // ── Bloquear "e", "E", "+", "-" en TODOS los campos numéricos del panel ──
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        input.addEventListener('keydown', function(e) {
+            if (['e', 'E', '+', '-'].includes(e.key)) e.preventDefault();
+        });
+        input.addEventListener('input', function() {
+            this.value = this.value.replace(/[eE+\-]/g, '');
+        });
+    });
+
+    // ── Buscador de SKU en vivo (panel Actualizar / Reabastecer) ──
+    function fmtPesos(n) {
+        return '$' + (parseInt(n, 10) || 0).toLocaleString('es-CL');
+    }
+    let actStockNum = 0;
+    let actPrecioNum = 0;
+    function seleccionarProductoUpd(sku, nombre, precio, stock) {
+        actStockNum = parseInt(stock, 10) || 0;
+        actPrecioNum = parseInt(precio, 10) || 0;
+        document.getElementById('actSku').value = sku;
+        document.getElementById('actNombre').textContent = nombre;
+        document.getElementById('actSkuTexto').textContent = sku;
+        document.getElementById('actStockActual').textContent = stock + ' unidades';
+        document.getElementById('actPrecioActual').textContent = fmtPesos(precio);
+        document.getElementById('actSeleccionado').style.display = 'block';
+        document.getElementById('buscarSku').value = sku + ' — ' + nombre;
+        document.getElementById('sugerenciasSku').style.display = 'none';
+        const btn = document.getElementById('btnActualizar');
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        previewPonderado();
+    }
+
+    // Vista previa EN VIVO del promedio ponderado al reabastecer
+    function previewPonderado() {
+        const prev = document.getElementById('actPreview');
+        if (!prev) return;
+        if (!document.getElementById('actSku').value) { prev.style.display = 'none'; return; }
+        const cant = parseInt(document.getElementById('actCantidad').value, 10) || 0;
+        const precioCompra = parseFloat(document.getElementById('actPrecioCompra').value) || 0;
+        if (cant <= 0) { prev.style.display = 'none'; return; }
+
+        const nuevoStock = actStockNum + cant;
+        prev.style.display = 'block';
+        if (precioCompra > 0) {
+            const nuevoPrecio = Math.round((actStockNum * actPrecioNum + cant * precioCompra) / nuevoStock);
+            prev.innerHTML =
+                '<i class="fa-solid fa-calculator" style="color:var(--violet-light);"></i> '
+                + 'Nuevo stock: <strong>' + nuevoStock + '</strong> · '
+                + 'Precio promedio ponderado: <strong>' + fmtPesos(nuevoPrecio) + '</strong> '
+                + '<span style="color:var(--text-muted);">(antes ' + fmtPesos(actPrecioNum)
+                + ', ingreso ' + fmtPesos(precioCompra) + ')</span>';
+        } else {
+            prev.innerHTML =
+                '<i class="fa-solid fa-box" style="color:var(--violet-light);"></i> '
+                + 'Nuevo stock: <strong>' + nuevoStock + '</strong> · '
+                + '<span style="color:var(--text-muted);">precio sin cambios (no ingresaste precio de compra).</span>';
+        }
+    }
+
+    // Vista previa del SKU automático según la categoría (apartado Agregar)
+    function actualizarSkuPreview() {
+        const sel = document.getElementById('categoriaAgregar');
+        const campo = document.getElementById('agregarSku');
+        const datos = document.getElementById('skus-siguientes');
+        if (!sel || !campo || !datos) return;
+        const skus = JSON.parse(datos.textContent);
+        campo.value = skus[sel.value] || '(automático)';
+    }
+    document.addEventListener('DOMContentLoaded', actualizarSkuPreview);
+    function filtrarSku() {
+        const inputEl = document.getElementById('buscarSku');
+        if (!inputEl) return;
+        const texto = inputEl.value.trim().toLowerCase();
+        const cont = document.getElementById('sugerenciasSku');
+        const items = document.querySelectorAll('#listaProductosUpd .prod-upd-item');
+        cont.innerHTML = '';
+
+        if (texto === '') { cont.style.display = 'none'; return; }
+
+        let encontrados = 0;
+        items.forEach(item => {
+            const sku = (item.dataset.sku || '').toLowerCase();
+            const nombre = (item.dataset.nombre || '').toLowerCase();
+            const coincide =
+                sku.startsWith(texto) ||
+                nombre.startsWith(texto);
+            if (coincide) {
+                if (encontrados >= 12) return;
+                encontrados++;
+                const fila = document.createElement('div');
+                fila.style.cssText = 'padding:11px 16px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.15s;';
+                fila.onmouseover = () => fila.style.background = 'rgba(232,0,125,0.12)';
+                fila.onmouseout = () => fila.style.background = 'transparent';
+                fila.innerHTML = '<span style="font-family:monospace;color:var(--violet-light);font-weight:700;">'
+                    + item.dataset.sku + '</span> <span style="color:#fff;">' + item.dataset.nombre + '</span>'
+                    + '<br><span style="color:var(--text-muted);font-size:0.78rem;">Stock: '
+                    + item.dataset.stock + ' · Precio: ' + fmtPesos(item.dataset.precio) + '</span>';
+                fila.onclick = () => seleccionarProductoUpd(
+                    item.dataset.sku, item.dataset.nombre, item.dataset.precio, item.dataset.stock
+                );
+                cont.appendChild(fila);
+            }
+        });
+
+        if (encontrados === 0) {
+            cont.innerHTML = '<div style="padding:12px 14px;color:var(--text-muted);">Sin coincidencias para ese SKU.</div>';
+        }
+        cont.style.display = 'block';
+    }
+    // Cerrar sugerencias al hacer clic fuera
+    document.addEventListener('click', function(e) {
+        const cont = document.getElementById('sugerenciasSku');
+        const inputEl = document.getElementById('buscarSku');
+        if (cont && inputEl && !cont.contains(e.target) && e.target !== inputEl) {
+            cont.style.display = 'none';
+        }
+    });
+
+    // ── Filtro EN VIVO del inventario (coincidencia por inicio de SKU/nombre/categoría) ──
+    function filtrarInventario() {
+        const inputEl = document.getElementById('buscarInventario');
+        if (!inputEl) return;
+        const texto = inputEl.value.trim().toLowerCase();
+        const filas = document.querySelectorAll('.fila-inventario');
+        let visibles = 0;
+        filas.forEach(fila => {
+            const sku = (fila.dataset.sku || '').toLowerCase();
+            const nombre = (fila.dataset.nombre || '').toLowerCase();
+            const cat = (fila.dataset.cat || '').toLowerCase();
+            const coincide = texto === '' ||
+                sku.startsWith(texto) || nombre.startsWith(texto) || cat.startsWith(texto);
+            if (coincide) {
+                fila.style.display = '';
+                visibles++;
+            } else {
+                fila.style.display = 'none';
+            }
+        });
+        // Mensaje "sin resultados"
+        let aviso = document.getElementById('inventarioVacio');
+        if (visibles === 0) {
+            if (!aviso) {
+                const tbody = filas.length ? filas[0].parentElement : null;
+                if (tbody) {
+                    const tr = document.createElement('tr');
+                    tr.id = 'inventarioVacio';
+                    tr.innerHTML = '<td colspan="6" style="text-align:center;color:var(--text-muted);padding:32px;">'
+                        + 'No se encontraron productos para «' + texto + '».</td>';
+                    tbody.appendChild(tr);
+                }
+            } else {
+                aviso.style.display = '';
+                aviso.querySelector('td').textContent = 'No se encontraron productos para «' + texto + '».';
+            }
+        } else if (aviso) {
+            aviso.style.display = 'none';
+        }
+    }
+
+    // ── Validador EN VIVO del SKU en el apartado Agregar ──
+    function validarSkuAgregar() {
+        const inputEl = document.getElementById('agregarSku');
+        const aviso = document.getElementById('avisoSkuAgregar');
+        if (!inputEl || !aviso) return;
+        const sku = inputEl.value.trim().toUpperCase();
+        if (sku === '') {
+            aviso.style.display = 'none';
+            inputEl.style.borderColor = '';
+            return;
+        }
+        let existente = null;
+        document.querySelectorAll('#listaProductosUpd .prod-upd-item').forEach(item => {
+            if ((item.dataset.sku || '').toUpperCase() === sku) existente = item.dataset.nombre;
+        });
+        if (existente) {
+            aviso.style.display = 'flex';
+            aviso.style.color = '#f87171';
+            aviso.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Ese SKU ya existe (' + existente + '). Usa «Actualizar / Reabastecer».';
+            inputEl.style.borderColor = '#f87171';
+        } else {
+            aviso.style.display = 'flex';
+            aviso.style.color = '#34d399';
+            aviso.innerHTML = '<i class="fa-solid fa-circle-check"></i> SKU disponible.';
+            inputEl.style.borderColor = '#34d399';
+        }
+    }
+</script>
+</body>
+</html>

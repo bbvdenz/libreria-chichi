@@ -1,0 +1,275 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventas — Librería Chichi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --magenta:#e8007d; --violet:#7c3aed; --violet-light:#a855f7;
+            --gold:#f59e0b; --green:#10b981; --blue:#3b82f6;
+            --bg:#0d0d14; --surface:#13131f; --surface2:#1a1a2e;
+            --border:rgba(255,255,255,0.08); --text:#f0f0f8; --text-muted:#8888aa;
+        }
+        * { box-sizing:border-box; margin:0; padding:0; }
+        body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+        .ambient { position:fixed; inset:0; pointer-events:none; z-index:0; background:radial-gradient(ellipse 70% 50% at 15% 10%, rgba(232,0,125,0.1) 0%, transparent 70%); }
+        .navbar-chichi { position:sticky; top:0; z-index:1000; background:rgba(13,13,20,0.92); backdrop-filter:blur(24px); border-bottom:1px solid var(--border); }
+        .navbar-inner { max-width:1400px; margin:0 auto; padding:13px 28px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+        .brand { display:flex; align-items:center; gap:13px; text-decoration:none; }
+        .brand-logo-wrap { width:50px; height:50px; border-radius:14px; background:linear-gradient(135deg,var(--magenta),var(--violet)); display:flex; align-items:center; justify-content:center; font-size:1.4rem; box-shadow:0 0 24px rgba(232,0,125,0.45); overflow:hidden; }
+        .brand-logo-wrap img { width:100%; height:100%; object-fit:cover; border-radius:inherit; }
+        .brand-text { display:flex; flex-direction:column; line-height:1.1; }
+        .brand-name { font-family:'Playfair Display',serif; font-size:1.45rem; font-weight:900; background:linear-gradient(90deg,#fff 0%,var(--magenta) 55%,var(--violet-light) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .brand-tagline { font-size:0.62rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--text-muted); }
+        .nav-actions { display:flex; align-items:center; gap:10px; }
+        .btn-nav { font-weight:600; font-size:0.85rem; padding:8px 18px; border-radius:100px; border:1.5px solid rgba(255,255,255,0.15); background:transparent; color:var(--text); text-decoration:none; transition:all 0.2s; display:inline-flex; align-items:center; gap:6px; }
+        .btn-nav:hover { background:rgba(255,255,255,0.08); color:#fff; }
+        .btn-nav.nav-panel { border-color:rgba(124,58,237,0.5); color:#c4b5fd; }
+        .btn-nav.nav-panel:hover { background:rgba(124,58,237,0.18); color:#fff; }
+        .btn-nav.nav-vender { border-color:rgba(16,185,129,0.5); color:#6ee7b7; }
+        .btn-nav.nav-vender:hover { background:rgba(16,185,129,0.18); color:#fff; }
+        .btn-nav.nav-pedidos { border-color:rgba(59,130,246,0.55); color:#93c5fd; }
+        .btn-nav.nav-pedidos:hover { background:rgba(59,130,246,0.18); color:#fff; }
+        .btn-nav.nav-ventas { border-color:rgba(245,158,11,0.55); color:#fcd34d; }
+        .btn-nav.nav-ventas:hover { background:rgba(245,158,11,0.20); color:#fff; }
+        .btn-nav.nav-tienda { border-color:rgba(6,182,212,0.55); color:#67e8f9; }
+        .btn-nav.nav-tienda:hover { background:rgba(6,182,212,0.20); color:#fff; }
+        .btn-nav.nav-salir { border-color:rgba(239,68,68,0.45); color:#fca5a5; }
+        .btn-nav.nav-salir:hover { background:rgba(239,68,68,0.18); color:#fff; }
+        .wrap { position:relative; z-index:1; max-width:1400px; margin:0 auto; padding:40px 28px 80px; }
+        .title { font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:900; color:#fff; margin-bottom:8px; }
+        .title span { background:linear-gradient(90deg,var(--magenta),var(--violet-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .sub { color:var(--text-muted); margin-bottom:28px; }
+        .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-bottom:30px; }
+        .card { background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:22px; position:relative; overflow:hidden; }
+        .card::before { content:''; position:absolute; top:0; left:0; width:100%; height:3px; background:linear-gradient(90deg,var(--magenta),var(--violet)); }
+        .card-label { font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin-bottom:10px; display:flex; align-items:center; gap:7px; }
+        .card-money { font-size:2rem; font-weight:900; color:#fff; line-height:1; margin-bottom:6px; }
+        .card-money small { font-size:1rem; color:var(--text-muted); font-weight:700; }
+        .card-meta { font-size:0.83rem; color:var(--text-muted); }
+        .card-meta b { color:var(--violet-light); }
+        .section-card { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:28px; margin-bottom:28px; }
+        .section-card h3 { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:#fff; margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+        /* gráfico */
+        .chart { display:flex; align-items:flex-end; gap:12px; height:200px; padding-top:10px; }
+        .bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; height:100%; justify-content:flex-end; }
+        .bar { width:100%; max-width:54px; border-radius:8px 8px 0 0; background:linear-gradient(180deg,var(--magenta),var(--violet)); min-height:3px; transition:height 0.4s; position:relative; }
+        .bar-val { font-size:0.72rem; color:var(--text-muted); font-weight:700; }
+        .bar-day { font-size:0.72rem; color:var(--text-muted); }
+        /* tabs período */
+        .tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+        .tab { padding:7px 15px; border-radius:100px; border:1.5px solid var(--border); background:var(--surface2); color:var(--text-muted); text-decoration:none; font-size:0.84rem; font-weight:600; transition:all 0.2s; }
+        .tab:hover { color:#fff; }
+        .tab.active { background:linear-gradient(135deg,var(--magenta),var(--violet)); color:#fff; border-color:transparent; }
+        .table-wrap { overflow-x:auto; border-radius:14px; border:1px solid var(--border); }
+        table { width:100%; border-collapse:collapse; }
+        thead th { background:rgba(255,255,255,0.03); padding:12px 16px; text-align:left; font-size:0.74rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); border-bottom:1px solid var(--border); white-space:nowrap; }
+        thead th.num, tbody td.num { text-align:right; }
+        tbody tr { border-bottom:1px solid var(--border); }
+        tbody tr:last-child { border-bottom:none; }
+        tbody tr:hover { background:rgba(255,255,255,0.02); }
+        tbody td { padding:13px 16px; font-size:0.88rem; }
+        .money { font-weight:800; color:#34d399; }
+        .sku { font-family:monospace; color:var(--text-muted); font-size:0.78rem; }
+        .link-dia { color:var(--violet-light); text-decoration:none; font-weight:700; }
+        .link-dia:hover { text-decoration:underline; }
+        .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+        @media (max-width:900px){ .grid2 { grid-template-columns:1fr; } }
+        .vacio { text-align:center; color:var(--text-muted); padding:30px; }
+        .pill-hist { background:rgba(124,58,237,0.15); border:1px solid rgba(124,58,237,0.3); color:var(--violet-light); padding:2px 9px; border-radius:6px; font-size:0.72rem; font-weight:700; }
+        .detalle-dia { background:rgba(124,58,237,0.07); border:1px solid rgba(124,58,237,0.3); border-radius:16px; padding:22px; margin-bottom:28px; }
+    </style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<nav class="navbar-chichi">
+    <div class="navbar-inner">
+        <a class="brand" href="{% url 'inicio' %}">
+            <div class="brand-logo-wrap">
+                <img src="{% static 'imagenes/logo.png' %}" alt="Logo" onerror="this.parentElement.innerHTML='📚'">
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">Librería Chichi</span>
+                <span class="brand-tagline">Ventas</span>
+            </div>
+        </a>
+        <div class="nav-actions">
+            <a href="{% url 'panel_admin' %}" class="btn-nav nav-panel"><i class="fa-solid fa-gauge"></i> Panel</a>
+            <a href="{% url 'panel_pos' %}" class="btn-nav nav-vender"><i class="fa-solid fa-cash-register"></i> Vender</a>
+            <a href="{% url 'panel_pedidos' %}" class="btn-nav nav-pedidos"><i class="fa-solid fa-truck"></i> Pedidos</a>
+            {% if permisos.puede_validar_transferencias %}
+            <a href="{% url 'panel_transferencias' %}" class="btn-nav nav-pedidos"><i class="fa-solid fa-building-columns"></i> Transferencias</a>
+            {% endif %}
+            <a href="{% url 'logout' %}" class="btn-nav nav-salir"><i class="fa-solid fa-right-from-bracket"></i> Salir</a>
+        </div>
+    </div>
+</nav>
+
+<div class="wrap">
+    <h1 class="title">Ventas y <span>Ganancias</span></h1>
+    <p class="sub">Resumen de lo vendido. Una venta cuenta cuando el pedido está confirmado o entregado.</p>
+
+    <!-- Tarjetas resumen -->
+    <div class="cards">
+        <div class="card">
+            <div class="card-label"><i class="fa-solid fa-sun"></i> Hoy ({{ hoy }})</div>
+            <div class="card-money"><small>$</small>{{ resumen_hoy.ingresos_fmt }}</div>
+            <div class="card-meta"><b>{{ resumen_hoy.n_ventas }}</b> ventas · <b>{{ resumen_hoy.unidades }}</b> productos</div>
+        </div>
+        <div class="card">
+            <div class="card-label"><i class="fa-solid fa-calendar-week"></i> Esta semana</div>
+            <div class="card-money"><small>$</small>{{ resumen_semana.ingresos_fmt }}</div>
+            <div class="card-meta"><b>{{ resumen_semana.n_ventas }}</b> ventas · <b>{{ resumen_semana.unidades }}</b> productos</div>
+        </div>
+        <div class="card">
+            <div class="card-label"><i class="fa-solid fa-calendar-days"></i> Este mes</div>
+            <div class="card-money"><small>$</small>{{ resumen_mes.ingresos_fmt }}</div>
+            <div class="card-meta"><b>{{ resumen_mes.n_ventas }}</b> ventas · <b>{{ resumen_mes.unidades }}</b> productos</div>
+        </div>
+        <div class="card">
+            <div class="card-label"><i class="fa-solid fa-infinity"></i> Histórico total</div>
+            <div class="card-money"><small>$</small>{{ resumen_total.ingresos_fmt }}</div>
+            <div class="card-meta"><b>{{ resumen_total.n_ventas }}</b> ventas · <b>{{ resumen_total.unidades }}</b> productos</div>
+        </div>
+    </div>
+
+    <!-- Detalle de un día (drill-down) -->
+    {% if dia_detalle %}
+    <div class="detalle-dia">
+        <h3 style="font-family:'Playfair Display',serif;color:#fff;margin-bottom:14px;">
+            <i class="fa-solid fa-calendar-day" style="color:var(--violet-light);"></i>
+            Detalle del {{ dia_detalle.fecha }}
+            <a href="{% url 'panel_ventas' %}" class="btn-nav nav-ventas" style="float:right;font-size:0.78rem;">✕ Cerrar</a>
+        </h3>
+        <p style="color:var(--text-muted);margin-bottom:16px;">
+            <b style="color:#fff;">{{ dia_detalle.resumen.n_ventas }}</b> ventas ·
+            <b style="color:#fff;">{{ dia_detalle.resumen.unidades }}</b> productos ·
+            <span class="money">${{ dia_detalle.resumen.ingresos_fmt }}</span>
+        </p>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Producto</th><th>SKU</th><th class="num">Unidades</th><th class="num">Ingresos</th></tr></thead>
+                <tbody>
+                    {% for p in dia_detalle.productos %}
+                    <tr><td>{{ p.nombre }}</td><td class="sku">{{ p.sku }}</td><td class="num">{{ p.unidades }}</td><td class="num money">${{ p.ingresos_fmt }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Gráfico últimos 7 días -->
+    <div class="section-card">
+        <h3><i class="fa-solid fa-chart-column" style="color:var(--magenta);"></i> Ingresos últimos 7 días</h3>
+        <div class="chart">
+            {% for g in grafico %}
+            <div class="bar-col">
+                <div class="bar-val">${{ g.ingresos_fmt }}</div>
+                <div class="bar" style="height:{{ g.pct }}%;" title="{{ g.fecha }}"></div>
+                <div class="bar-day">{{ g.fecha|date:"d/m" }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Ventas por canal: online vs presencial -->
+    <div class="section-card">
+        <h3><i class="fa-solid fa-shop" style="color:var(--violet-light);"></i> Por canal — {{ etiqueta_periodo }}</h3>
+        <div class="cards" style="margin-bottom:0;">
+            <div class="card">
+                <div class="card-label"><i class="fa-solid fa-globe"></i> Online (web)</div>
+                <div class="card-money"><small>$</small>{{ resumen_online.ingresos_fmt }}</div>
+                <div class="card-meta"><b>{{ resumen_online.n_ventas }}</b> ventas · <b>{{ resumen_online.unidades }}</b> productos</div>
+            </div>
+            <div class="card">
+                <div class="card-label"><i class="fa-solid fa-cash-register"></i> Presencial (local)</div>
+                <div class="card-money"><small>$</small>{{ resumen_presencial.ingresos_fmt }}</div>
+                <div class="card-meta"><b>{{ resumen_presencial.n_ventas }}</b> ventas · <b>{{ resumen_presencial.unidades }}</b> productos</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desglose de productos vendidos -->
+    <div class="section-card">
+        <h3><i class="fa-solid fa-ranking-star" style="color:var(--gold);"></i> Productos vendidos — {{ etiqueta_periodo }}</h3>
+        <div class="tabs">
+            <a href="?periodo=hoy" class="tab {% if periodo == 'hoy' %}active{% endif %}">Hoy</a>
+            <a href="?periodo=semana" class="tab {% if periodo == 'semana' %}active{% endif %}">Esta semana</a>
+            <a href="?periodo=mes" class="tab {% if periodo == 'mes' %}active{% endif %}">Este mes</a>
+            <a href="?periodo=todo" class="tab {% if periodo == 'todo' %}active{% endif %}">Todo</a>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Producto</th><th>SKU</th><th class="num">Unidades vendidas</th><th class="num">Ingresos</th></tr></thead>
+                <tbody>
+                    {% for p in productos_periodo %}
+                    <tr>
+                        <td>{{ p.nombre }}</td>
+                        <td class="sku">{{ p.sku }}</td>
+                        <td class="num">{{ p.unidades }}</td>
+                        <td class="num money">${{ p.ingresos_fmt }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="vacio">No hay ventas en este período.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Históricos día a día y semana a semana -->
+    <div class="grid2">
+        <div class="section-card">
+            <h3><i class="fa-solid fa-calendar-day" style="color:var(--violet-light);"></i> Día a día</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Día</th><th class="num">Ventas</th><th class="num">Prod.</th><th class="num">Ingresos</th></tr></thead>
+                    <tbody>
+                        {% for d in dias %}
+                        <tr>
+                            <td><a class="link-dia" href="?dia={{ d.fecha|date:'Y-m-d' }}">{{ d.fecha|date:"D d/m/Y" }}</a></td>
+                            <td class="num">{{ d.n_ventas }}</td>
+                            <td class="num">{{ d.unidades }}</td>
+                            <td class="num money">${{ d.ingresos_fmt }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="vacio">Aún no hay ventas registradas.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <h3><i class="fa-solid fa-calendar-week" style="color:var(--blue);"></i> Semana a semana</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Semana</th><th class="num">Ventas</th><th class="num">Prod.</th><th class="num">Ingresos</th></tr></thead>
+                    <tbody>
+                        {% for s in semanas %}
+                        <tr>
+                            <td>
+                                {{ s.inicio|date:"d/m" }} – {{ s.fin|date:"d/m/Y" }}
+                                <span class="pill-hist">Sem {{ s.semana }}</span>
+                            </td>
+                            <td class="num">{{ s.n_ventas }}</td>
+                            <td class="num">{{ s.unidades }}</td>
+                            <td class="num money">${{ s.ingresos_fmt }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="vacio">Aún no hay ventas registradas.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

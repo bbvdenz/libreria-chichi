@@ -1,0 +1,324 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta — Librería Chichi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --magenta:#e8007d; --violet:#7c3aed; --violet-light:#a855f7; --gold:#f59e0b; --green:#10b981; --bg:#0d0d14; --surface:#13131f; --surface2:#1a1a2e; --border:rgba(255,255,255,0.08); --text:#f0f0f8; --text-muted:#8888aa; }
+        * { box-sizing:border-box; margin:0; padding:0; }
+        body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; }
+        .ambient { position:fixed; inset:0; pointer-events:none; z-index:0; background:radial-gradient(ellipse 60% 60% at 80% 20%, rgba(124,58,237,0.13) 0%, transparent 70%), radial-gradient(ellipse 50% 50% at 20% 80%, rgba(232,0,125,0.1) 0%, transparent 70%); }
+        .top-bar { position:relative; z-index:10; background:rgba(13,13,20,0.88); backdrop-filter:blur(24px); border-bottom:1px solid var(--border); padding:14px 28px; display:flex; align-items:center; justify-content:space-between; }
+        .brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
+        .brand-logo-wrap { width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,var(--magenta),var(--violet)); display:flex; align-items:center; justify-content:center; font-size:1.2rem; overflow:hidden; box-shadow:0 0 20px rgba(232,0,125,0.4); }
+        .brand-logo-wrap img { width:100%; height:100%; object-fit:cover; }
+        .brand-name { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:900; background:linear-gradient(90deg,#fff 0%,var(--magenta) 55%,var(--violet-light) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .back-link { color:var(--text-muted); text-decoration:none; font-size:0.85rem; font-weight:600; display:flex; align-items:center; gap:6px; }
+        .back-link:hover { color:var(--text); }
+        .page-wrap { position:relative; z-index:1; padding:40px 20px 60px; display:flex; justify-content:center; }
+        .reg-card { width:100%; max-width:640px; background:var(--surface); border:1px solid var(--border); border-radius:24px; padding:48px 44px; box-shadow:0 32px 80px rgba(0,0,0,0.5); animation:fadeUp 0.5s ease both; }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        .card-icon { width:60px; height:60px; border-radius:16px; background:linear-gradient(135deg,var(--violet),var(--violet-light)); display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:#fff; margin:0 auto 24px; box-shadow:0 8px 24px rgba(124,58,237,0.4); }
+        .card-title { font-family:'Playfair Display',serif; font-size:1.9rem; font-weight:900; text-align:center; color:#fff; margin-bottom:6px; }
+        .card-sub { text-align:center; color:var(--text-muted); font-size:0.9rem; margin-bottom:36px; }
+        .section-divider { display:flex; align-items:center; gap:12px; margin:28px 0 22px; }
+        .section-divider-line { flex:1; height:1px; background:var(--border); }
+        .section-divider-text { font-size:0.72rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--text-muted); white-space:nowrap; }
+        .row-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        @media(max-width:540px) { .row-2{grid-template-columns:1fr;} .reg-card{padding:32px 20px;} }
+        .field-group { margin-bottom:18px; }
+        .field-label { display:block; font-size:0.8rem; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; color:var(--text-muted); margin-bottom:7px; }
+        .field-label .req { color:var(--magenta); margin-left:2px; }
+        .field-label .opt { color:#444460; font-size:0.7rem; font-weight:600; margin-left:4px; }
+        .field-wrap { position:relative; }
+        .field-icon { position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:0.85rem; pointer-events:none; }
+        .field-input, .field-select { width:100%; background:var(--surface2); border:1.5px solid var(--border); border-radius:12px; padding:12px 13px 12px 40px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.92rem; transition:border-color 0.2s,box-shadow 0.2s; }
+        .field-select { appearance:none; cursor:pointer; }
+        .field-input:focus,.field-select:focus { outline:none; border-color:var(--violet); box-shadow:0 0 0 3px rgba(124,58,237,0.15); }
+        .field-input::placeholder { color:#44445a; }
+        .field-help { font-size:0.72rem; color:var(--text-muted); margin-top:5px; }
+        .rut-status { font-size:0.75rem; margin-top:5px; display:flex; align-items:center; gap:5px; min-height:18px; }
+        .rut-status.valid { color:#34d399; }
+        .rut-status.invalid { color:#f87171; }
+        .btn-submit { width:100%; padding:14px; background:linear-gradient(135deg,var(--magenta),var(--violet)); color:#fff; border:none; border-radius:12px; font-family:'DM Sans',sans-serif; font-weight:800; font-size:1rem; cursor:pointer; margin-top:12px; transition:all 0.25s; box-shadow:0 6px 20px rgba(232,0,125,0.35); display:flex; align-items:center; justify-content:center; gap:10px; }
+        .btn-submit:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(232,0,125,0.45); }
+        .login-link-wrap { text-align:center; margin-top:24px; font-size:0.88rem; color:var(--text-muted); }
+        .login-link-wrap a { color:var(--magenta); font-weight:700; text-decoration:none; }
+        .login-link-wrap a:hover { text-decoration:underline; }
+        .errors-box { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:12px; padding:16px; margin-bottom:24px; }
+        .errors-box h6 { color:#fca5a5; font-size:0.88rem; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+        .errors-box ul { list-style:none; padding:0; }
+        .errors-box li { color:#fca5a5; font-size:0.85rem; padding:3px 0; }
+        .errors-box li::before { content:'→ '; }
+    </style>
+</head>
+<body>
+<div class="ambient"></div>
+<div class="top-bar">
+    <a href="{% url 'inicio' %}" class="brand">
+        <div class="brand-logo-wrap">
+            <img src="{% static 'imagenes/logo.png' %}" alt="Logo" onerror="this.parentElement.innerHTML='📚'">
+        </div>
+        <span class="brand-name">Librería Chichi</span>
+    </a>
+    <a href="{% url 'inicio' %}" class="back-link"><i class="fa-solid fa-arrow-left"></i> Volver</a>
+</div>
+
+<div class="page-wrap">
+    <div class="reg-card">
+        <div class="card-icon"><i class="fa-solid fa-user-plus"></i></div>
+        <h1 class="card-title">Crear Cuenta</h1>
+        <p class="card-sub">Completa el formulario para registrarte</p>
+
+        {% if form.errors %}
+        <div class="errors-box">
+            <h6><i class="fa-solid fa-circle-exclamation"></i> Revisa los siguientes datos:</h6>
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- RUT con validación en tiempo real -->
+            <div class="field-group">
+                <label class="field-label">RUT <span class="req">*</span></label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-id-card field-icon"></i>
+                    <input type="text" name="rut" id="id_rut" class="field-input"
+                           placeholder="Ej: 12345678-9" required value="{{ form.rut.value|default:'' }}">
+                </div>
+                <div class="rut-status" id="rut-status"></div>
+                <p class="field-help">Sin puntos, con guión. Se usará para iniciar sesión.</p>
+            </div>
+
+            <div class="row-2">
+                <div class="field-group">
+                    <label class="field-label">Nombre <span class="req">*</span></label>
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-user field-icon"></i>
+                        <input type="text" name="nombre" class="field-input" placeholder="Juan" required value="{{ form.nombre.value|default:'' }}">
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Apellido <span class="req">*</span></label>
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-user field-icon"></i>
+                        <input type="text" name="apellido" class="field-input" placeholder="Pérez" required value="{{ form.apellido.value|default:'' }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-2">
+                <div class="field-group">
+                    <label class="field-label">Correo <span class="req">*</span></label>
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-envelope field-icon"></i>
+                        <input type="email" name="email" class="field-input" placeholder="juan@gmail.com" required value="{{ form.email.value|default:'' }}">
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Teléfono <span class="opt">(Opc.)</span></label>
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-phone field-icon"></i>
+                        <input type="text" name="telefono" class="field-input" placeholder="+56912345678" value="{{ form.telefono.value|default:'' }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-divider">
+                <div class="section-divider-line"></div>
+                <span class="section-divider-text">Dirección de facturación</span>
+                <div class="section-divider-line"></div>
+            </div>
+
+            <div class="field-group">
+                <label class="field-label">Calle y Número <span class="req">*</span></label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-location-dot field-icon"></i>
+                    <input type="text" name="direccion_calle" class="field-input" placeholder="Av. El Bosque 453" required value="{{ form.direccion_calle.value|default:'' }}">
+                </div>
+            </div>
+
+            <!-- Región y Comunas dinámicas -->
+            <div class="row-2">
+                <div class="field-group">
+                    <label class="field-label">Región <span class="req">*</span></label>
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-map field-icon"></i>
+                        <select name="region" id="id_region" class="field-select field-input" required>
+                            {% for value, text in form.region.field.choices %}
+                                <option value="{{ value }}" {% if form.region.value == value %}selected{% endif %} style="background:#1a1a2e;">{{ text }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Comuna <span class="req">*</span></label>
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-building field-icon"></i>
+                        <select name="comuna" id="id_comuna" class="field-select field-input" required>
+                            <option value="" style="background:#1a1a2e;">Seleccione una región primero...</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-divider">
+                <div class="section-divider-line"></div>
+                <span class="section-divider-text">Seguridad</span>
+                <div class="section-divider-line"></div>
+            </div>
+
+            <div class="row-2">
+                <div class="field-group">
+                    <label class="field-label">Contraseña <span class="req">*</span></label>
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-lock field-icon"></i>
+                        <input type="password" name="password" class="field-input" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Confirmar <span class="req">*</span></label>
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-lock field-icon"></i>
+                        <input type="password" name="password_confirm" class="field-input" placeholder="••••••••" required>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fa-solid fa-check-circle"></i> Crear Cuenta
+            </button>
+        </form>
+
+        <div class="login-link-wrap">
+            ¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.bundle.min.js"></script>
+<script>
+// ── Comunas dinámicas por región ──────────────────────────────────────────
+const COMUNAS = {
+    "Tarapacá": ["Iquique","Alto Hospicio","Pozo Almonte","Camiña","Colchane","Huara","Pica"],
+    "Antofagasta": ["Antofagasta","Mejillones","Sierra Gorda","Taltal","Calama","Ollagüe","San Pedro de Atacama","Tocopilla","María Elena"],
+    "Atacama": ["Copiapó","Caldera","Tierra Amarilla","Chañaral","Diego de Almagro","Vallenar","Alto del Carmen","Freirina","Huasco"],
+    "Coquimbo": ["La Serena","Coquimbo","Andacollo","La Higuera","Paihuano","Vicuña","Illapel","Canela","Los Vilos","Salamanca","Ovalle","Combarbalá","Monte Patria","Punitaqui","Río Hurtado"],
+    "Valparaíso": ["Valparaíso","Casablanca","Concón","Juan Fernández","Puchuncaví","Quilpué","Quintero","Villa Alemana","Viña del Mar","Isla de Pascua","Los Andes","Calle Larga","Rinconada","San Esteban","La Ligua","Cabildo","Papudo","Petorca","Zapallar","Quillota","Calera","Hijuelas","La Cruz","Nogales","San Antonio","Algarrobo","Cartagena","El Quisco","El Tabo","Santo Domingo","San Felipe","Catemu","Llaillay","Panquehue","Putaendo","Santa María","Olmué"],
+    "Metropolitana": ["Santiago","Cerrillos","Cerro Navia","Conchalí","El Bosque","Estación Central","Huechuraba","Independencia","La Cisterna","La Florida","La Granja","La Pintana","La Reina","Las Condes","Lo Barnechea","Lo Espejo","Lo Prado","Macul","Maipú","Ñuñoa","Pedro Aguirre Cerda","Peñalolén","Providencia","Pudahuel","Quilicura","Quinta Normal","Recoleta","Renca","San Joaquín","San Miguel","San Ramón","Vitacura","Puente Alto","Pirque","San José de Maipo","Colina","Lampa","Tiltil","San Bernardo","Buin","Calera de Tango","Paine","Melipilla","Alhué","Curacaví","María Pinto","San Pedro","Talagante","El Monte","Isla de Maipo","Padre Hurtado","Peñaflor"],
+    "O'Higgins": ["Rancagua","Codegua","Coinco","Coltauco","Doñihue","Graneros","Las Cabras","Machalí","Malloa","Mostazal","Olivar","Peumo","Pichidegua","Quinta de Tilcoco","Rengo","Requínoa","San Vicente","Pichilemu","La Estrella","Litueche","Marchihue","Navidad","Paredones","San Fernando","Chépica","Chimbarongo","Lolol","Nancagua","Palmilla","Peralillo","Placilla","Pumanque","Santa Cruz"],
+    "Maule": ["Talca","Constitución","Curepto","Empedrado","Maule","Pelarco","Pencahue","Río Claro","San Clemente","San Rafael","Cauquenes","Chanco","Pelluhue","Curicó","Hualañé","Licantén","Molina","Rauco","Romeral","Sagrada Familia","Teno","Vichuquén","Linares","Colbún","Longaví","Parral","Retiro","San Javier","Villa Alegre","Yerbas Buenas"],
+    "Ñuble": ["Chillán","Bulnes","Chillán Viejo","Cobquecura","Coelemu","Coihueco","El Carmen","Ninhue","Ñiquén","Pemuco","Pinto","Portezuelo","Quillón","Quirihue","Ránquil","San Carlos","San Fabián","San Ignacio","San Nicolás","Treguaco","Yungay"],
+    "Biobío": ["Concepción","Coronel","Chiguayante","Florida","Hualpén","Hualqui","Lota","Penco","San Pedro de la Paz","Santa Juana","Talcahuano","Tomé","Cabrero","Laja","Los Ángeles","Mulchén","Nacimiento","Negrete","Quilaco","Quilleco","San Rosendo","Santa Bárbara","Tucapel","Yumbel","Alto Biobío","Arauco","Cañete","Contulmo","Curanilahue","Lebu","Los Álamos","Tirúa"],
+    "Araucanía": ["Temuco","Carahue","Cholchol","Cunco","Curarrehue","Freire","Galvarino","Gorbea","Lautaro","Loncoche","Melipeuco","Nueva Imperial","Padre las Casas","Perquenco","Pitrufquén","Pucón","Saavedra","Teodoro Schmidt","Toltén","Vilcún","Villarrica","Angol","Collipulli","Curacautín","Ercilla","Lonquimay","Los Sauces","Lumaco","Purén","Renaico","Traiguén","Victoria"],
+    "Los Ríos": ["Valdivia","Corral","Futrono","La Unión","Lago Ranco","Lanco","Los Lagos","Máfil","Mariquina","Paillaco","Panguipulli","Río Bueno"],
+    "Los Lagos": ["Puerto Montt","Calbuco","Cochamó","Fresia","Frutillar","Los Muermos","Llanquihue","Maullín","Puerto Varas","Castro","Ancud","Chonchi","Curaco de Vélez","Dalcahue","Puqueldón","Queilén","Quellón","Quemchi","Quinchao","Osorno","Puerto Octay","Purranque","Puyehue","Río Negro","San Juan de la Costa","San Pablo","Chaitén","Futaleufú","Hualaihué","Palena"],
+    "Aysén": ["Coihaique","Lago Verde","Aysén","Cisnes","Guaitecas","Cochrane","O'Higgins","Tortel","Chile Chico","Río Ibáñez"],
+    "Magallanes": ["Punta Arenas","Laguna Blanca","Río Verde","San Gregorio","Cabo de Hornos","Antártica","Porvenir","Primavera","Timaukel","Natales","Torres del Paine"]
+};
+
+const regionSelect = document.getElementById('id_region');
+const comunaSelect = document.getElementById('id_comuna');
+const valorComunaPrevio = "{{ form.comuna.value|default:'' }}";
+
+function actualizarComunas(region) {
+    comunaSelect.innerHTML = '';
+    if (!region || !COMUNAS[region]) {
+        comunaSelect.innerHTML = '<option value="" style="background:#1a1a2e;">Seleccione una región primero...</option>';
+        return;
+    }
+    COMUNAS[region].forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
+        opt.style.background = '#1a1a2e';
+        if (c === valorComunaPrevio) opt.selected = true;
+        comunaSelect.appendChild(opt);
+    });
+}
+
+regionSelect.addEventListener('change', function() {
+    actualizarComunas(this.value);
+});
+
+// Inicializar si ya hay región seleccionada (al volver con errores del form)
+if (regionSelect.value) {
+    actualizarComunas(regionSelect.value);
+}
+
+// ── Validación RUT en tiempo real ─────────────────────────────────────────
+function validarRUT(rut) {
+    const limpio = rut.replace(/\./g,'').replace(/-/g,'').toUpperCase().trim();
+    if (limpio.length < 2) return null;
+    const cuerpo = limpio.slice(0, -1);
+    const dvIngresado = limpio.slice(-1);
+    if (!/^\d+$/.test(cuerpo)) return false;
+
+    let suma = 0, multiplo = 2;
+    for (let i = cuerpo.length - 1; i >= 0; i--) {
+        suma += parseInt(cuerpo[i]) * multiplo;
+        multiplo = multiplo === 7 ? 2 : multiplo + 1;
+    }
+    const resto = suma % 11;
+    const dv = 11 - resto;
+    const dvEsperado = dv === 11 ? '0' : dv === 10 ? 'K' : String(dv);
+    return dvIngresado === dvEsperado;
+}
+
+const rutInput = document.getElementById('id_rut');
+const rutStatus = document.getElementById('rut-status');
+
+rutInput.addEventListener('input', function() {
+    const val = this.value.trim();
+    if (!val) { rutStatus.textContent = ''; rutStatus.className = 'rut-status'; return; }
+    const resultado = validarRUT(val);
+    if (resultado === null) { rutStatus.textContent = ''; return; }
+    if (resultado) {
+        rutStatus.innerHTML = '<i class="fa-solid fa-check"></i> RUT válido';
+        rutStatus.className = 'rut-status valid';
+    } else {
+        rutStatus.innerHTML = '<i class="fa-solid fa-xmark"></i> RUT inválido';
+        rutStatus.className = 'rut-status invalid';
+    }
+});
+</script>
+<script>
+(function () {
+  document.querySelectorAll('input[type="password"]').forEach(function (inp) {
+    if (inp.dataset.eye) return;
+    inp.dataset.eye = '1';
+    var wrap = inp.parentElement;
+    if (getComputedStyle(wrap).position === 'static') wrap.style.position = 'relative';
+    inp.style.paddingRight = '44px';
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Mostrar u ocultar contrasena');
+    btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
+    btn.style.cssText = 'position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#8888aa;cursor:pointer;font-size:1rem;padding:6px;line-height:1;z-index:5;';
+    btn.addEventListener('click', function () {
+      var show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password';
+      btn.innerHTML = show ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>';
+    });
+    wrap.appendChild(btn);
+  });
+})();
+</script>
+</body>
+</html>

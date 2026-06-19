@@ -1,0 +1,457 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tu Carrito — Librería Chichi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --magenta: #e8007d;
+            --magenta-dark: #b5005f;
+            --violet: #7c3aed;
+            --violet-light: #a855f7;
+            --gold: #f59e0b;
+            --green: #10b981;
+            --green-dark: #059669;
+            --bg: #0d0d14;
+            --surface: #13131f;
+            --surface2: #1a1a2e;
+            --border: rgba(255,255,255,0.07);
+            --text: #f0f0f8;
+            --text-muted: #8888aa;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .ambient {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse 70% 50% at 15% 10%, rgba(232,0,125,0.13) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 60% at 85% 90%, rgba(124,58,237,0.1) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 50% 50%, rgba(245,158,11,0.04) 0%, transparent 70%);
+        }
+
+        .navbar-chichi {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(13,13,20,0.88);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+        }
+        .navbar-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 13px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+        .brand-logo-wrap {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--magenta), var(--violet));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            box-shadow: 0 0 24px rgba(232,0,125,0.45), 0 0 48px rgba(124,58,237,0.2);
+            overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .brand-logo-wrap::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 60%);
+            border-radius: inherit;
+        }
+        .brand-logo-wrap img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+        .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.45rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, #fff 0%, var(--magenta) 55%, var(--violet-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+        .brand-tagline {
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .nav-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .btn-nav {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 8px 18px;
+            border-radius: 100px;
+            border: 1.5px solid rgba(255,255,255,0.15);
+            background: transparent;
+            color: var(--text);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-nav:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.3); color: #fff; }
+        
+        .cart-section {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 40px auto 80px;
+            padding: 0 24px;
+        }
+        .cart-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 28px;
+        }
+        .cart-title span {
+            background: linear-gradient(90deg, var(--magenta) 0%, var(--violet-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-chichi {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+            overflow: hidden;
+        }
+
+        .table-chichi {
+            color: var(--text) !important;
+            margin-bottom: 0;
+        }
+        .table-chichi thead th {
+            background-color: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 16px 20px;
+        }
+        .table-chichi tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.2s ease;
+        }
+        .table-chichi tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.01);
+        }
+        .table-chichi tbody td {
+            padding: 20px;
+            border-bottom: none;
+        }
+
+        .quantity-control {
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 4px;
+            min-width: 115px;
+        }
+        .btn-qty {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        .btn-qty:hover {
+            background: var(--magenta);
+            color: #fff;
+        }
+        .qty-value {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #ffffff !important;
+            min-width: 24px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        /* Badge de stock elegante */
+        .stock-badge {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            color: var(--gold);
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .btn-delete {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.25);
+            color: #f87171;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-delete:hover {
+            background: rgba(239,68,68,0.25);
+            color: #fca5a5;
+            transform: scale(1.05);
+        }
+
+        .cart-footer {
+            background: rgba(255, 255, 255, 0.02);
+            border-top: 1px solid var(--border);
+            padding: 28px;
+        }
+        .total-label {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+        .total-amount {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: #fff;
+        }
+        .total-amount span {
+            color: var(--gold);
+            text-shadow: 0 0 15px rgba(245,158,11,0.3);
+        }
+
+        .btn-chichi-secondary {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 12px 24px;
+            border-radius: 100px;
+            background: transparent;
+            border: 1.5px solid rgba(255,255,255,0.15);
+            color: var(--text);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-chichi-secondary:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.3);
+            color: #fff;
+        }
+        .btn-chichi-checkout {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 14px 32px;
+            border-radius: 100px;
+            background: linear-gradient(135deg, var(--green), #34d399);
+            color: #fff;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(16,185,129,0.35);
+            transition: all 0.25s;
+        }
+        .btn-chichi-checkout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(16,185,129,0.5);
+            color: #fff;
+        }
+
+        .alert-chichi {
+            background: linear-gradient(135deg, rgba(232,0,125,0.15), rgba(124,58,237,0.15));
+            border: 1px solid rgba(232,0,125,0.3);
+            color: #fff; border-radius: 12px; font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+        .alerts-wrap { max-width: 1100px; margin: 24px auto 0; padding: 0 24px; }
+
+        @media (max-width: 768px) {
+            .table-chichi thead { display: none; }
+            .table-chichi tbody tr { display: block; padding: 12px 0; }
+            .table-chichi tbody td { display: block; padding: 8px 20px; text-align: right; }
+            .table-chichi tbody td::before {
+                content: attr(data-label);
+                float: left;
+                font-weight: 700;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                font-size: 0.75rem;
+            }
+            .quantity-control, .stock-badge { margin-left: auto; }
+            .cart-footer .d-flex { flex-direction: column; gap: 20px; }
+            .btn-chichi-checkout, .btn-chichi-secondary { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient"></div>
+
+    <nav class="navbar-chichi">
+        <div class="navbar-inner">
+            <a class="brand" href="/">
+                <div class="brand-logo-wrap">
+                    <img src="{% static 'imagenes/logo.png' %}" alt="Logo" onerror="this.parentElement.innerHTML='📚'">
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">Librería Chichi</span>
+                    <span class="brand-tagline">Tu espacio creativo</span>
+                </div>
+            </a>
+            <div class="nav-actions">
+                {% if user.is_authenticated %}
+                <div class="btn-nav"><i class="fa-solid fa-user"></i> {{ user.first_name|default:user.username }}</div>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn-nav"><i class="fa-solid fa-user"></i> Ingresar</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    {% if messages %}
+    <div class="alerts-wrap">
+        {% for message in messages %}
+        <div class="alert alert-chichi alert-dismissible fade show mb-3" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i>{{ message }}
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="cart-section">
+        <h2 class="cart-title">Tu <span>Carrito de Compras</span></h2>
+        
+        <div class="card card-chichi">
+            <div class="table-responsive">
+                <table class="table table-chichi align-middle">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio Unitario</th>
+                            <th>Cantidad</th>
+                            <th>Stock Disponible</th>
+                            <th>Subtotal</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in productos_carrito %}
+                        <tr>
+                            <td data-label="Producto" class="fw-semibold text-white">{{ item.producto.nombre_producto }}</td>
+                            <td data-label="Precio Unitario">${{ item.producto.precio|floatformat:0 }}</td>
+                            <td data-label="Cantidad">
+                                <div class="quantity-control">
+                                    <a href="{% url 'modificar_carrito' item.producto.id_producto 'restar' %}" class="btn-qty">-</a>
+                                    <span class="qty-value">{{ item.cantidad }}</span>
+                                    <a href="{% url 'modificar_carrito' item.producto.id_producto 'sumar' %}" class="btn-qty">+</a>
+                                </div>
+                            </td>
+                            <td data-label="Stock Disponible">
+                                <span class="stock-badge">{{ item.stock_disponible }} un.</span>
+                            </td>
+                            <td data-label="Subtotal" class="fw-bold text-white">${{ item.subtotal|floatformat:0 }}</td>
+                            <td data-label="Acción">
+                                <a href="{% url 'modificar_carrito' item.producto.id_producto 'eliminar' %}" class="btn-delete" title="Eliminar producto">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="fa-solid fa-basket-shopping d-block fs-1 mb-3" style="color: var(--magenta); opacity: 0.6;"></i>
+                                Tu carrito está vacío. ¡Ve a vitrinear al catálogo!
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="cart-footer">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
+                        <div class="total-label">Total a Pagar</div>
+                        <div class="total-amount"><span>$</span>{{ total|floatformat:0 }}</div>
+                    </div>
+                    <div class="d-flex gap-3 align-items-center flex-wrap">
+                        <a href="/" class="btn-chichi-secondary">
+                            <i class="fa-solid fa-arrow-left"></i> Seguir Comprando
+                        </a>
+                        {% if productos_carrito %}
+                        <a href="{% url 'procesar_pago' %}" class="btn-chichi-checkout">
+                            <i class="fa-solid fa-credit-card"></i> Ir a Pagar
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bundle.min.js"></script>
+</body>
+</html>

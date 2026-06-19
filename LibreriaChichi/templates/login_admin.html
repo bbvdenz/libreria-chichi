@@ -1,0 +1,224 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Administrador — Librería Chichi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --magenta:#e8007d; --violet:#7c3aed; --violet-light:#a855f7;
+            --gold:#f59e0b; --red:#ef4444;
+            --bg:#0d0d14; --surface:#13131f; --surface2:#1a1a2e;
+            --border:rgba(255,255,255,0.08); --text:#f0f0f8; --text-muted:#8888aa;
+        }
+        * { box-sizing:border-box; margin:0; padding:0; }
+        body {
+            background:var(--bg); color:var(--text);
+            font-family:'DM Sans',sans-serif;
+            min-height:100vh; display:flex; flex-direction:column;
+        }
+        .ambient {
+            position:fixed; inset:0; pointer-events:none; z-index:0;
+            background:
+                radial-gradient(ellipse 60% 60% at 20% 30%, rgba(239,68,68,0.12) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 50% at 80% 70%, rgba(124,58,237,0.1) 0%, transparent 70%);
+        }
+        .top-bar {
+            position:relative; z-index:10;
+            background:rgba(13,13,20,0.88); backdrop-filter:blur(24px);
+            border-bottom:1px solid var(--border);
+            padding:14px 28px;
+            display:flex; align-items:center; justify-content:space-between;
+        }
+        .brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
+        .brand-logo-wrap {
+            width:44px; height:44px; border-radius:12px;
+            background:linear-gradient(135deg,var(--red),var(--violet));
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.2rem; overflow:hidden;
+            box-shadow:0 0 20px rgba(239,68,68,0.4);
+        }
+        .brand-logo-wrap img { width:100%; height:100%; object-fit:cover; }
+        .brand-name {
+            font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:900;
+            background:linear-gradient(90deg,#fff 0%,#f87171 55%,var(--violet-light) 100%);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+        }
+        .back-link {
+            color:var(--text-muted); text-decoration:none;
+            font-size:0.85rem; font-weight:600;
+            display:flex; align-items:center; gap:6px; transition:color 0.2s;
+        }
+        .back-link:hover { color:var(--text); }
+        .page-wrap {
+            position:relative; z-index:1; flex:1;
+            display:flex; align-items:center; justify-content:center;
+            padding:40px 20px;
+        }
+        .login-card {
+            width:100%; max-width:420px;
+            background:var(--surface); border:1px solid rgba(239,68,68,0.2);
+            border-radius:24px; padding:48px 44px;
+            box-shadow:0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(239,68,68,0.05);
+            animation:fadeUp 0.5s ease both;
+        }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        .card-icon {
+            width:60px; height:60px; border-radius:16px;
+            background:linear-gradient(135deg,var(--red),var(--violet));
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.4rem; color:#fff; margin:0 auto 24px;
+            box-shadow:0 8px 24px rgba(239,68,68,0.4);
+        }
+        .card-title {
+            font-family:'Playfair Display',serif; font-size:1.9rem; font-weight:900;
+            text-align:center; color:#fff; margin-bottom:6px;
+        }
+        .card-sub { text-align:center; color:var(--text-muted); font-size:0.9rem; margin-bottom:32px; }
+        .admin-badge {
+            display:flex; align-items:center; justify-content:center; gap:8px;
+            background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.25);
+            border-radius:100px; padding:6px 16px;
+            font-size:0.75rem; font-weight:700; letter-spacing:1.5px;
+            text-transform:uppercase; color:#f87171;
+            margin:0 auto 28px; width:fit-content;
+        }
+        .field-group { margin-bottom:20px; }
+        .field-label {
+            display:block; font-size:0.82rem; font-weight:700;
+            letter-spacing:0.5px; text-transform:uppercase;
+            color:var(--text-muted); margin-bottom:8px;
+        }
+        .field-wrap { position:relative; }
+        .field-icon {
+            position:absolute; left:14px; top:50%; transform:translateY(-50%);
+            color:var(--text-muted); font-size:0.9rem; pointer-events:none;
+        }
+        .field-input {
+            width:100%; background:var(--surface2);
+            border:1.5px solid var(--border); border-radius:12px;
+            padding:13px 14px 13px 42px;
+            color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.95rem;
+            transition:border-color 0.2s;
+        }
+        .field-input:focus {
+            outline:none; border-color:#ef4444;
+            box-shadow:0 0 0 3px rgba(239,68,68,0.15);
+        }
+        .field-input::placeholder { color:#55556a; }
+        .btn-submit {
+            width:100%; padding:14px;
+            background:linear-gradient(135deg,var(--red),var(--violet));
+            color:#fff; border:none; border-radius:12px;
+            font-family:'DM Sans',sans-serif; font-weight:800; font-size:1rem;
+            cursor:pointer; margin-top:8px; transition:all 0.25s;
+            box-shadow:0 6px 20px rgba(239,68,68,0.35);
+            display:flex; align-items:center; justify-content:center; gap:10px;
+        }
+        .btn-submit:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(239,68,68,0.45); }
+        .alert-error {
+            background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3);
+            border-radius:12px; padding:14px 16px; color:#fca5a5;
+            font-size:0.88rem; font-weight:600;
+            display:flex; align-items:center; gap:10px; margin-bottom:24px;
+        }
+        .cliente-link {
+            text-align:center; margin-top:20px;
+            font-size:0.85rem; color:var(--text-muted);
+        }
+        .cliente-link a {
+            color:#f87171; font-weight:700; text-decoration:none;
+        }
+        .cliente-link a:hover { text-decoration:underline; }
+    </style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<div class="top-bar">
+    <a href="{% url 'inicio' %}" class="brand">
+        <div class="brand-logo-wrap">
+            <img src="{% static 'imagenes/logo.png' %}" alt="Logo" onerror="this.parentElement.innerHTML='🔐'">
+        </div>
+        <span class="brand-name">Librería Chichi</span>
+    </a>
+    <a href="{% url 'inicio' %}" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> Volver al inicio
+    </a>
+</div>
+
+<div class="page-wrap">
+    <div class="login-card">
+        <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <h1 class="card-title">Acceso Admin</h1>
+        <div class="admin-badge">
+            <i class="fa-solid fa-lock"></i> Área restringida
+        </div>
+        <p class="card-sub">Solo para administradores autorizados</p>
+
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert-error">
+                <i class="fa-solid fa-circle-exclamation"></i> {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'login_admin' %}">
+            {% csrf_token %}
+            <div class="field-group">
+                <label class="field-label">Usuario</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-user-shield field-icon"></i>
+                    <input type="text" name="username" class="field-input"
+                           placeholder="Nombre de usuario" required autofocus>
+                </div>
+            </div>
+            <div class="field-group">
+                <label class="field-label">Contraseña</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-key field-icon"></i>
+                    <input type="password" name="password" class="field-input"
+                           placeholder="••••••••" required>
+                </div>
+            </div>
+            <button type="submit" class="btn-submit">
+                <i class="fa-solid fa-right-to-bracket"></i> Ingresar al Panel
+            </button>
+        </form>
+
+        <div class="cliente-link">
+            ¿Eres cliente? <a href="{% url 'login' %}">Inicia sesión aquí</a>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.bundle.min.js"></script>
+<script>
+(function () {
+  document.querySelectorAll('input[type="password"]').forEach(function (inp) {
+    if (inp.dataset.eye) return;
+    inp.dataset.eye = '1';
+    var wrap = inp.parentElement;
+    if (getComputedStyle(wrap).position === 'static') wrap.style.position = 'relative';
+    inp.style.paddingRight = '44px';
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Mostrar u ocultar contrasena');
+    btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
+    btn.style.cssText = 'position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#8888aa;cursor:pointer;font-size:1rem;padding:6px;line-height:1;z-index:5;';
+    btn.addEventListener('click', function () {
+      var show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password';
+      btn.innerHTML = show ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>';
+    });
+    wrap.appendChild(btn);
+  });
+})();
+</script>
+</body>
+</html>

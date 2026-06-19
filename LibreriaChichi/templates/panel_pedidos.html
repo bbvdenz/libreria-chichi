@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos — Librería Chichi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --magenta:#e8007d; --violet:#7c3aed; --violet-light:#a855f7;
+            --gold:#f59e0b; --green:#10b981; --blue:#3b82f6;
+            --bg:#0d0d14; --surface:#13131f; --surface2:#1a1a2e;
+            --border:rgba(255,255,255,0.08); --text:#f0f0f8; --text-muted:#8888aa;
+        }
+        * { box-sizing:border-box; margin:0; padding:0; }
+        body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+        .ambient { position:fixed; inset:0; pointer-events:none; z-index:0; background:radial-gradient(ellipse 70% 50% at 15% 10%, rgba(232,0,125,0.1) 0%, transparent 70%); }
+        .navbar-chichi { position:sticky; top:0; z-index:1000; background:rgba(13,13,20,0.92); backdrop-filter:blur(24px); border-bottom:1px solid var(--border); }
+        .navbar-inner { max-width:1400px; margin:0 auto; padding:13px 28px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+        .brand { display:flex; align-items:center; gap:13px; text-decoration:none; flex-shrink:0; }
+        .brand-logo-wrap { width:50px; height:50px; border-radius:14px; background:linear-gradient(135deg,var(--magenta),var(--violet)); display:flex; align-items:center; justify-content:center; font-size:1.4rem; box-shadow:0 0 24px rgba(232,0,125,0.45); overflow:hidden; }
+        .brand-logo-wrap img { width:100%; height:100%; object-fit:cover; border-radius:inherit; }
+        .brand-text { display:flex; flex-direction:column; line-height:1.1; }
+        .brand-name { font-family:'Playfair Display',serif; font-size:1.45rem; font-weight:900; background:linear-gradient(90deg,#fff 0%,var(--magenta) 55%,var(--violet-light) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .brand-tagline { font-size:0.62rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--text-muted); }
+        .nav-actions { display:flex; align-items:center; gap:10px; }
+        .btn-nav { font-family:'DM Sans',sans-serif; font-weight:600; font-size:0.85rem; padding:8px 18px; border-radius:100px; border:1.5px solid rgba(255,255,255,0.15); background:transparent; color:var(--text); cursor:pointer; text-decoration:none; transition:all 0.2s; display:inline-flex; align-items:center; gap:6px; }
+        .btn-nav:hover { background:rgba(255,255,255,0.08); color:#fff; }
+        .btn-nav.nav-panel { border-color:rgba(124,58,237,0.5); color:#c4b5fd; }
+        .btn-nav.nav-panel:hover { background:rgba(124,58,237,0.18); color:#fff; }
+        .btn-nav.nav-vender { border-color:rgba(16,185,129,0.5); color:#6ee7b7; }
+        .btn-nav.nav-vender:hover { background:rgba(16,185,129,0.18); color:#fff; }
+        .btn-nav.nav-pedidos { border-color:rgba(59,130,246,0.55); color:#93c5fd; }
+        .btn-nav.nav-pedidos:hover { background:rgba(59,130,246,0.18); color:#fff; }
+        .btn-nav.nav-ventas { border-color:rgba(245,158,11,0.55); color:#fcd34d; }
+        .btn-nav.nav-ventas:hover { background:rgba(245,158,11,0.20); color:#fff; }
+        .btn-nav.nav-tienda { border-color:rgba(6,182,212,0.55); color:#67e8f9; }
+        .btn-nav.nav-tienda:hover { background:rgba(6,182,212,0.20); color:#fff; }
+        .btn-nav.nav-salir { border-color:rgba(239,68,68,0.45); color:#fca5a5; }
+        .btn-nav.nav-salir:hover { background:rgba(239,68,68,0.18); color:#fff; }
+        .wrap { position:relative; z-index:1; max-width:1400px; margin:0 auto; padding:40px 28px 80px; }
+        .title { font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:900; color:#fff; margin-bottom:8px; }
+        .title span { background:linear-gradient(90deg,var(--magenta),var(--violet-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .sub { color:var(--text-muted); margin-bottom:28px; }
+        .alert-ok { background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); color:#34d399; border-radius:12px; font-weight:600; padding:12px 16px; margin-bottom:8px; display:flex; align-items:center; gap:10px; }
+        .alert-err { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#fca5a5; border-radius:12px; font-weight:600; padding:12px 16px; margin-bottom:8px; display:flex; align-items:center; gap:10px; }
+        .tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px; }
+        .tab { padding:8px 16px; border-radius:100px; border:1.5px solid var(--border); background:var(--surface); color:var(--text-muted); text-decoration:none; font-size:0.85rem; font-weight:600; display:inline-flex; align-items:center; gap:7px; transition:all 0.2s; }
+        .tab:hover { color:#fff; }
+        .tab.active { background:linear-gradient(135deg,var(--magenta),var(--violet)); color:#fff; border-color:transparent; }
+        .tab .count { background:rgba(255,255,255,0.15); border-radius:100px; padding:1px 8px; font-size:0.72rem; }
+        .pedido-card { background:var(--surface); border:1px solid var(--border); border-radius:18px; margin-bottom:18px; overflow:hidden; }
+        .pedido-head { display:flex; flex-wrap:wrap; align-items:center; gap:14px; padding:18px 22px; border-bottom:1px solid var(--border); }
+        .pedido-id { font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:900; color:#fff; }
+        .pedido-fecha { color:var(--text-muted); font-size:0.85rem; }
+        .estado { padding:4px 12px; border-radius:100px; font-size:0.74rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; }
+        .e-pendiente { background:rgba(245,158,11,0.13); color:var(--gold); border:1px solid rgba(245,158,11,0.3); }
+        .e-confirmado { background:rgba(59,130,246,0.13); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); }
+        .e-entregado { background:rgba(16,185,129,0.13); color:#34d399; border:1px solid rgba(16,185,129,0.3); }
+        .e-cancelado { background:rgba(239,68,68,0.13); color:#f87171; border:1px solid rgba(239,68,68,0.3); }
+        .pedido-total { margin-left:auto; font-size:1.25rem; font-weight:800; color:#fff; }
+        .pedido-body { display:grid; grid-template-columns:1fr 1.4fr; gap:0; }
+        @media (max-width:760px){ .pedido-body { grid-template-columns:1fr; } }
+        .cliente-box { padding:20px 22px; border-right:1px solid var(--border); }
+        @media (max-width:760px){ .cliente-box { border-right:none; border-bottom:1px solid var(--border); } }
+        .box-titulo { font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin-bottom:12px; }
+        .dato { display:flex; gap:8px; margin-bottom:7px; font-size:0.88rem; }
+        .dato i { color:var(--violet-light); width:16px; text-align:center; margin-top:2px; }
+        .items-box { padding:20px 22px; }
+        .item-row { display:flex; justify-content:space-between; gap:12px; padding:7px 0; border-bottom:1px dashed var(--border); font-size:0.88rem; }
+        .item-row:last-child { border-bottom:none; }
+        .item-sku { font-family:monospace; color:var(--text-muted); font-size:0.78rem; }
+        .acciones { display:flex; flex-wrap:wrap; gap:8px; padding:16px 22px; border-top:1px solid var(--border); background:rgba(255,255,255,0.015); }
+        .btn-accion { border:none; border-radius:10px; padding:9px 16px; font-family:'DM Sans',sans-serif; font-weight:700; font-size:0.84rem; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:all 0.2s; }
+        .btn-accion:hover { transform:translateY(-1px); }
+        .b-confirmar { background:linear-gradient(135deg,var(--blue),#60a5fa); color:#fff; }
+        .b-entregar { background:linear-gradient(135deg,var(--green),#34d399); color:#000; }
+        .b-cancelar { background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.3); }
+        .b-espera { background:rgba(245,158,11,0.13); color:var(--gold); border:1px solid rgba(245,158,11,0.35); text-decoration:none; }
+        .b-espera:hover { background:rgba(245,158,11,0.22); }
+        .b-boleta { background:rgba(245,158,11,0.12); color:var(--gold); border:1px solid rgba(245,158,11,0.3); text-decoration:none; }
+        .vacio { text-align:center; color:var(--text-muted); padding:60px 20px; }
+        .vacio i { font-size:2.5rem; opacity:0.4; margin-bottom:14px; display:block; }
+    </style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<nav class="navbar-chichi">
+    <div class="navbar-inner">
+        <a class="brand" href="{% url 'inicio' %}">
+            <div class="brand-logo-wrap">
+                <img src="{% static 'imagenes/logo.png' %}" alt="Logo" onerror="this.parentElement.innerHTML='📚'">
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">Librería Chichi</span>
+                <span class="brand-tagline">Pedidos</span>
+            </div>
+        </a>
+        <div class="nav-actions">
+            <a href="{% url 'panel_admin' %}" class="btn-nav nav-panel"><i class="fa-solid fa-gauge"></i> Panel</a>
+            <a href="{% url 'panel_pos' %}" class="btn-nav nav-vender"><i class="fa-solid fa-cash-register"></i> Vender</a>
+            {% if permisos.puede_validar_transferencias %}
+            <a href="{% url 'panel_transferencias' %}" class="btn-nav nav-pedidos"><i class="fa-solid fa-building-columns"></i> Transferencias</a>
+            {% endif %}
+            {% if permisos.puede_ver_reportes %}
+            <a href="{% url 'panel_ventas' %}" class="btn-nav nav-ventas"><i class="fa-solid fa-chart-line"></i> Ventas</a>
+            {% endif %}
+            <a href="{% url 'catalogo' %}" class="btn-nav nav-tienda"><i class="fa-solid fa-store"></i> Ver Tienda</a>
+            <a href="{% url 'logout' %}" class="btn-nav nav-salir"><i class="fa-solid fa-right-from-bracket"></i> Salir</a>
+        </div>
+    </div>
+</nav>
+
+<div class="wrap">
+    <h1 class="title">Gestión de <span>Pedidos</span></h1>
+    <p class="sub">Revisa los pedidos entrantes, los datos del cliente, lo solicitado y confirma su estado.</p>
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if 'success' in message.tags %}
+                <div class="alert-ok"><i class="fa-solid fa-circle-check"></i> {{ message }}</div>
+            {% else %}
+                <div class="alert-err"><i class="fa-solid fa-circle-exclamation"></i> {{ message }}</div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <!-- Pestañas por estado -->
+    <div class="tabs">
+        <a href="?estado=todos" class="tab {% if filtro == 'todos' %}active{% endif %}">
+            Todos <span class="count">{{ conteos.todos }}</span>
+        </a>
+        <a href="?estado=pendiente" class="tab {% if filtro == 'pendiente' %}active{% endif %}">
+            <i class="fa-solid fa-clock"></i> Pendientes <span class="count">{{ conteos.pendiente }}</span>
+        </a>
+        <a href="?estado=confirmado" class="tab {% if filtro == 'confirmado' %}active{% endif %}">
+            <i class="fa-solid fa-check"></i> Confirmados <span class="count">{{ conteos.confirmado }}</span>
+        </a>
+        <a href="?estado=entregado" class="tab {% if filtro == 'entregado' %}active{% endif %}">
+            <i class="fa-solid fa-box-open"></i> Entregados <span class="count">{{ conteos.entregado }}</span>
+        </a>
+        <a href="?estado=cancelado" class="tab {% if filtro == 'cancelado' %}active{% endif %}">
+            <i class="fa-solid fa-ban"></i> Cancelados <span class="count">{{ conteos.cancelado }}</span>
+        </a>
+    </div>
+
+    <!-- Buscador por número de pedido -->
+    <div style="position:relative;max-width:340px;margin-bottom:24px;">
+        <i class="fa-solid fa-magnifying-glass" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text-muted);"></i>
+        <input type="text" id="buscarPedido" inputmode="numeric" autocomplete="off"
+               oninput="filtrarPedidos()" placeholder="Buscar por N° de pedido..."
+               style="width:100%;padding:11px 16px 11px 44px;border-radius:100px;background:var(--surface);
+                      border:1.5px solid var(--border);color:#fff;font-family:'DM Sans',sans-serif;font-size:0.92rem;outline:none;">
+    </div>
+
+    {% for ped in pedidos %}
+    <div class="pedido-card" data-id="{{ ped.id }}">
+        <div class="pedido-head">
+            <span class="pedido-id">Pedido #{{ ped.id }}</span>
+            <span class="pedido-fecha"><i class="fa-regular fa-calendar"></i> {{ ped.fecha }} · {{ ped.tipo }}</span>
+            <span class="estado e-{{ ped.estado }}">{{ ped.estado }}</span>
+            <span class="pedido-total">${{ ped.total }}</span>
+        </div>
+
+        <div class="pedido-body">
+            <div class="cliente-box">
+                <div class="box-titulo"><i class="fa-solid fa-user"></i> Datos del cliente</div>
+                <div class="dato"><i class="fa-solid fa-id-card"></i> <span>{{ ped.cliente.nombre }}</span></div>
+                <div class="dato"><i class="fa-solid fa-envelope"></i> <span>{{ ped.cliente.email }}</span></div>
+                <div class="dato"><i class="fa-solid fa-phone"></i> <span>{{ ped.cliente.telefono }}</span></div>
+                <div class="dato"><i class="fa-solid fa-fingerprint"></i> <span>RUT: {{ ped.cliente.rut }}</span></div>
+                <div class="dato"><i class="fa-solid fa-location-dot"></i> <span>{{ ped.cliente.direccion }}</span></div>
+            </div>
+
+            <div class="items-box">
+                <div class="box-titulo"><i class="fa-solid fa-basket-shopping"></i> Productos solicitados ({{ ped.n_items }})</div>
+                {% for it in ped.items %}
+                <div class="item-row">
+                    <div>
+                        <strong>{{ it.cantidad }}×</strong> {{ it.nombre }}
+                        <span class="item-sku">({{ it.sku }})</span>
+                    </div>
+                    <div style="color:var(--text-muted);">${{ it.precio_unitario }} c/u → <strong style="color:#fff;">${{ it.subtotal }}</strong></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if ped.estado != 'cancelado' %}
+        <div class="acciones">
+            <a class="btn-accion b-boleta" href="{% url 'generar_boleta' ped.id %}" target="_blank">
+                <i class="fa-solid fa-file-invoice-dollar"></i> Boleta
+            </a>
+            {% if ped.estado == 'pendiente' %}
+                {% if ped.transf_pendiente %}
+                <a class="btn-accion b-espera" href="{% url 'panel_transferencias' %}">
+                    <i class="fa-solid fa-hourglass-half"></i> Esperando validar transferencia
+                </a>
+                {% else %}
+                <form method="POST" action="{% url 'cambiar_estado_pedido' ped.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="accion" value="confirmar">
+                    <input type="hidden" name="volver_estado" value="{{ filtro }}">
+                    <button class="btn-accion b-confirmar"><i class="fa-solid fa-check"></i> Confirmar pedido</button>
+                </form>
+                {% endif %}
+            {% endif %}
+            {% if ped.estado == 'confirmado' %}
+            <form method="POST" action="{% url 'cambiar_estado_pedido' ped.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="accion" value="entregar">
+                <input type="hidden" name="volver_estado" value="{{ filtro }}">
+                <button class="btn-accion b-entregar"><i class="fa-solid fa-box-open"></i> Marcar entregado</button>
+            </form>
+            {% endif %}
+            {% if ped.estado != 'entregado' %}
+            <form method="POST" action="{% url 'cambiar_estado_pedido' ped.id %}"
+                  onsubmit="return confirm('¿Cancelar el pedido #{{ ped.id }}? Se devolverá el stock.');">
+                {% csrf_token %}
+                <input type="hidden" name="accion" value="cancelar">
+                <input type="hidden" name="volver_estado" value="{{ filtro }}">
+                <button class="btn-accion b-cancelar"><i class="fa-solid fa-ban"></i> Cancelar</button>
+            </form>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    {% empty %}
+    <div class="vacio">
+        <i class="fa-solid fa-inbox"></i>
+        <p>No hay pedidos {% if filtro != 'todos' %}en estado «{{ filtro }}»{% endif %} por ahora.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    function filtrarPedidos() {
+        const inputEl = document.getElementById('buscarPedido');
+        if (!inputEl) return;
+        const texto = inputEl.value.replace(/[^0-9]/g, '');
+        const cards = document.querySelectorAll('.pedido-card');
+        let visibles = 0;
+        cards.forEach(card => {
+            const id = card.dataset.id || '';
+            if (texto === '' || id.startsWith(texto)) {
+                card.style.display = '';
+                visibles++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        let aviso = document.getElementById('sinPedidos');
+        if (visibles === 0 && texto !== '') {
+            if (!aviso) {
+                aviso = document.createElement('div');
+                aviso.id = 'sinPedidos';
+                aviso.className = 'vacio';
+                aviso.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i><p>No hay ningún pedido con el N° «' + texto + '».</p>';
+                document.querySelector('.wrap').appendChild(aviso);
+            } else {
+                aviso.style.display = '';
+                aviso.querySelector('p').textContent = 'No hay ningún pedido con el N° «' + texto + '».';
+            }
+        } else if (aviso) {
+            aviso.style.display = 'none';
+        }
+    }
+</script>
+</body>
+</html>

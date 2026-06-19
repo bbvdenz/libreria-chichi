@@ -1,0 +1,275 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar Compra — Librería Chichi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --magenta:#e8007d; --violet:#7c3aed; --violet-light:#a855f7;
+            --gold:#f59e0b; --green:#10b981;
+            --bg:#0d0d14; --surface:#13131f; --surface2:#1a1a2e;
+            --border:rgba(255,255,255,0.08); --text:#f0f0f8; --text-muted:#8888aa;
+        }
+        * { box-sizing:border-box; margin:0; padding:0; }
+        body {
+            background:var(--bg); color:var(--text);
+            font-family:'DM Sans',sans-serif;
+            min-height:100vh; overflow-x:hidden;
+        }
+        .ambient {
+            position:fixed; inset:0; pointer-events:none; z-index:0;
+            background:
+                radial-gradient(ellipse 60% 50% at 30% 30%, rgba(16,185,129,0.1) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 50% at 70% 70%, rgba(124,58,237,0.1) 0%, transparent 70%);
+        }
+        .top-bar {
+            position:relative; z-index:10;
+            background:rgba(13,13,20,0.88); backdrop-filter:blur(24px);
+            border-bottom:1px solid var(--border);
+            padding:14px 28px;
+            display:flex; align-items:center; justify-content:space-between;
+        }
+        .brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
+        .brand-logo-wrap {
+            width:44px; height:44px; border-radius:12px;
+            background:linear-gradient(135deg,var(--magenta),var(--violet));
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.2rem; overflow:hidden;
+            box-shadow:0 0 20px rgba(232,0,125,0.4);
+        }
+        .brand-logo-wrap img { width:100%; height:100%; object-fit:cover; }
+        .brand-name {
+            font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:900;
+            background:linear-gradient(90deg,#fff 0%,var(--magenta) 55%,var(--violet-light) 100%);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+        }
+        .back-link {
+            color:var(--text-muted); text-decoration:none;
+            font-size:0.85rem; font-weight:600;
+            display:flex; align-items:center; gap:6px; transition:color 0.2s;
+        }
+        .back-link:hover { color:var(--text); }
+        .page-wrap {
+            position:relative; z-index:1;
+            padding:50px 20px 60px;
+            display:flex; justify-content:center;
+        }
+        .pago-card {
+            width:100%; max-width:540px;
+            background:var(--surface); border:1px solid var(--border);
+            border-radius:24px; padding:48px 44px;
+            box-shadow:0 32px 80px rgba(0,0,0,0.5);
+            animation:fadeUp 0.5s ease both;
+        }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        .card-title {
+            font-family:'Playfair Display',serif; font-size:1.7rem; font-weight:900;
+            text-align:center; color:#fff; margin-bottom:6px;
+        }
+        .card-sub { text-align:center; color:var(--text-muted); font-size:0.9rem; margin-bottom:28px; }
+
+        /* Badge total */
+        .total-badge {
+            background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(16,185,129,0.05));
+            border:1px solid rgba(16,185,129,0.3);
+            border-radius:16px; padding:20px 24px;
+            text-align:center; margin-bottom:32px;
+        }
+        .total-label {
+            font-size:0.72rem; font-weight:700; letter-spacing:2px;
+            text-transform:uppercase; color:var(--green); margin-bottom:6px;
+        }
+        .total-amount {
+            font-family:'Playfair Display',serif; font-size:2.4rem; font-weight:900; color:#fff;
+        }
+        .total-amount span { font-size:1.4rem; color:var(--green); vertical-align:super; }
+
+        /* Botones de opción (login / registro) */
+        .opt-btn {
+            width:100%; padding:16px 20px;
+            border-radius:14px; border:1.5px solid;
+            cursor:pointer; display:flex; align-items:center; gap:14px;
+            text-decoration:none; margin-bottom:12px;
+            transition:all 0.22s; font-family:'DM Sans',sans-serif;
+        }
+        .opt-btn-icon {
+            width:42px; height:42px; border-radius:10px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.1rem; flex-shrink:0;
+        }
+        .opt-btn-text { text-align:left; }
+        .opt-btn-title { font-size:0.95rem; font-weight:700; }
+        .opt-btn-sub { font-size:0.78rem; }
+        .opt-primary {
+            background:linear-gradient(135deg,rgba(232,0,125,0.12),rgba(124,58,237,0.08));
+            border-color:rgba(232,0,125,0.35); color:var(--text);
+        }
+        .opt-primary:hover {
+            background:linear-gradient(135deg,rgba(232,0,125,0.2),rgba(124,58,237,0.14));
+            transform:translateY(-2px); box-shadow:0 8px 24px rgba(232,0,125,0.2); color:#fff;
+        }
+        .opt-primary .opt-btn-icon { background:linear-gradient(135deg,var(--magenta),var(--violet)); color:#fff; }
+        .opt-primary .opt-btn-sub { color:rgba(232,0,125,0.8); }
+        .opt-secondary {
+            background:rgba(255,255,255,0.03);
+            border-color:var(--border); color:var(--text);
+        }
+        .opt-secondary:hover { background:rgba(255,255,255,0.07); border-color:rgba(255,255,255,0.2); color:#fff; }
+        .opt-secondary .opt-btn-icon { background:rgba(255,255,255,0.08); color:var(--text-muted); }
+        .opt-secondary .opt-btn-sub { color:var(--text-muted); }
+        .chevron { margin-left:auto; font-size:0.8rem; opacity:0.5; }
+
+        /* Separador */
+        .divider { display:flex; align-items:center; gap:12px; margin:24px 0; }
+        .divider-line { flex:1; height:1px; background:var(--border); }
+        .divider-text {
+            font-size:0.72rem; color:var(--text-muted); font-weight:700;
+            letter-spacing:1.5px; text-transform:uppercase;
+        }
+
+        /* Formulario invitado */
+        .invitado-title {
+            font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700;
+            color:#fff; margin-bottom:18px;
+            display:flex; align-items:center; gap:10px;
+        }
+        .field-group { margin-bottom:16px; }
+        .field-label {
+            display:block; font-size:0.78rem; font-weight:700;
+            letter-spacing:0.5px; text-transform:uppercase;
+            color:var(--text-muted); margin-bottom:7px;
+        }
+        .field-wrap { position:relative; }
+        .field-icon {
+            position:absolute; left:13px; top:50%; transform:translateY(-50%);
+            color:var(--text-muted); font-size:0.85rem; pointer-events:none;
+        }
+        .field-input {
+            width:100%; background:var(--surface2);
+            border:1.5px solid var(--border); border-radius:12px;
+            padding:12px 13px 12px 40px;
+            color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.92rem;
+            transition:border-color 0.2s,box-shadow 0.2s;
+        }
+        .field-input:focus {
+            outline:none; border-color:var(--green);
+            box-shadow:0 0 0 3px rgba(16,185,129,0.15);
+        }
+        .field-input::placeholder { color:#44445a; }
+        .btn-pagar {
+            width:100%; padding:15px;
+            background:linear-gradient(135deg,var(--green),#34d399);
+            color:#000; border:none; border-radius:12px;
+            font-family:'DM Sans',sans-serif; font-weight:900; font-size:1rem;
+            cursor:pointer; margin-top:8px; transition:all 0.25s;
+            box-shadow:0 6px 20px rgba(16,185,129,0.35);
+            display:flex; align-items:center; justify-content:center; gap:10px;
+        }
+        .btn-pagar:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(16,185,129,0.45); }
+
+        @media(max-width:540px) { .pago-card { padding:32px 20px; } }
+    </style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<div class="top-bar">
+    <a href="{% url 'inicio' %}" class="brand">
+        <div class="brand-logo-wrap">
+            <img src="{% static 'imagenes/logo.png' %}" alt="Logo" onerror="this.parentElement.innerHTML='📚'">
+        </div>
+        <span class="brand-name">Librería Chichi</span>
+    </a>
+    <a href="{% url 'ver_carrito' %}" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> Volver al carrito
+    </a>
+</div>
+
+<div class="page-wrap">
+    <div class="pago-card">
+        <h2 class="card-title">Finalizar Compra</h2>
+        <p class="card-sub">Estás a un paso. ¿Cómo deseas continuar?</p>
+
+        <!-- Total -->
+        <div class="total-badge">
+            <div class="total-label">Total a pagar</div>
+            <div class="total-amount"><span>$</span>{{ total|floatformat:0 }}</div>
+        </div>
+
+        <!-- Opción 1: Iniciar sesión -->
+        <a href="{% url 'login' %}" class="opt-btn opt-primary">
+            <div class="opt-btn-icon"><i class="fa-solid fa-right-to-bracket"></i></div>
+            <div class="opt-btn-text">
+                <div class="opt-btn-title">Ya tengo cuenta</div>
+                <div class="opt-btn-sub">Iniciar sesión para continuar</div>
+            </div>
+            <i class="fa-solid fa-chevron-right chevron"></i>
+        </a>
+
+        <!-- Opción 2: Registrarse -->
+        <a href="{% url 'registro' %}" class="opt-btn opt-secondary">
+            <div class="opt-btn-icon"><i class="fa-solid fa-user-plus"></i></div>
+            <div class="opt-btn-text">
+                <div class="opt-btn-title">Crear cuenta nueva</div>
+                <div class="opt-btn-sub">Regístrate rápido y fácil</div>
+            </div>
+            <i class="fa-solid fa-chevron-right chevron"></i>
+        </a>
+
+        <!-- Separador -->
+        <div class="divider">
+            <div class="divider-line"></div>
+            <span class="divider-text">o continuar como invitado</span>
+            <div class="divider-line"></div>
+        </div>
+
+        <!-- Formulario invitado -->
+        <p class="invitado-title">
+            <i class="fa-solid fa-user-secret" style="color:var(--text-muted);"></i>
+            Datos de contacto
+        </p>
+        <form action="{% url 'procesar_pago' %}" method="POST">
+            {% csrf_token %}
+            <div class="field-group">
+                <label class="field-label">Nombre completo</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-user field-icon"></i>
+                    <input type="text" name="nombre" class="field-input"
+                           placeholder="Juan Pérez" required>
+                </div>
+            </div>
+            <div class="field-group">
+                <label class="field-label">Correo electrónico</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-envelope field-icon"></i>
+                    <input type="email" name="email" class="field-input"
+                           placeholder="juan@gmail.com" required>
+                </div>
+            </div>
+            <div class="field-group">
+                <label class="field-label">
+                    Teléfono <small style="color:#44445a;">(Opcional)</small>
+                </label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-phone field-icon"></i>
+                    <input type="text" name="telefono" class="field-input"
+                           placeholder="+56912345678">
+                </div>
+            </div>
+            <button type="submit" class="btn-pagar">
+                <i class="fa-solid fa-cart-shopping"></i>
+                Pagar como Invitado — ${{ total|floatformat:0 }}
+            </button>
+        </form>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.bundle.min.js"></script>
+</body>
+</html>
