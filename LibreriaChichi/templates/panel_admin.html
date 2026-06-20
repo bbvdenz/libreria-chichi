@@ -218,8 +218,8 @@
     <div class="section-card" style="position:relative;z-index:30;">
         <h3><i class="fa-solid fa-rotate" style="color:var(--violet-light);"></i> Actualizar / Reabastecer Producto</h3>
         <p style="color:var(--text-muted);font-size:0.85rem;margin-top:-12px;margin-bottom:18px;">
-            Busca el producto por su SKU. Se suma el stock entrante y, si indicas un precio de compra,
-            se recalcula el precio con <strong>promedio ponderado</strong>.
+            Busca el producto por su SKU. Escribe el <strong>nuevo precio de venta</strong> y/o una
+            <strong>cantidad a sumar</strong> al stock. Lo que dejes vacío no se modifica.
         </p>
 
         <!-- Buscador de SKU en vivo -->
@@ -251,12 +251,12 @@
             </div>
             <div class="field-row">
                 <div class="field-group">
-                    <label class="field-label">Cantidad entrante *</label>
-                    <input type="number" name="stock_inicial" id="actCantidad" oninput="previewPonderado()" class="field-input num-entero" min="1" placeholder="Ej: 20">
+                    <label class="field-label">Cantidad a sumar (opcional)</label>
+                    <input type="number" name="stock_inicial" id="actCantidad" oninput="previewPonderado()" class="field-input num-entero" min="1" placeholder="Si lo dejas vacío, el stock no cambia">
                 </div>
                 <div class="field-group">
-                    <label class="field-label">Precio de compra (opcional)</label>
-                    <input type="number" name="precio" id="actPrecioCompra" oninput="previewPonderado()" class="field-input" min="0" step="0.01" placeholder="Si lo dejas vacío, no cambia el precio">
+                    <label class="field-label">Nuevo precio de venta (opcional)</label>
+                    <input type="number" name="precio" id="actPrecioCompra" oninput="previewPonderado()" class="field-input" min="0" step="0.01" placeholder="Si lo dejas vacío, el precio no cambia">
                 </div>
             </div>
             <div id="actPreview"
@@ -683,31 +683,27 @@
         previewPonderado();
     }
 
-    // Vista previa EN VIVO del promedio ponderado al reabastecer
+    // Vista previa EN VIVO de lo que cambiará (el precio se fija tal cual; el stock se suma)
     function previewPonderado() {
         const prev = document.getElementById('actPreview');
         if (!prev) return;
         if (!document.getElementById('actSku').value) { prev.style.display = 'none'; return; }
         const cant = parseInt(document.getElementById('actCantidad').value, 10) || 0;
-        const precioCompra = parseFloat(document.getElementById('actPrecioCompra').value) || 0;
-        if (cant <= 0) { prev.style.display = 'none'; return; }
+        const precioStr = document.getElementById('actPrecioCompra').value.trim();
+        const precioNuevo = parseFloat(precioStr);
+        const tienePrecio = precioStr !== '' && !isNaN(precioNuevo) && precioNuevo >= 0;
 
-        const nuevoStock = actStockNum + cant;
+        if (cant <= 0 && !tienePrecio) { prev.style.display = 'none'; return; }
         prev.style.display = 'block';
-        if (precioCompra > 0) {
-            const nuevoPrecio = Math.round((actStockNum * actPrecioNum + cant * precioCompra) / nuevoStock);
-            prev.innerHTML =
-                '<i class="fa-solid fa-calculator" style="color:var(--violet-light);"></i> '
-                + 'Nuevo stock: <strong>' + nuevoStock + '</strong> · '
-                + 'Precio promedio ponderado: <strong>' + fmtPesos(nuevoPrecio) + '</strong> '
-                + '<span style="color:var(--text-muted);">(antes ' + fmtPesos(actPrecioNum)
-                + ', ingreso ' + fmtPesos(precioCompra) + ')</span>';
-        } else {
-            prev.innerHTML =
-                '<i class="fa-solid fa-box" style="color:var(--violet-light);"></i> '
-                + 'Nuevo stock: <strong>' + nuevoStock + '</strong> · '
-                + '<span style="color:var(--text-muted);">precio sin cambios (no ingresaste precio de compra).</span>';
+
+        const partes = [];
+        if (tienePrecio) {
+            partes.push('Precio: <strong>' + fmtPesos(actPrecioNum) + ' → ' + fmtPesos(precioNuevo) + '</strong>');
         }
+        if (cant > 0) {
+            partes.push('Stock: <strong>' + actStockNum + ' + ' + cant + ' = ' + (actStockNum + cant) + '</strong>');
+        }
+        prev.innerHTML = '<i class="fa-solid fa-calculator" style="color:var(--violet-light);"></i> ' + partes.join(' · ');
     }
 
     // Vista previa del SKU automático según la categoría (apartado Agregar)
@@ -842,6 +838,26 @@
             inputEl.style.borderColor = '#34d399';
         }
     }
+</script>
+<script>
+/* anti-doble-submit: evita pulsar el boton 2 veces mientras carga */
+(function(){
+  document.addEventListener("submit", function(e){
+    var f = e.target;
+    if(!f || f.nodeName !== "FORM") return;
+    if(e.defaultPrevented) return;            /* un confirm() o validacion lo cancelo */
+    if(f.getAttribute("data-enviando") === "1"){ e.preventDefault(); return; }
+    f.setAttribute("data-enviando","1");
+    var btns = f.querySelectorAll('button[type="submit"], input[type="submit"], button:not([type])');
+    setTimeout(function(){
+      for(var i=0;i<btns.length;i++){
+        var b = btns[i];
+        b.disabled = true; b.style.opacity = "0.6"; b.style.cursor = "not-allowed";
+        if(b.nodeName === "BUTTON"){ b.innerHTML = "Procesando\u2026"; } else { b.value = "Procesando\u2026"; }
+      }
+    }, 0);
+  }, false);
+})();
 </script>
 </body>
 </html>

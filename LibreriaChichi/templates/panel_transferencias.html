@@ -147,7 +147,9 @@
     </div>
 
     <script>
+        let validandoTransferencia = false;
         async function validar(id, decision) {
+            if (validandoTransferencia) return;   // evita procesar 2 veces si haces doble clic
             let motivo = "";
             if (decision === "rechazar") {
                 motivo = prompt("Motivo del rechazo:");
@@ -155,6 +157,9 @@
             } else {
                 if (!confirm("¿Aprobar esta transferencia? El pedido quedará confirmado.")) return;
             }
+            validandoTransferencia = true;
+            const botones = document.querySelectorAll('.btn-aprobar, .btn-rechazar');
+            botones.forEach(b => { b.disabled = true; b.style.opacity = "0.6"; b.style.cursor = "not-allowed"; });
             try {
                 const resp = await fetch(`/api/v1/transferencias/${id}/validar/`, {
                     method: "POST",
@@ -165,12 +170,16 @@
                 if (data.ok) {
                     alert(data.mensaje || "Listo.");
                     location.reload();
+                    return;                        // la página se recarga; no reactivamos
                 } else {
                     alert("Error: " + (data.error || "no se pudo procesar."));
                 }
             } catch (e) {
                 alert("Error de conexión: " + e);
             }
+            // Si hubo error, reactivamos para poder reintentar
+            validandoTransferencia = false;
+            botones.forEach(b => { b.disabled = false; b.style.opacity = "1"; b.style.cursor = "pointer"; });
         }
     </script>
 </body>

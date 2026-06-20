@@ -15,6 +15,7 @@ from . import permisos
 from .utils import enviar_correo_estado_pedido
 from decimal import Decimal, InvalidOperation
 from django.db.models import Q, ProtectedError, RestrictedError
+from django.db import IntegrityError, transaction
 import re
 import unicodedata
 
@@ -107,21 +108,32 @@ def registro_usuario(request):
                 f"{form.cleaned_data['comuna']}, "
                 f"{form.cleaned_data['region']}"
             )
-            user = User.objects.create_user(
-                username=rut_usuario,
-                email=email_usuario,
-                password=form.cleaned_data['password'],
-                first_name=form.cleaned_data['nombre'],
-                last_name=form.cleaned_data['apellido'],
-            )
-            Cliente.objects.create(
-                usuario=user,
-                rut=rut_usuario,
-                nombre=nombre_completo,
-                email=email_usuario,
-                telefono=form.cleaned_data['telefono'],
-                direccion_facturacion=direccion_unificada,
-            )
+            # Defensa ante doble envío / carrera: si el RUT ya tiene cuenta,
+            # no intentamos crearla otra vez (evita el error de "no se pudo crear").
+            if User.objects.filter(username=rut_usuario).exists():
+                messages.info(request, "Ya existe una cuenta con ese RUT. Inicia sesión.")
+                return redirect('login')
+            try:
+                with transaction.atomic():
+                    user = User.objects.create_user(
+                        username=rut_usuario,
+                        email=email_usuario,
+                        password=form.cleaned_data['password'],
+                        first_name=form.cleaned_data['nombre'],
+                        last_name=form.cleaned_data['apellido'],
+                    )
+                    Cliente.objects.create(
+                        usuario=user,
+                        rut=rut_usuario,
+                        nombre=nombre_completo,
+                        email=email_usuario,
+                        telefono=form.cleaned_data['telefono'],
+                        direccion_facturacion=direccion_unificada,
+                    )
+            except IntegrityError:
+                # Dos envíos casi simultáneos: otro ya creó la cuenta.
+                messages.info(request, "Ya existe una cuenta con ese RUT. Inicia sesión.")
+                return redirect('login')
             login(request, user)
             messages.success(request, f"¡Bienvenido {user.first_name}! Tu cuenta fue creada exitosamente.")
 
@@ -692,9 +704,11 @@ def admin_agregar_producto(request):
 
 
 def admin_actualizar_producto(request):
-    """Panel dedicado a REABASTECER un producto existente buscado por SKU.
-    Suma el stock entrante y recalcula el precio con promedio ponderado.
-    Solo administradores (el bodeguero no gestiona stock ni precio)."""
+    """Actualiza el PRECIO DE VENTA y/o suma stock de un producto buscado por SKU.
+    - Si indicas un precio, se fija como nuevo precio de venta (sin promedios).
+    - Si indicas una cantidad, se suma al stock actual.
+    Puedes cambiar solo el precio, solo el stock, o ambos. Al menos uno es
+    obligatorio. Solo administradores (el bodeguero no gestiona stock ni precio)."""
     if not permisos.puede_gestionar_inventario(request.user):
         messages.error(request, "⚠️ No tienes permiso para actualizar stock ni precios.")
         return redirect('panel_admin')
@@ -711,53 +725,51 @@ def admin_actualizar_producto(request):
         messages.error(request, f"No existe ningún producto con el SKU '{sku}'.")
         return redirect('panel_admin')
 
+    # ── Cantidad a sumar (opcional) ──
     try:
         cantidad = int(request.POST.get('stock_inicial', 0) or 0)
     except ValueError:
         cantidad = 0
-    if cantidad <= 0:
-        messages.error(request, "La cantidad entrante debe ser mayor a 0.")
-        return redirect('panel_admin')
+    if cantidad < 0:
+        cantidad = 0
 
-    try:
-        precio_entrada = Decimal(str(request.POST.get('precio', '0') or '0'))
-    except InvalidOperation:
-        precio_entrada = Decimal('0')
+    # ── Nuevo precio de venta (opcional): se fija tal cual, sin promediar ──
+    precio_str = (request.POST.get('precio', '') or '').strip()
+    nuevo_precio = None
+    if precio_str != '':
+        try:
+            nuevo_precio = Decimal(precio_str)
+        except InvalidOperation:
+            messages.error(request, "El precio ingresado no es válido.")
+            return redirect('panel_admin')
+        if nuevo_precio < 0:
+            messages.error(request, "El precio no puede ser negativo.")
+            return redirect('panel_admin')
+
+    if cantidad <= 0 and nuevo_precio is None:
+        messages.error(request, "Indica un nuevo precio de venta o una cantidad a sumar (o ambos).")
+        return redirect('panel_admin')
 
     stock_obj, _ = Stock.objects.get_or_create(
         id_producto=producto, defaults={'cantidad_disponible': 0}
     )
     cant_actual = stock_obj.cantidad_disponible
-    precio_actual = Decimal(str(producto.precio))
-    cant_total = cant_actual + cantidad
+    precio_anterior = Decimal(str(producto.precio))
 
-    if precio_entrada > 0:
-        # Promedio ponderado
-        nuevo_precio = (
-            (Decimal(cant_actual) * precio_actual) +
-            (Decimal(cantidad) * precio_entrada)
-        ) / Decimal(cant_total)
-        nuevo_precio = nuevo_precio.quantize(Decimal('0.01'))
+    partes = []
+    if nuevo_precio is not None:
         producto.precio = nuevo_precio
         producto.save()
-        stock_obj.cantidad_disponible = cant_total
+        partes.append(f"precio ${precio_anterior:,.0f} → ${nuevo_precio:,.0f}")
+    if cantidad > 0:
+        stock_obj.cantidad_disponible = cant_actual + cantidad
         stock_obj.save()
-        messages.success(
-            request,
-            f"♻️ '{producto.nombre_producto}' actualizado. "
-            f"Stock: {cant_actual} + {cantidad} = {cant_total}. "
-            f"Precio promedio ponderado: ${nuevo_precio:,.0f} "
-            f"(antes ${precio_actual:,.0f}, ingreso ${precio_entrada:,.0f})."
-        )
-    else:
-        # Solo suma stock, mantiene el precio actual
-        stock_obj.cantidad_disponible = cant_total
-        stock_obj.save()
-        messages.success(
-            request,
-            f"📦 Stock de '{producto.nombre_producto}' actualizado: "
-            f"{cant_actual} + {cantidad} = {cant_total}. Precio sin cambios."
-        )
+        partes.append(f"stock {cant_actual} + {cantidad} = {cant_actual + cantidad}")
+
+    messages.success(
+        request,
+        f"✅ '{producto.nombre_producto}' actualizado: " + " · ".join(partes) + "."
+    )
     return redirect('panel_admin')
 
 
