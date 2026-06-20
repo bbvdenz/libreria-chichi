@@ -459,6 +459,7 @@
             </div>
         </a>
         <div class="nav-actions">
+            <a href="{% url 'soporte' %}" class="btn-nav"><i class="fa-solid fa-headset"></i> Soporte</a>
             {% if user.is_staff or user.is_superuser %}
                 {% if user.is_authenticated %}
                     <a href="{% url 'panel_admin' %}" class="btn-admin">
@@ -471,6 +472,7 @@
                 {% endif %}
             {% endif %}
             {% if user.is_authenticated %}
+                {% if not user.is_staff %}<a href="{% url 'mi_perfil' %}" class="btn-nav"><i class="fa-solid fa-user-gear"></i> Mi perfil</a>{% endif %}
                 <div class="user-pill">
                     <div class="user-avatar">{{ user.first_name|default:user.username|first|upper }}</div>
                     <span class="user-name">{{ user.first_name|default:user.username }}</span>

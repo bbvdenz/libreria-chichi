@@ -12,6 +12,7 @@ from .models import Producto, Cliente, Pedido, DetallePedido, Stock, Pago
 from .models import Transferencia
 from .forms import RegistroClienteForm
 from . import permisos
+from .utils import enviar_correo_estado_pedido
 from decimal import Decimal, InvalidOperation
 from django.db.models import Q, ProtectedError, RestrictedError
 import re
@@ -987,14 +988,17 @@ def cambiar_estado_pedido(request, pedido_id):
     if accion == 'confirmar':
         pedido.estado_pedido = 'confirmado'
         pedido.save()
-        messages.success(request, f"✅ Pedido #{pedido.id_pedido} confirmado.")
+        enviar_correo_estado_pedido(pedido, 'confirmado')
+        messages.success(request, f"✅ Pedido #{pedido.id_pedido} confirmado. Se notificó al cliente por correo.")
 
     elif accion == 'entregar':
         pedido.estado_pedido = 'entregado'
         pedido.save()
-        messages.success(request, f"📦 Pedido #{pedido.id_pedido} marcado como entregado.")
+        enviar_correo_estado_pedido(pedido, 'entregado')
+        messages.success(request, f"📦 Pedido #{pedido.id_pedido} marcado como entregado. Se notificó al cliente por correo.")
 
     elif accion == 'cancelar':
+        motivo = (request.POST.get('motivo', '') or '').strip() or None
         # Devolver el stock de cada producto del pedido (si no estaba ya cancelado)
         if pedido.estado_pedido != 'cancelado':
             for d in DetallePedido.objects.select_related('id_producto').filter(id_pedido=pedido):
@@ -1004,9 +1008,19 @@ def cambiar_estado_pedido(request, pedido_id):
                     st.save()
                 except Stock.DoesNotExist:
                     pass
+            # Marcar como reembolsado el pago de las transferencias validadas
+            # (es el único pago que queda enlazado al pedido en este sistema).
+            for t in pedido.transferencias.all():
+                if t.id_pago and t.id_pago.estado_pago != 'Reembolsado':
+                    t.id_pago.estado_pago = 'Reembolsado'
+                    t.id_pago.save()
         pedido.estado_pedido = 'cancelado'
         pedido.save()
-        messages.success(request, f"↩️ Pedido #{pedido.id_pedido} cancelado y stock devuelto.")
+        enviar_correo_estado_pedido(pedido, 'cancelado', motivo=motivo)
+        messages.success(
+            request,
+            f"↩️ Pedido #{pedido.id_pedido} cancelado, stock devuelto y cliente notificado del reembolso por correo."
+        )
 
     else:
         messages.error(request, "Acción no válida.")
@@ -1592,3 +1606,135 @@ def panel_transferencias(request):
         'conteos': conteos,
         'permisos': permisos.permisos_para_template(request.user),
     })
+
+
+# ── 12. MI PERFIL (cliente / persona natural) ────────────────────────────────
+def mi_perfil(request):
+    """Permite a un cliente autenticado ver y modificar sus datos."""
+    if not request.user.is_authenticated:
+        messages.error(request, "Debes iniciar sesión para ver tu perfil.")
+        return redirect('login')
+
+    # Aseguramos que exista una ficha de Cliente enlazada a este usuario.
+    cliente = Cliente.objects.filter(usuario=request.user).first()
+    if cliente is None:
+        cliente = Cliente.objects.create(
+            usuario=request.user,
+            rut=request.user.username,
+            nombre=f"{request.user.first_name} {request.user.last_name}".strip() or request.user.username,
+            email=request.user.email or None,
+        )
+
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre', '').strip()
+        apellido = request.POST.get('apellido', '').strip()
+        email = request.POST.get('email', '').strip()
+        telefono = request.POST.get('telefono', '').strip()
+        direccion = request.POST.get('direccion', '').strip()
+
+        # ── Cambio de contraseña (opcional: solo si llena los campos) ──
+        actual = request.POST.get('password_actual', '')
+        nueva = request.POST.get('nueva_password', '')
+        confirmar = request.POST.get('confirmar_password', '')
+        if nueva or confirmar or actual:
+            if not request.user.check_password(actual):
+                messages.error(request, "Tu contraseña actual no es correcta.")
+                return redirect('mi_perfil')
+            if len(nueva) < 8:
+                messages.error(request, "La nueva contraseña debe tener al menos 8 caracteres.")
+                return redirect('mi_perfil')
+            if nueva != confirmar:
+                messages.error(request, "La nueva contraseña y su confirmación no coinciden.")
+                return redirect('mi_perfil')
+            request.user.set_password(nueva)
+            request.user.save()
+            from django.contrib.auth import update_session_auth_hash
+            update_session_auth_hash(request, request.user)  # no cerrar la sesión
+            messages.success(request, "🔒 Tu contraseña fue actualizada.")
+
+        # ── Datos personales ──
+        if not nombre:
+            messages.error(request, "El nombre no puede quedar vacío.")
+            return redirect('mi_perfil')
+
+        # Email único (si lo cambió, que no choque con otro cliente)
+        if email and email != (cliente.email or ''):
+            if Cliente.objects.filter(email=email).exclude(pk=cliente.pk).exists():
+                messages.error(request, "Ese correo ya está registrado por otra cuenta.")
+                return redirect('mi_perfil')
+
+        request.user.first_name = nombre
+        request.user.last_name = apellido
+        if email:
+            request.user.email = email
+        request.user.save()
+
+        cliente.nombre = f"{nombre} {apellido}".strip()
+        cliente.email = email or cliente.email
+        cliente.telefono = telefono
+        cliente.direccion_facturacion = direccion
+        cliente.save()
+
+        messages.success(request, "✅ Tus datos fueron actualizados correctamente.")
+        return redirect('mi_perfil')
+
+    return render(request, 'perfil.html', {
+        'cliente': cliente,
+        'usuario': request.user,
+    })
+
+
+# ── 13. SOPORTE / CONTACTO ───────────────────────────────────────────────────
+def soporte(request):
+    """Página de ayuda con preguntas frecuentes y formulario de contacto.
+    El formulario envía un correo al buzón de soporte de la librería."""
+    if request.method == 'POST':
+        from django.core.mail import EmailMessage
+
+        nombre = request.POST.get('nombre', '').strip()
+        email = request.POST.get('email', '').strip()
+        asunto = request.POST.get('asunto', '').strip() or "Consulta desde el sitio"
+        mensaje = request.POST.get('mensaje', '').strip()
+
+        if not nombre or not email or not mensaje:
+            messages.error(request, "Completa tu nombre, correo y mensaje.")
+            return redirect('soporte')
+
+        cuerpo = (
+            f"Nuevo mensaje de soporte desde el sitio web:\n\n"
+            f"Nombre: {nombre}\n"
+            f"Correo: {email}\n"
+            f"Asunto: {asunto}\n\n"
+            f"Mensaje:\n{mensaje}\n"
+        )
+        try:
+            correo = EmailMessage(
+                subject=f"[Soporte] {asunto}",
+                body=cuerpo,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[settings.SOPORTE_EMAIL],
+                reply_to=[email],  # al responder, le llega al cliente
+            )
+            correo.send(fail_silently=True)
+
+            # Acuse de recibo al cliente
+            from django.core.mail import send_mail
+            send_mail(
+                subject="Recibimos tu mensaje — Librería Chichi",
+                message=(
+                    f"Hola {nombre},\n\n"
+                    f"¡Gracias por escribirnos! Recibimos tu mensaje y te responderemos pronto.\n\n"
+                    f"Tu consulta:\n\"{mensaje}\"\n\n"
+                    f"Un saludo,\nEquipo Librería Chichi"
+                ),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[email],
+                fail_silently=True,
+            )
+        except Exception as e:
+            print(f"⚠️ No se pudo enviar el correo de soporte: {e}")
+
+        messages.success(request, "✅ ¡Mensaje enviado! Te responderemos a tu correo lo antes posible.")
+        return redirect('soporte')
+
+    return render(request, 'soporte.html', {})

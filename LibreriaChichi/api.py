@@ -41,6 +41,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import ClaveAPI, DetallePedido, Pago, Pedido, Transferencia
 from .permisos import puede_validar_transferencias
 from .utils import formatear_rut, rut_es_valido
+from .utils import enviar_correo_estado_pedido, enviar_correo_transferencia_rechazada
 
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -302,6 +303,8 @@ def validar_transferencia(request, transferencia_id):
         if pedido.estado_pedido in ('pendiente', ''):
             pedido.estado_pedido = 'confirmado'
             pedido.save()
+            # Avisar al cliente que su pago fue validado y el pedido confirmado
+            enviar_correo_estado_pedido(pedido, 'confirmado')
 
         return _json({
             'ok': True,
@@ -318,6 +321,8 @@ def validar_transferencia(request, transferencia_id):
         t.validado_por = usuario
         t.validado_en = timezone.now()
         t.save()
+        # Avisar al cliente del rechazo y el motivo
+        enviar_correo_transferencia_rechazada(t, motivo)
         return _json({
             'ok': True,
             'mensaje': 'Transferencia rechazada.',

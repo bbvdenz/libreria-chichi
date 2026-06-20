@@ -156,6 +156,10 @@ DEFAULT_FROM_EMAIL = os.environ.get(
     EMAIL_HOST_USER or 'Librería Chichi <noreply@libreriachichi.cl>'
 )
 
+# Correo donde llegan los mensajes del formulario de Soporte/Contacto.
+# Por defecto, el mismo buzón que envía (tu correo configurado arriba).
+SOPORTE_EMAIL = os.environ.get('SOPORTE_EMAIL', '') or EMAIL_HOST_USER or DEFAULT_FROM_EMAIL
+
 # ── Login / Logout ──
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
