@@ -145,7 +145,7 @@
             <i class="fa-solid fa-box"></i> Listos <span class="count">{{ conteos.listo }}</span>
         </a>
         <a href="?estado=entregado" class="tab {% if filtro == 'entregado' %}active{% endif %}">
-            <i class="fa-solid fa-box-open"></i> Entregados <span class="count">{{ conteos.entregado }}</span>
+            <i class="fa-solid fa-box-open"></i> Retirados <span class="count">{{ conteos.entregado }}</span>
         </a>
         <a href="?estado=cancelado" class="tab {% if filtro == 'cancelado' %}active{% endif %}">
             <i class="fa-solid fa-ban"></i> Cancelados <span class="count">{{ conteos.cancelado }}</span>
@@ -166,7 +166,7 @@
         <div class="pedido-head">
             <span class="pedido-id">Pedido #{{ ped.id }}</span>
             <span class="pedido-fecha"><i class="fa-regular fa-calendar"></i> {{ ped.fecha }} · {{ ped.tipo }}</span>
-            <span class="estado e-{{ ped.estado }}">{{ ped.estado }}</span>
+            <span class="estado e-{{ ped.estado }}">{% if ped.estado == 'entregado' %}retirado{% else %}{{ ped.estado }}{% endif %}</span>
             <span class="pedido-total">${{ ped.total }}</span>
         </div>
 
@@ -218,7 +218,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="accion" value="listo">
                 <input type="hidden" name="volver_estado" value="{{ filtro }}">
-                <button class="btn-accion b-listo"><i class="fa-solid fa-box"></i> Marcar listo para entrega</button>
+                <button class="btn-accion b-listo"><i class="fa-solid fa-box"></i> Marcar listo para retiro</button>
             </form>
             {% endif %}
             {% if ped.estado == 'listo' %}
@@ -226,7 +226,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="accion" value="entregar">
                 <input type="hidden" name="volver_estado" value="{{ filtro }}">
-                <button class="btn-accion b-entregar"><i class="fa-solid fa-box-open"></i> Marcar entregado</button>
+                <button class="btn-accion b-entregar"><i class="fa-solid fa-box-open"></i> Marcar retirado</button>
             </form>
             {% endif %}
             {% if ped.estado != 'entregado' %}

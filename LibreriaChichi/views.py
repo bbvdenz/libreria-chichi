@@ -1044,7 +1044,7 @@ def cambiar_estado_pedido(request, pedido_id):
         pedido.estado_pedido = 'entregado'
         pedido.save()
         enviar_correo_estado_pedido(pedido, 'entregado')
-        messages.success(request, f"📦 Pedido #{pedido.id_pedido} marcado como entregado. Se notificó al cliente por correo.")
+        messages.success(request, f"📦 Pedido #{pedido.id_pedido} marcado como retirado. Se notificó al cliente por correo.")
 
     elif accion == 'cancelar':
         motivo = (request.POST.get('motivo', '') or '').strip() or None

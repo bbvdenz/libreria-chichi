@@ -89,7 +89,7 @@ def enviar_correo_estado_pedido(pedido, nuevo_estado, motivo=None):
             f"Hola {nombre},\n\n"
             f"¡Buenas noticias! Confirmamos tu pedido #{pedido.id_pedido} y ya lo estamos preparando.\n\n"
             f"Detalle:\n{resumen}\n\nTotal: ${total}\n\n"
-            f"Te avisaremos otra vez cuando esté listo para la entrega.\n\n"
+            f"Te avisaremos otra vez cuando esté listo para retiro.\n\n"
             f"Un saludo,\nEquipo Librería Chichi"
         )
     elif nuevo_estado == 'listo':
@@ -103,20 +103,20 @@ def enviar_correo_estado_pedido(pedido, nuevo_estado, motivo=None):
             extra += f"🕒 Horario: {horario}\n"
         if telefono:
             extra += f"📞 Dudas: {telefono}\n"
-        asunto = f"Tu pedido #{pedido.id_pedido} está listo para la entrega 📦 — Librería Chichi"
+        asunto = f"Tu pedido #{pedido.id_pedido} está listo para retiro 📦 — Librería Chichi"
         cuerpo = (
             f"Hola {nombre},\n\n"
-            f"¡Tu pedido #{pedido.id_pedido} ya está listo para la entrega/retiro!\n\n"
+            f"¡Tu pedido #{pedido.id_pedido} ya está listo para retiro!\n\n"
             f"{extra}\n"
             f"Detalle:\n{resumen}\n\nTotal: ${total}\n\n"
-            f"Te esperamos. Cuando lo recibas, lo marcaremos como entregado.\n\n"
+            f"Te esperamos. Cuando pases a retirarlo, lo marcaremos como retirado.\n\n"
             f"Un saludo,\nEquipo Librería Chichi"
         )
     elif nuevo_estado == 'entregado':
-        asunto = f"Tu pedido #{pedido.id_pedido} fue entregado 📦 — Librería Chichi"
+        asunto = f"Tu pedido #{pedido.id_pedido} fue retirado 📦 — Librería Chichi"
         cuerpo = (
             f"Hola {nombre},\n\n"
-            f"Tu pedido #{pedido.id_pedido} fue marcado como ENTREGADO. ¡Esperamos que lo disfrutes!\n\n"
+            f"Tu pedido #{pedido.id_pedido} fue marcado como RETIRADO. ¡Esperamos que lo disfrutes!\n\n"
             f"Detalle:\n{resumen}\n\nTotal: ${total}\n\n"
             f"Gracias por comprar en Librería Chichi. Cualquier consulta, escríbenos.\n\n"
             f"Un saludo,\nEquipo Librería Chichi"
