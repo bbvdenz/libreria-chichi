@@ -16,9 +16,17 @@ from .utils import enviar_correo_estado_pedido
 from decimal import Decimal, InvalidOperation
 from django.db.models import Q, ProtectedError, RestrictedError
 import re
+import unicodedata
 
 
 # ── Generación automática de SKU ────────────────────────────────────────────
+def _sin_acentos(texto):
+    """Devuelve el texto en minúsculas y sin tildes/acentos.
+    Sirve para buscar 'lapiz' y encontrar 'Lápiz'."""
+    t = unicodedata.normalize('NFD', (texto or ''))
+    return ''.join(c for c in t if unicodedata.category(c) != 'Mn').lower()
+
+
 PREFIJOS_SKU = {
     'PINTURA Y COLOR': 'PIN',
     'PAPEL Y CARTULINA': 'PAP',
@@ -533,12 +541,15 @@ def panel_admin(request):
         return redirect('panel_pos')
 
     busqueda = request.GET.get('q', '').strip()
-    productos = Producto.objects.all()
+    # Solo productos activos: los "retirados" (con ventas) no llenan el panel.
+    productos = Producto.objects.filter(activo=True)
     if busqueda:
-        productos = productos.filter(
-            Q(nombre_producto__icontains=busqueda) |
-            Q(sku__icontains=busqueda)
-        )
+        objetivo = _sin_acentos(busqueda)
+        productos = [
+            p for p in productos
+            if objetivo in _sin_acentos(p.nombre_producto)
+            or objetivo in _sin_acentos(p.sku or '')
+        ]
 
     for p in productos:
         try:
@@ -559,7 +570,7 @@ def panel_admin(request):
     # buscador en vivo del panel "Actualizar / Reabastecer".
     productos_actualizar = []
     if not es_bodeguero:
-        for p in Producto.objects.exclude(sku__isnull=True).exclude(sku=''):
+        for p in Producto.objects.filter(activo=True).exclude(sku__isnull=True).exclude(sku=''):
             try:
                 st = Stock.objects.get(id_producto=p)
                 stock_val = st.cantidad_disponible

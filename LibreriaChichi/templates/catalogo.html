@@ -421,8 +421,12 @@
 
     // ── Coincidencia por INICIO del nombre (como autocompletar de Google) ──
     // "cua" coincide con "Cuadernos"; "d" NO trae "Acrílicos de" (no empieza con d).
+    function normalizaTxt(s) {
+        return (s || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
     function coincidePalabra(nombre, texto) {
-        return (nombre || '').toLowerCase().startsWith(texto);
+        // Ignora mayúsculas Y acentos: "lapiz" encuentra "Lápiz".
+        return normalizaTxt(nombre).includes(normalizaTxt(texto));
     }
 
     function filtrarCatalogoVivo() {

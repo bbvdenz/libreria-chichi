@@ -720,6 +720,9 @@
         campo.value = skus[sel.value] || '(automático)';
     }
     document.addEventListener('DOMContentLoaded', actualizarSkuPreview);
+    function normalizaTxt(s) {
+        return (s || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
     function filtrarSku() {
         const inputEl = document.getElementById('buscarSku');
         if (!inputEl) return;
@@ -732,11 +735,12 @@
 
         let encontrados = 0;
         items.forEach(item => {
-            const sku = (item.dataset.sku || '').toLowerCase();
-            const nombre = (item.dataset.nombre || '').toLowerCase();
+            const q = normalizaTxt(texto);
+            const sku = normalizaTxt(item.dataset.sku || '');
+            const nombre = normalizaTxt(item.dataset.nombre || '');
             const coincide =
-                sku.startsWith(texto) ||
-                nombre.startsWith(texto);
+                sku.includes(q) ||
+                nombre.includes(q);
             if (coincide) {
                 if (encontrados >= 12) return;
                 encontrados++;
@@ -777,11 +781,12 @@
         const filas = document.querySelectorAll('.fila-inventario');
         let visibles = 0;
         filas.forEach(fila => {
-            const sku = (fila.dataset.sku || '').toLowerCase();
-            const nombre = (fila.dataset.nombre || '').toLowerCase();
-            const cat = (fila.dataset.cat || '').toLowerCase();
-            const coincide = texto === '' ||
-                sku.startsWith(texto) || nombre.startsWith(texto) || cat.startsWith(texto);
+            const q = normalizaTxt(texto);
+            const sku = normalizaTxt(fila.dataset.sku || '');
+            const nombre = normalizaTxt(fila.dataset.nombre || '');
+            const cat = normalizaTxt(fila.dataset.cat || '');
+            const coincide = q === '' ||
+                sku.includes(q) || nombre.includes(q) || cat.includes(q);
             if (coincide) {
                 fila.style.display = '';
                 visibles++;
