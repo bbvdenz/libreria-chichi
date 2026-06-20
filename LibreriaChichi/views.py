@@ -491,21 +491,28 @@ def procesar_pago(request):
             else:
                 estado_txt = "Estamos revisando tu compra y te avisaremos cuando esté lista."
             try:
-                send_mail(
-                    subject=f'Comprobante de tu pedido #{nuevo_pedido.id_pedido} — Librería Chichi',
-                    message=(
-                        f"Hola {getattr(cliente, 'nombre', '') or 'cliente'},\n\n"
-                        f"¡Gracias por tu compra! Recibimos tu pedido #{nuevo_pedido.id_pedido}.\n\n"
-                        f"Detalle:\n{resumen}\n\n"
-                        f"Total: ${total}\n"
-                        f"Método de pago: {metodo}\n\n"
-                        f"{estado_txt}\n\n"
-                        f"Un saludo,\nEquipo Librería Chichi"
-                    ),
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[email_cliente],
-                    fail_silently=True,
+                from django.core.mail import EmailMessage
+                pdf = construir_boleta_pdf(nuevo_pedido)
+                nota_boleta = "Adjuntamos tu boleta en PDF.\n\n" if pdf else ""
+                cuerpo = (
+                    f"Hola {getattr(cliente, 'nombre', '') or 'cliente'},\n\n"
+                    f"¡Gracias por tu compra! Recibimos tu pedido #{nuevo_pedido.id_pedido}.\n\n"
+                    f"Detalle:\n{resumen}\n\n"
+                    f"Total: ${total}\n"
+                    f"Método de pago: {metodo}\n\n"
+                    f"{estado_txt}\n\n"
+                    f"{nota_boleta}"
+                    f"Un saludo,\nEquipo Librería Chichi"
                 )
+                correo = EmailMessage(
+                    subject=f'Comprobante de tu pedido #{nuevo_pedido.id_pedido} — Librería Chichi',
+                    body=cuerpo,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    to=[email_cliente],
+                )
+                if pdf:
+                    correo.attach(f"boleta_pedido_{nuevo_pedido.id_pedido}.pdf", pdf, 'application/pdf')
+                correo.send(fail_silently=True)
             except Exception as e:
                 print(f"⚠️ No se pudo enviar comprobante de compra: {e}")
 
@@ -1060,13 +1067,9 @@ def _formato_clp(valor):
     return f"{int(valor):,}".replace(",", ".")
 
 
-def generar_boleta(request, pedido_id):
-    if not permisos.puede_generar_boleta(request.user):
-        messages.error(request, "No tienes acceso a las boletas.")
-        return redirect('inicio' if not permisos.es_backoffice(request.user) else 'panel_admin')
-
-    pedido = get_object_or_404(Pedido, pk=pedido_id)
-
+def construir_boleta_pdf(pedido):
+    """Construye el PDF de la boleta de un pedido y devuelve los bytes.
+    Devuelve None si no está instalada la librería 'reportlab'."""
     try:
         from reportlab.lib.pagesizes import A4
         from reportlab.lib.units import mm
@@ -1076,14 +1079,8 @@ def generar_boleta(request, pedido_id):
             SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
         )
     except ImportError:
-        messages.error(
-            request,
-            "Falta la librería 'reportlab' para generar boletas. "
-            "Instálala con: pip install reportlab"
-        )
-        return redirect('panel_pedidos')
+        return None
 
-    from django.http import HttpResponse
     import io
 
     detalles = DetallePedido.objects.select_related('id_producto').filter(id_pedido=pedido)
@@ -1192,8 +1189,27 @@ def generar_boleta(request, pedido_id):
 
     doc.build(elems)
     buffer.seek(0)
+    return buffer.getvalue()
 
-    response = HttpResponse(buffer, content_type='application/pdf')
+
+def generar_boleta(request, pedido_id):
+    """Vista: descarga la boleta en PDF (solo backoffice)."""
+    if not permisos.puede_generar_boleta(request.user):
+        messages.error(request, "No tienes acceso a las boletas.")
+        return redirect('inicio' if not permisos.es_backoffice(request.user) else 'panel_admin')
+
+    pedido = get_object_or_404(Pedido, pk=pedido_id)
+    pdf = construir_boleta_pdf(pedido)
+    if pdf is None:
+        messages.error(
+            request,
+            "Falta la librería 'reportlab' para generar boletas. "
+            "Instálala con: pip install reportlab"
+        )
+        return redirect('panel_pedidos')
+
+    from django.http import HttpResponse
+    response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="boleta_pedido_{pedido.id_pedido}.pdf"'
     return response
 
@@ -1749,3 +1765,76 @@ def soporte(request):
         return redirect('soporte')
 
     return render(request, 'soporte.html', {})
+
+
+# ── 14. REPORTES DE VENTAS (descargar / enviar por correo) ───────────────────
+def descargar_reporte(request):
+    """Descarga el Excel de ventas de una semana.
+    ?fecha=YYYY-MM-DD elige la semana (cualquier día de esa semana); sin
+    parámetro, usa la semana actual."""
+    if not permisos.puede_ver_reportes(request.user):
+        messages.error(request, "No tienes permiso para ver los reportes.")
+        return redirect('inicio' if not permisos.es_backoffice(request.user) else 'panel_admin')
+
+    from datetime import datetime
+    fecha = None
+    fstr = request.GET.get('fecha', '').strip()
+    if fstr:
+        try:
+            fecha = datetime.strptime(fstr, '%Y-%m-%d').date()
+        except ValueError:
+            fecha = None
+
+    from .reportes import generar_excel
+    nombre, contenido = generar_excel(fecha)
+    if contenido is None:
+        messages.error(request, "Falta la librería 'openpyxl' para generar el Excel.")
+        return redirect('panel_ventas')
+
+    from django.http import HttpResponse
+    resp = HttpResponse(
+        contenido,
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    resp['Content-Disposition'] = f'attachment; filename="{nombre}"'
+    return resp
+
+
+def enviar_reporte(request):
+    """Envía el reporte de ventas por correo al buzón configurado (REPORTE_EMAIL).
+
+    Se puede gatillar de dos formas:
+      • Un administrador con permiso de reportes (botón del panel).
+      • Un servicio programador externo, con ?token=<REPORTE_TOKEN> en la URL
+        (así se logra el envío automático semanal).
+    ?fecha=YYYY-MM-DD elige la semana; sin parámetro, la semana actual."""
+    token = request.GET.get('token', '')
+    token_ok = bool(getattr(settings, 'REPORTE_TOKEN', '')) and token == settings.REPORTE_TOKEN
+
+    if not token_ok and not permisos.puede_ver_reportes(request.user):
+        messages.error(request, "No tienes permiso para enviar reportes.")
+        return redirect('inicio' if not permisos.es_backoffice(request.user) else 'panel_admin')
+
+    from datetime import datetime
+    fecha = None
+    fstr = request.GET.get('fecha', '').strip()
+    if fstr:
+        try:
+            fecha = datetime.strptime(fstr, '%Y-%m-%d').date()
+        except ValueError:
+            fecha = None
+
+    destino = getattr(settings, 'REPORTE_EMAIL', '') or getattr(settings, 'DEFAULT_FROM_EMAIL', '')
+    from .reportes import enviar_reporte_correo
+    ok = enviar_reporte_correo(destino, fecha)
+
+    # Si vino del programador externo (token), responder JSON sin redirigir.
+    if token_ok:
+        from django.http import JsonResponse
+        return JsonResponse({'ok': bool(ok), 'destinatario': destino})
+
+    if ok:
+        messages.success(request, f"📧 Reporte enviado a {destino}.")
+    else:
+        messages.error(request, "No se pudo enviar el reporte. Revisa la configuración de correo.")
+    return redirect('panel_ventas')

@@ -114,6 +114,19 @@
     <h1 class="title">Ventas y <span>Ganancias</span></h1>
     <p class="sub">Resumen de lo vendido. Una venta cuenta cuando el pedido está confirmado o entregado.</p>
 
+    <!-- Reportes: descargar / enviar por correo -->
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 24px;">
+        <a href="{% url 'descargar_reporte' %}"
+           style="display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:100px;font-weight:700;font-size:0.9rem;text-decoration:none;color:#fff;background:linear-gradient(135deg,var(--magenta),var(--violet));box-shadow:0 6px 18px rgba(232,0,125,0.3);">
+            <i class="fa-solid fa-file-excel"></i> Descargar Excel (esta semana)
+        </a>
+        <a href="{% url 'enviar_reporte' %}"
+           onclick="return confirm('¿Enviar el reporte de ventas de esta semana a tu correo?');"
+           style="display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:100px;font-weight:700;font-size:0.9rem;text-decoration:none;color:var(--text);background:transparent;border:1.5px solid rgba(255,255,255,0.2);">
+            <i class="fa-solid fa-paper-plane"></i> Enviar a mi correo
+        </a>
+    </div>
+
     <!-- Tarjetas resumen -->
     <div class="cards">
         <div class="card">
@@ -250,7 +263,7 @@
             <h3><i class="fa-solid fa-calendar-week" style="color:var(--blue);"></i> Semana a semana</h3>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Semana</th><th class="num">Ventas</th><th class="num">Prod.</th><th class="num">Ingresos</th></tr></thead>
+                    <thead><tr><th>Semana</th><th class="num">Ventas</th><th class="num">Prod.</th><th class="num">Ingresos</th><th class="num">Excel</th></tr></thead>
                     <tbody>
                         {% for s in semanas %}
                         <tr>
@@ -261,9 +274,10 @@
                             <td class="num">{{ s.n_ventas }}</td>
                             <td class="num">{{ s.unidades }}</td>
                             <td class="num money">${{ s.ingresos_fmt }}</td>
+                            <td class="num"><a href="{% url 'descargar_reporte' %}?fecha={{ s.inicio|date:'Y-m-d' }}" title="Descargar Excel de esta semana" style="color:var(--violet-light);"><i class="fa-solid fa-download"></i></a></td>
                         </tr>
                         {% empty %}
-                        <tr><td colspan="4" class="vacio">Aún no hay ventas registradas.</td></tr>
+                        <tr><td colspan="5" class="vacio">Aún no hay ventas registradas.</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>

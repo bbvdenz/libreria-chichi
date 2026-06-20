@@ -160,6 +160,15 @@ DEFAULT_FROM_EMAIL = os.environ.get(
 # Por defecto, el mismo buzón que envía (tu correo configurado arriba).
 SOPORTE_EMAIL = os.environ.get('SOPORTE_EMAIL', '') or EMAIL_HOST_USER or DEFAULT_FROM_EMAIL
 
+# Correo donde llega el reporte semanal de ventas (por defecto, tu buzón).
+REPORTE_EMAIL = os.environ.get('REPORTE_EMAIL', '') or SOPORTE_EMAIL
+
+# Token secreto para que un programador externo (ej. cron-job.org) dispare el
+# envío automático del reporte llamando a:
+#   /gestion/reporte/enviar/?token=<REPORTE_TOKEN>
+# Si queda vacío, esa vía queda desactivada (solo se envía estando logueado).
+REPORTE_TOKEN = os.environ.get('REPORTE_TOKEN', '')
+
 # ── Login / Logout ──
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'

@@ -29,6 +29,8 @@ urlpatterns = [
     path('gestion/pedido/<int:pedido_id>/estado/', views.cambiar_estado_pedido, name='cambiar_estado_pedido'),
     path('gestion/pedido/<int:pedido_id>/boleta/', views.generar_boleta, name='generar_boleta'),
     path('gestion/ventas/', views.panel_ventas, name='panel_ventas'),
+    path('gestion/reporte/descargar/', views.descargar_reporte, name='descargar_reporte'),
+    path('gestion/reporte/enviar/', views.enviar_reporte, name='enviar_reporte'),
     path('gestion/pos/', views.panel_pos, name='panel_pos'),
     path('gestion/pos/registrar/', views.registrar_venta_pos, name='registrar_venta_pos'),
     # Panel de transferencias (staff)
