@@ -283,8 +283,21 @@ def agregar_al_carrito(request, producto_id):
             messages.error(request, f"⚠️ {producto.nombre_producto} no tiene stock registrado.")
             return redirect(request.META.get('HTTP_REFERER', '/'))
 
-        carrito = request.session.get('carrito', {})
         id_str = str(producto_id)
+
+        # ── Compra rápida ("Comprar Ahora"): NO toca el carrito permanente.
+        # Se guarda aparte y se compra solo ese producto. Si el cliente vuelve
+        # atrás sin pagar, el carrito queda intacto y no se acumula nada.
+        if accion == 'comprar':
+            if cantidad > stock_disponible:
+                messages.error(request, f"❌ Solo quedan {stock_disponible} unidades disponibles.")
+                return redirect(request.META.get('HTTP_REFERER', '/'))
+            request.session['comprar_ahora'] = {id_str: cantidad}
+            request.session.modified = True
+            return redirect('procesar_pago')
+
+        # ── Agregar al carrito normal ──
+        carrito = request.session.get('carrito', {})
         nueva_cantidad = carrito.get(id_str, 0) + cantidad
 
         if nueva_cantidad > stock_disponible:
@@ -293,9 +306,9 @@ def agregar_al_carrito(request, producto_id):
 
         carrito[id_str] = nueva_cantidad
         request.session['carrito'] = carrito
-
-        if accion == 'comprar':
-            return redirect('procesar_pago')
+        # Si había una compra rápida pendiente, se descarta (ahora usa el carrito).
+        request.session['comprar_ahora'] = {}
+        request.session.modified = True
 
         messages.success(request, f"✅ {cantidad} x {producto.nombre_producto} agregado al carrito.")
         return redirect(request.META.get('HTTP_REFERER', '/'))
@@ -304,6 +317,10 @@ def agregar_al_carrito(request, producto_id):
 
 
 def ver_carrito(request):
+    # El cliente usa el carrito normal: descartar cualquier compra rápida pendiente.
+    if request.session.get('comprar_ahora'):
+        request.session['comprar_ahora'] = {}
+        request.session.modified = True
     carrito = request.session.get('carrito', {})
     productos_carrito = []
     total = 0
@@ -351,7 +368,11 @@ def modificar_carrito(request, producto_id, accion):
 
 # ── 6. PAGO ──────────────────────────────────────────────────────────────────
 def procesar_pago(request):
-    carrito = request.session.get('carrito', {})
+    # Si hay una "compra rápida" pendiente, se compra SOLO ese producto
+    # (sin tocar el carrito). Si no, se usa el carrito normal.
+    comprar_ahora = request.session.get('comprar_ahora') or {}
+    es_compra_ahora = bool(comprar_ahora)
+    carrito = comprar_ahora if es_compra_ahora else request.session.get('carrito', {})
     if not carrito:
         messages.warning(request, "Tu carrito está vacío.")
         return redirect('catalogo')
@@ -462,7 +483,11 @@ def procesar_pago(request):
             except Exception as e:
                 print(f"⚠️ Nota Transferencia: {e}")
 
-        request.session['carrito'] = {}
+        # Limpiar lo que se compró: si fue compra rápida, solo eso (el carrito
+        # del cliente queda intacto); si no, se vacía el carrito.
+        request.session['comprar_ahora'] = {}
+        if not es_compra_ahora:
+            request.session['carrito'] = {}
         request.session.modified = True
         if es_transferencia:
             messages.success(
