@@ -132,15 +132,19 @@
                 <div class="card-title"><i class="fa-solid fa-circle-info"></i> Contacto</div>
                 <div class="contact-item">
                     <div class="contact-ico"><i class="fa-solid fa-envelope"></i></div>
-                    <div><div class="contact-label">Correo</div><div class="contact-val">contacto@libreriachichi.cl</div></div>
+                    <div><div class="contact-label">Correo</div><div class="contact-val">{{ tienda.email }}</div></div>
                 </div>
                 <div class="contact-item">
                     <div class="contact-ico"><i class="fa-brands fa-whatsapp"></i></div>
-                    <div><div class="contact-label">WhatsApp</div><div class="contact-val">+56 9 1234 5678</div></div>
+                    <div><div class="contact-label">WhatsApp / Teléfono</div><div class="contact-val">{{ tienda.telefono }}</div></div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-ico"><i class="fa-solid fa-location-dot"></i></div>
+                    <div><div class="contact-label">Dirección (retiros)</div><div class="contact-val">{{ tienda.direccion }}</div></div>
                 </div>
                 <div class="contact-item">
                     <div class="contact-ico"><i class="fa-solid fa-clock"></i></div>
-                    <div><div class="contact-label">Horario</div><div class="contact-val">Lun a Vie · 9:00 a 19:00</div></div>
+                    <div><div class="contact-label">Horario</div><div class="contact-val">{{ tienda.horario }}</div></div>
                 </div>
             </div>
 

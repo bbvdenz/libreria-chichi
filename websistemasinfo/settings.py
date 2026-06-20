@@ -169,6 +169,15 @@ REPORTE_EMAIL = os.environ.get('REPORTE_EMAIL', '') or SOPORTE_EMAIL
 # Si queda vacío, esa vía queda desactivada (solo se envía estando logueado).
 REPORTE_TOKEN = os.environ.get('REPORTE_TOKEN', '')
 
+# ── Datos de la tienda (se usan en la boleta PDF, los correos y la página de soporte) ──
+TIENDA_NOMBRE = 'Librería Chichi'
+TIENDA_RUT = '76.543.210-K'          # ← cambia esto por el RUT real de la librería
+TIENDA_GIRO = 'Venta de artículos de librería y papelería'
+TIENDA_DIRECCION = 'Carlos Dittborn #69, Lo Espejo'
+TIENDA_TELEFONO = '+56 9 3178 2338'
+TIENDA_EMAIL = 'benjitaquiroz45@gmail.com'
+TIENDA_HORARIO = 'Lun a Vie · 9:00 a 19:00'
+
 # ── Login / Logout ──
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'

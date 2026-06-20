@@ -92,6 +92,26 @@ def enviar_correo_estado_pedido(pedido, nuevo_estado, motivo=None):
             f"Te avisaremos otra vez cuando esté listo para la entrega.\n\n"
             f"Un saludo,\nEquipo Librería Chichi"
         )
+    elif nuevo_estado == 'listo':
+        direccion = getattr(settings, 'TIENDA_DIRECCION', '')
+        horario = getattr(settings, 'TIENDA_HORARIO', '')
+        telefono = getattr(settings, 'TIENDA_TELEFONO', '')
+        extra = ""
+        if direccion:
+            extra += f"📍 Retíralo en: {direccion}\n"
+        if horario:
+            extra += f"🕒 Horario: {horario}\n"
+        if telefono:
+            extra += f"📞 Dudas: {telefono}\n"
+        asunto = f"Tu pedido #{pedido.id_pedido} está listo para la entrega 📦 — Librería Chichi"
+        cuerpo = (
+            f"Hola {nombre},\n\n"
+            f"¡Tu pedido #{pedido.id_pedido} ya está listo para la entrega/retiro!\n\n"
+            f"{extra}\n"
+            f"Detalle:\n{resumen}\n\nTotal: ${total}\n\n"
+            f"Te esperamos. Cuando lo recibas, lo marcaremos como entregado.\n\n"
+            f"Un saludo,\nEquipo Librería Chichi"
+        )
     elif nuevo_estado == 'entregado':
         asunto = f"Tu pedido #{pedido.id_pedido} fue entregado 📦 — Librería Chichi"
         cuerpo = (

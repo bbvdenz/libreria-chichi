@@ -58,6 +58,7 @@
         .estado { padding:4px 12px; border-radius:100px; font-size:0.74rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; }
         .e-pendiente { background:rgba(245,158,11,0.13); color:var(--gold); border:1px solid rgba(245,158,11,0.3); }
         .e-confirmado { background:rgba(59,130,246,0.13); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); }
+        .e-listo { background:rgba(124,58,237,0.16); color:#a855f7; border:1px solid rgba(124,58,237,0.35); }
         .e-entregado { background:rgba(16,185,129,0.13); color:#34d399; border:1px solid rgba(16,185,129,0.3); }
         .e-cancelado { background:rgba(239,68,68,0.13); color:#f87171; border:1px solid rgba(239,68,68,0.3); }
         .pedido-total { margin-left:auto; font-size:1.25rem; font-weight:800; color:#fff; }
@@ -76,6 +77,7 @@
         .btn-accion { border:none; border-radius:10px; padding:9px 16px; font-family:'DM Sans',sans-serif; font-weight:700; font-size:0.84rem; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:all 0.2s; }
         .btn-accion:hover { transform:translateY(-1px); }
         .b-confirmar { background:linear-gradient(135deg,var(--blue),#60a5fa); color:#fff; }
+        .b-listo { background:linear-gradient(135deg,var(--violet),#a855f7); color:#fff; }
         .b-entregar { background:linear-gradient(135deg,var(--green),#34d399); color:#000; }
         .b-cancelar { background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.3); }
         .b-espera { background:rgba(245,158,11,0.13); color:var(--gold); border:1px solid rgba(245,158,11,0.35); text-decoration:none; }
@@ -138,6 +140,9 @@
         </a>
         <a href="?estado=confirmado" class="tab {% if filtro == 'confirmado' %}active{% endif %}">
             <i class="fa-solid fa-check"></i> Confirmados <span class="count">{{ conteos.confirmado }}</span>
+        </a>
+        <a href="?estado=listo" class="tab {% if filtro == 'listo' %}active{% endif %}">
+            <i class="fa-solid fa-box"></i> Listos <span class="count">{{ conteos.listo }}</span>
         </a>
         <a href="?estado=entregado" class="tab {% if filtro == 'entregado' %}active{% endif %}">
             <i class="fa-solid fa-box-open"></i> Entregados <span class="count">{{ conteos.entregado }}</span>
@@ -209,6 +214,14 @@
                 {% endif %}
             {% endif %}
             {% if ped.estado == 'confirmado' %}
+            <form method="POST" action="{% url 'cambiar_estado_pedido' ped.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="accion" value="listo">
+                <input type="hidden" name="volver_estado" value="{{ filtro }}">
+                <button class="btn-accion b-listo"><i class="fa-solid fa-box"></i> Marcar listo para entrega</button>
+            </form>
+            {% endif %}
+            {% if ped.estado == 'listo' %}
             <form method="POST" action="{% url 'cambiar_estado_pedido' ped.id %}">
                 {% csrf_token %}
                 <input type="hidden" name="accion" value="entregar">

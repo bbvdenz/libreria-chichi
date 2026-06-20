@@ -909,7 +909,7 @@ def iniciar_sesion_admin(request):
     return render(request, 'login_admin.html', {})
 
 # ── 8. PANEL DE PEDIDOS / ENVÍOS ─────────────────────────────────────────────
-ESTADOS_PEDIDO = ['pendiente', 'confirmado', 'entregado', 'cancelado']
+ESTADOS_PEDIDO = ['pendiente', 'confirmado', 'listo', 'entregado', 'cancelado']
 
 
 def panel_pedidos(request):
@@ -990,7 +990,7 @@ def cambiar_estado_pedido(request, pedido_id):
     transf_pendiente = pedido.transferencias.filter(
         estado=Transferencia.ESTADO_PENDIENTE
     ).exists()
-    if accion in ('confirmar', 'entregar') and transf_pendiente:
+    if accion in ('confirmar', 'entregar', 'listo') and transf_pendiente:
         messages.error(
             request,
             "⚠️ Este pedido se pagó por transferencia y aún no la validas. "
@@ -1008,6 +1008,12 @@ def cambiar_estado_pedido(request, pedido_id):
         pedido.save()
         enviar_correo_estado_pedido(pedido, 'confirmado')
         messages.success(request, f"✅ Pedido #{pedido.id_pedido} confirmado. Se notificó al cliente por correo.")
+
+    elif accion == 'listo':
+        pedido.estado_pedido = 'listo'
+        pedido.save()
+        enviar_correo_estado_pedido(pedido, 'listo')
+        messages.success(request, f"📦 Pedido #{pedido.id_pedido} marcado como listo para entrega. Se notificó al cliente por correo.")
 
     elif accion == 'entregar':
         pedido.estado_pedido = 'entregado'
@@ -1054,11 +1060,11 @@ def cambiar_estado_pedido(request, pedido_id):
 # ── 9. BOLETA (PDF) ──────────────────────────────────────────────────────────
 # Datos del local para la boleta. Edítalos con los datos reales de la librería.
 DATOS_LOCAL = {
-    'nombre': 'Librería Chichi',
-    'rut': '76.543.210-K',
-    'giro': 'Venta de artículos de librería y papelería',
-    'direccion': 'Av. Siempre Viva 123, Santiago',
-    'telefono': '+56 9 1234 5678',
+    'nombre': getattr(settings, 'TIENDA_NOMBRE', 'Librería Chichi'),
+    'rut': getattr(settings, 'TIENDA_RUT', ''),
+    'giro': getattr(settings, 'TIENDA_GIRO', ''),
+    'direccion': getattr(settings, 'TIENDA_DIRECCION', ''),
+    'telefono': getattr(settings, 'TIENDA_TELEFONO', ''),
 }
 
 
@@ -1764,7 +1770,14 @@ def soporte(request):
         messages.success(request, "✅ ¡Mensaje enviado! Te responderemos a tu correo lo antes posible.")
         return redirect('soporte')
 
-    return render(request, 'soporte.html', {})
+    return render(request, 'soporte.html', {
+        'tienda': {
+            'email': getattr(settings, 'TIENDA_EMAIL', ''),
+            'telefono': getattr(settings, 'TIENDA_TELEFONO', ''),
+            'direccion': getattr(settings, 'TIENDA_DIRECCION', ''),
+            'horario': getattr(settings, 'TIENDA_HORARIO', ''),
+        },
+    })
 
 
 # ── 14. REPORTES DE VENTAS (descargar / enviar por correo) ───────────────────
