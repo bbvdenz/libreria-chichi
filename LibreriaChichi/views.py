@@ -13,7 +13,7 @@ from .models import Transferencia
 from .forms import RegistroClienteForm
 from . import permisos
 from decimal import Decimal, InvalidOperation
-from django.db.models import Q
+from django.db.models import Q, ProtectedError, RestrictedError
 import re
 
 
@@ -65,7 +65,7 @@ def _siguiente_sku(categoria):
 # ── 0. PÁGINA BASE ──────────────────────────────────────────────────────────
 def inicio_base(request):
     from .models import Stock
-    productos_destacados = Producto.objects.all()[:12]
+    productos_destacados = Producto.objects.filter(activo=True)[:12]
     destacados = []
     for p in productos_destacados:
         try:
@@ -115,6 +115,27 @@ def registro_usuario(request):
             )
             login(request, user)
             messages.success(request, f"¡Bienvenido {user.first_name}! Tu cuenta fue creada exitosamente.")
+
+            # ── Correo de bienvenida ──
+            # fail_silently=True: si el correo falla, NO rompemos el registro.
+            if email_usuario:
+                try:
+                    send_mail(
+                        subject='¡Bienvenido a Librería Chichi! 📚',
+                        message=(
+                            f"Hola {user.first_name},\n\n"
+                            f"¡Gracias por registrarte en Librería Chichi!\n"
+                            f"Tu cuenta fue creada correctamente con el RUT {rut_usuario}.\n\n"
+                            f"Ya puedes explorar nuestro catálogo y realizar tus compras.\n\n"
+                            f"Un saludo,\nEquipo Librería Chichi"
+                        ),
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[email_usuario],
+                        fail_silently=True,
+                    )
+                except Exception as e:
+                    print(f"⚠️ No se pudo enviar correo de bienvenida: {e}")
+
             if request.session.get('carrito'):
                 return redirect('procesar_pago')
             return redirect('inicio')
@@ -171,7 +192,10 @@ def recuperar_password(request):
                     ),
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[email],
-                    fail_silently=True,
+                    # fail_silently=False mientras configuras: si el SMTP falla,
+                    # verás el error en los logs de Azure en vez de un "éxito"
+                    # silencioso. Cuando ya funcione, puedes ponerlo en True.
+                    fail_silently=False,
                 )
         messages.success(request, "Si el correo existe en nuestro sistema, recibirás el enlace.")
         return redirect('login')
@@ -209,7 +233,7 @@ def catalogo_publico(request):
     categoria_filtro = request.GET.get('cat', '').strip().upper()
     busqueda = request.GET.get('q', '').strip()
 
-    productos = Producto.objects.all()
+    productos = Producto.objects.filter(activo=True)
 
     # ── Buscador (lupa) para el cliente: solo por NOMBRE (el SKU es interno) ──
     if busqueda:
@@ -439,6 +463,43 @@ def procesar_pago(request):
             )
         else:
             messages.success(request, f"🎉 ¡Pedido #{nuevo_pedido.id_pedido} creado! Gracias por tu compra.")
+
+        # ── Correo de comprobante / seguimiento de compra ──
+        # fail_silently=True: la compra ya se guardó; un fallo de correo no debe
+        # romper la confirmación al cliente.
+        email_cliente = getattr(cliente, 'email', None)
+        if email_cliente:
+            detalles = DetallePedido.objects.filter(id_pedido=nuevo_pedido)
+            resumen = "\n".join(
+                f"  - {d.cantidad} x {d.id_producto.nombre_producto} (${d.precio_unitario} c/u)"
+                for d in detalles
+            )
+            if es_transferencia:
+                estado_txt = (
+                    "Tu pedido quedó PENDIENTE. Realiza la transferencia y el local la "
+                    "confirmará pronto; te avisaremos por correo cuando esté lista."
+                )
+            else:
+                estado_txt = "Estamos revisando tu compra y te avisaremos cuando esté lista."
+            try:
+                send_mail(
+                    subject=f'Comprobante de tu pedido #{nuevo_pedido.id_pedido} — Librería Chichi',
+                    message=(
+                        f"Hola {getattr(cliente, 'nombre', '') or 'cliente'},\n\n"
+                        f"¡Gracias por tu compra! Recibimos tu pedido #{nuevo_pedido.id_pedido}.\n\n"
+                        f"Detalle:\n{resumen}\n\n"
+                        f"Total: ${total}\n"
+                        f"Método de pago: {metodo}\n\n"
+                        f"{estado_txt}\n\n"
+                        f"Un saludo,\nEquipo Librería Chichi"
+                    ),
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[email_cliente],
+                    fail_silently=True,
+                )
+            except Exception as e:
+                print(f"⚠️ No se pudo enviar comprobante de compra: {e}")
+
         return redirect('inicio')
 
     cliente_datos = None
@@ -715,8 +776,34 @@ def admin_eliminar_producto(request, producto_id):
         return redirect('panel_admin')
     producto = get_object_or_404(Producto, pk=producto_id)
     nombre = producto.nombre_producto
-    producto.delete()
-    messages.success(request, f"🗑️ '{nombre}' eliminado.")
+
+    # Si el producto ya aparece en algún pedido, NO se puede borrar físicamente:
+    # la BD usa on_delete=RESTRICT en DetallePedido y lanzaría un error 500.
+    # En su lugar lo retiramos de la tienda (borrado lógico) y conservamos el
+    # historial de ventas.
+    if DetallePedido.objects.filter(id_producto=producto).exists():
+        producto.activo = False
+        producto.save()
+        messages.success(
+            request,
+            f"🗑️ '{nombre}' fue retirado de la tienda. Se conservó porque tiene "
+            f"pedidos asociados; ya no aparece en el catálogo."
+        )
+        return redirect('panel_admin')
+
+    # No tiene pedidos → se puede borrar de verdad. Aun así protegemos contra
+    # cualquier otra relación inesperada para no romper la página.
+    try:
+        producto.delete()
+        messages.success(request, f"🗑️ '{nombre}' eliminado.")
+    except (RestrictedError, ProtectedError):
+        producto.activo = False
+        producto.save()
+        messages.success(
+            request,
+            f"🗑️ '{nombre}' fue retirado de la tienda (tenía datos asociados; "
+            f"se conservó el historial)."
+        )
     return redirect('panel_admin')
 
 

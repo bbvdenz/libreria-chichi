@@ -130,18 +130,31 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ── Email ──────────────────────────────────────────────────────────────────
-# DESARROLLO: el email aparece en la consola de VS Code
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'Librería Chichi <noreply@libreriachichi.cl>'
+# La configuración se lee de variables de entorno.
+#   • En tu PC (sin variables): usa la consola → el correo aparece en la terminal.
+#   • En Azure: define EMAIL_BACKEND y las credenciales en
+#     App Service → Configuración → Configuración de la aplicación.
+#
+# Para enviar de verdad, define en Azure (como mínimo):
+#   EMAIL_BACKEND     = django.core.mail.backends.smtp.EmailBackend
+#   EMAIL_HOST_USER   = tucorreo@gmail.com
+#   EMAIL_HOST_PASSWORD = <contraseña de aplicación de 16 caracteres>
+EMAIL_BACKEND = os.environ.get(
+    'EMAIL_BACKEND',
+    'django.core.mail.backends.console.EmailBackend'  # respaldo: solo consola
+)
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 
-# PRODUCCIÓN con Gmail — cuando tengas la contraseña de aplicación,
-# comenta las 2 líneas de arriba y descomenta estas 6:
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'tucorreo@gmail.com'
-# EMAIL_HOST_PASSWORD = 'abcd efgh ijkl mnop'  # contraseña de aplicación Google
+# Remitente que ve el cliente. OJO con Gmail: reescribe el "From" a la cuenta
+# autenticada, así que si usas Gmail conviene que sea tu propio correo.
+DEFAULT_FROM_EMAIL = os.environ.get(
+    'DEFAULT_FROM_EMAIL',
+    EMAIL_HOST_USER or 'Librería Chichi <noreply@libreriachichi.cl>'
+)
 
 # ── Login / Logout ──
 LOGIN_URL = '/login/'
