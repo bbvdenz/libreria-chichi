@@ -133,6 +133,15 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', '2HA7Cf-3Xr1NjPxu4OoL4kVbp9s'),
 }
 
+# Configuración explícita para que cloudinary.uploader (subidas desde el panel) funcione
+import cloudinary
+cloudinary.config(
+    cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
+    api_key=CLOUDINARY_STORAGE['API_KEY'],
+    api_secret=CLOUDINARY_STORAGE['API_SECRET'],
+    secure=True,
+)
+
 # ── Archivos media ──
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

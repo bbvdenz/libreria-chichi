@@ -73,6 +73,29 @@ def _siguiente_sku(categoria):
 
 
 # ── 0. PÁGINA BASE ──────────────────────────────────────────────────────────
+def _subir_imagen_cloudinary(archivo, nombre_producto):
+    """Sube un archivo de imagen a Cloudinary y devuelve la URL segura.
+    Si algo falla o no hay archivo, devuelve None (no rompe el guardado).
+    """
+    if not archivo:
+        return None
+    try:
+        import cloudinary.uploader
+        # public_id corto y único basado en el nombre del producto
+        public_id = "chichi/" + "".join(
+            c if c.isalnum() else "_" for c in (nombre_producto or "producto").lower()
+        ).strip("_")
+        resultado = cloudinary.uploader.upload(
+            archivo,
+            public_id=public_id,
+            overwrite=True,
+            resource_type="image",
+        )
+        return resultado.get("secure_url")
+    except Exception:
+        return None
+
+
 def inicio_base(request):
     from .models import Stock
     productos_destacados = Producto.objects.filter(activo=True).select_related('stock')[:12]
@@ -656,12 +679,15 @@ def admin_agregar_producto(request):
 
     nombre = request.POST.get('nombre_producto', '').strip()
     categoria = request.POST.get('categoria', 'OTROS').strip()
-    imagen = request.FILES.get('imagen')
+    imagen_archivo = request.FILES.get('imagen')
     es_bodeguero = _es_bodeguero(request.user)
 
     if not nombre:
         messages.error(request, "El nombre del producto es obligatorio.")
         return redirect('panel_admin')
+
+    # Subir imagen a Cloudinary (si se adjuntó una); guardamos la URL
+    imagen_url = _subir_imagen_cloudinary(imagen_archivo, nombre) or ''
 
     # ── Precio y cantidad entrante: solo admin los maneja ──
     if es_bodeguero:
@@ -686,7 +712,7 @@ def admin_agregar_producto(request):
         sku=sku,
         precio=precio_ingresado,
         categoria=categoria,
-        imagen=imagen,
+        imagen=imagen_url,
     )
     Stock.objects.create(id_producto=prod, cantidad_disponible=cantidad_ingresada)
 
@@ -787,14 +813,20 @@ def admin_editar_producto(request, producto_id):
         precio_nuevo = request.POST.get('precio')
         categoria = request.POST.get('categoria', '').strip()
         stock_nuevo = request.POST.get('stock')
-        imagen = request.FILES.get('imagen')
+        imagen_archivo = request.FILES.get('imagen')
 
         if nombre:
             producto.nombre_producto = nombre
         if categoria:
             producto.categoria = categoria
-        if imagen:
-            producto.imagen = imagen
+        if imagen_archivo:
+            # Subir a Cloudinary y guardar la URL (no el nombre del archivo)
+            url = _subir_imagen_cloudinary(imagen_archivo, nombre or producto.nombre_producto)
+            if url:
+                producto.imagen = url
+            else:
+                messages.error(request, "No se pudo subir la imagen. Intenta de nuevo.")
+                return redirect('panel_admin')
 
         # El SKU NO se edita: es automático y fijo. Se ignora cualquier valor enviado.
 
