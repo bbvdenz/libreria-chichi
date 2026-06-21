@@ -1,4 +1,5 @@
 {% load static %}
+{% load cloudinary_extras %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -246,7 +247,7 @@
             <div class="prod-card" data-nombre="{{ prod.nombre_producto }}">
                 <div class="prod-img-wrap">
                     {% if prod.imagen %}
-                        <img src="{{ prod.imagen }}" alt="{{ prod.nombre_producto }}">
+                        <img src="{{ prod.imagen|optimizar }}" alt="{{ prod.nombre_producto }}" loading="lazy">
                     {% else %}
                         <div class="prod-img-placeholder">📚</div>
                     {% endif %}

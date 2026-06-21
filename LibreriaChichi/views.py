@@ -75,13 +75,12 @@ def _siguiente_sku(categoria):
 # ── 0. PÁGINA BASE ──────────────────────────────────────────────────────────
 def inicio_base(request):
     from .models import Stock
-    productos_destacados = Producto.objects.filter(activo=True)[:12]
+    productos_destacados = Producto.objects.filter(activo=True).select_related('stock')[:12]
     destacados = []
     for p in productos_destacados:
         try:
-            stock_obj = Stock.objects.get(id_producto=p)
-            stock = stock_obj.cantidad_disponible
-        except:
+            stock = p.stock.cantidad_disponible
+        except Stock.DoesNotExist:
             stock = 0
         destacados.append({
             'id': p.id_producto,
@@ -254,7 +253,8 @@ def catalogo_publico(request):
     categoria_filtro = request.GET.get('cat', '').strip().upper()
     busqueda = request.GET.get('q', '').strip()
 
-    productos = Producto.objects.filter(activo=True)
+    # select_related('stock') trae el stock en la MISMA consulta (evita N+1).
+    productos = Producto.objects.filter(activo=True).select_related('stock')
 
     # ── Buscador (lupa) para el cliente: solo por NOMBRE (el SKU es interno) ──
     if busqueda:
@@ -263,9 +263,9 @@ def catalogo_publico(request):
     productos_por_seccion = {}
 
     for prod in productos:
+        # El stock ya viene cargado; no se hace consulta extra por producto.
         try:
-            stock_obj = Stock.objects.get(id_producto=prod)
-            prod.stock_disponible = stock_obj.cantidad_disponible
+            prod.stock_disponible = prod.stock.cantidad_disponible
         except Stock.DoesNotExist:
             prod.stock_disponible = None
 
