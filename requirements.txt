@@ -5,3 +5,5 @@ whitenoise>=6.6
 Pillow>=10.0
 reportlab>=4.0
 openpyxl>=3.1
+cloudinary>=1.36
+django-cloudinary-storage>=0.3.0

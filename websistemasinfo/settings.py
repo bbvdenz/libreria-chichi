@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary',
+    'cloudinary_storage',
     'LibreriaChichi',
 ]
 
@@ -119,8 +121,16 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STORAGES = {
-    'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+    'default': {'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage'},
     'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage'},
+}
+
+# ── Cloudinary (imágenes de productos, comprobantes, etc.) ──
+# Las credenciales se leen desde variables de entorno en Azure.
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'dof5bbre5'),
+    'API_KEY':    os.environ.get('CLOUDINARY_API_KEY',    '843477436781424'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', '2HA7Cf-3Xr1NjPxu4OoL4kVbp9s'),
 }
 
 # ── Archivos media ──
