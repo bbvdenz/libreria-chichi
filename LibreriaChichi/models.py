@@ -32,7 +32,7 @@ class Producto(models.Model):
     nombre_producto = models.TextField()
     precio = models.DecimalField(max_length=10, decimal_places=2, max_digits=10)
     categoria = models.CharField(max_length=100, default='General')
-    imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
+    imagen = models.TextField(null=True, blank=True)  # URL de Cloudinary
     # Borrado lógico: si un producto ya está en pedidos no se puede borrar
     # físicamente (rompería el historial). En su lugar se marca activo=False:
     # desaparece de la tienda pero los pedidos antiguos quedan intactos.

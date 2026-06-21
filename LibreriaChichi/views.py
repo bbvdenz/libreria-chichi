@@ -89,7 +89,7 @@ def inicio_base(request):
             'categoria': p.categoria,
             'precio': int(p.precio),
             'stock': stock,
-            'imagen': p.imagen.url if p.imagen else None,
+            'imagen': p.imagen if p.imagen else None,
             'emoji': '📚',
         })
     return render(request, 'base.html', {'destacados': destacados})
