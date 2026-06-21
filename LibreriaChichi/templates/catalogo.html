@@ -246,7 +246,7 @@
             <div class="prod-card" data-nombre="{{ prod.nombre_producto }}">
                 <div class="prod-img-wrap">
                     {% if prod.imagen %}
-                        <img src="{{ prod.imagen.url }}" alt="{{ prod.nombre_producto }}">
+                        <img src="{{ prod.imagen }}" alt="{{ prod.nombre_producto }}">
                     {% else %}
                         <div class="prod-img-placeholder">📚</div>
                     {% endif %}
