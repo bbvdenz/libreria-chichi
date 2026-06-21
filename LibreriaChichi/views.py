@@ -75,13 +75,13 @@ def _siguiente_sku(categoria):
 # ── 0. PÁGINA BASE ──────────────────────────────────────────────────────────
 def _subir_imagen_cloudinary(archivo, nombre_producto):
     """Sube un archivo de imagen a Cloudinary y devuelve la URL segura.
-    Si algo falla o no hay archivo, devuelve None (no rompe el guardado).
+    Cloudinary redimensiona/comprime en SU servidor (no en Azure), lo que
+    evita timeouts. Si algo falla o no hay archivo, devuelve None.
     """
     if not archivo:
         return None
     try:
         import cloudinary.uploader
-        # public_id corto y único basado en el nombre del producto
         public_id = "chichi/" + "".join(
             c if c.isalnum() else "_" for c in (nombre_producto or "producto").lower()
         ).strip("_")
@@ -90,6 +90,10 @@ def _subir_imagen_cloudinary(archivo, nombre_producto):
             public_id=public_id,
             overwrite=True,
             resource_type="image",
+            # Cloudinary procesa la imagen en su nube: la achica a máx 800px
+            # y la comprime. Así no sobrecargamos el servidor de Azure.
+            transformation=[{"width": 800, "height": 800, "crop": "limit", "quality": "auto"}],
+            timeout=60,
         )
         return resultado.get("secure_url")
     except Exception:
