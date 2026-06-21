@@ -957,17 +957,28 @@ def panel_pedidos(request):
 
     filtro = request.GET.get('estado', '').strip().lower()
 
-    pedidos = Pedido.objects.select_related('id_cliente').order_by('-id_pedido')
+    # prefetch trae detalles+productos y transferencias en pocas consultas (no 1 por pedido).
+    pedidos = (
+        Pedido.objects
+        .select_related('id_cliente')
+        .prefetch_related('detallepedido_set__id_producto', 'transferencias')
+        .order_by('-id_pedido')
+    )
     if filtro in ESTADOS_PEDIDO:
         pedidos = pedidos.filter(estado_pedido=filtro)
 
-    # Conteos por estado (para las pestañas)
-    conteos = {est: Pedido.objects.filter(estado_pedido=est).count() for est in ESTADOS_PEDIDO}
-    conteos['todos'] = Pedido.objects.count()
+    # Conteos por estado en UNA sola consulta (en vez de 6 separadas)
+    from django.db.models import Count
+    agregado = dict(
+        Pedido.objects.values_list('estado_pedido')
+        .annotate(n=Count('id_pedido'))
+    )
+    conteos = {est: agregado.get(est, 0) for est in ESTADOS_PEDIDO}
+    conteos['todos'] = sum(agregado.values())
 
     lista = []
     for ped in pedidos:
-        detalles = DetallePedido.objects.select_related('id_producto').filter(id_pedido=ped)
+        detalles = ped.detallepedido_set.all()
         items = []
         total = Decimal('0')
         for d in detalles:
@@ -981,10 +992,11 @@ def panel_pedidos(request):
                 'subtotal': int(subtotal),
             })
         cli = ped.id_cliente
-        # ¿Tiene una transferencia aún sin validar?
-        transf_pendiente = ped.transferencias.filter(
-            estado=Transferencia.ESTADO_PENDIENTE
-        ).exists()
+        # ¿Tiene una transferencia aún sin validar? (ya viene prefetcheada)
+        transf_pendiente = any(
+            t.estado == Transferencia.ESTADO_PENDIENTE
+            for t in ped.transferencias.all()
+        )
         lista.append({
             'id': ped.id_pedido,
             'fecha': ped.fecha_pedido,
