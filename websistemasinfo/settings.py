@@ -14,16 +14,25 @@ SECRET_KEY = os.environ.get(
 )
 
 # ── Detección de entorno ─────────────────────────────────────────────────────
-# Azure App Service crea automáticamente la variable WEBSITE_HOSTNAME.
-# Si existe, estamos en la nube; si no, estamos en tu PC.
+# Azure crea la variable WEBSITE_HOSTNAME; Render crea la variable RENDER.
+# Si existe cualquiera, estamos en la nube (producción); si no, en tu PC.
 EN_AZURE = 'WEBSITE_HOSTNAME' in os.environ
-DEBUG = not EN_AZURE
+EN_RENDER = 'RENDER' in os.environ
+EN_PRODUCCION = EN_AZURE or EN_RENDER
+DEBUG = not EN_PRODUCCION
 
 if EN_AZURE:
     HOSTNAME = os.environ['WEBSITE_HOSTNAME']
     ALLOWED_HOSTS = [HOSTNAME]
     CSRF_TRUSTED_ORIGINS = [f'https://{HOSTNAME}']
-    # Azure entrega el sitio por HTTPS detrás de un proxy.
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+elif EN_RENDER:
+    # Render entrega el nombre del sitio en RENDER_EXTERNAL_HOSTNAME.
+    HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME', '')
+    ALLOWED_HOSTS = [HOSTNAME] if HOSTNAME else ['*']
+    CSRF_TRUSTED_ORIGINS = [f'https://{HOSTNAME}'] if HOSTNAME else []
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
@@ -74,8 +83,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'websistemasinfo.wsgi.application'
 
 # ── Base de datos ────────────────────────────────────────────────────────────
-# En Azure se leen las variables de entorno; en tu PC usa PostgreSQL local.
-if EN_AZURE:
+# En la nube (Azure o Render) se leen las variables de entorno;
+# en tu PC usa PostgreSQL local.
+if EN_PRODUCCION:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
