@@ -125,6 +125,48 @@
             .prod-grid { grid-template-columns: 1fr; }
             .brand-tagline { display: none; }
         }
+
+        /* ── Badge contador del carrito flotante ── */
+        .carrito-contador {
+            position: absolute; top: -4px; right: -4px;
+            min-width: 26px; height: 26px; padding: 0 7px;
+            background: var(--magenta, #e8007d); color: #fff;
+            border: 2px solid #0d0d14; border-radius: 50px;
+            font-size: 0.8rem; font-weight: 800;
+            display: inline-flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 8px rgba(232,0,125,0.5);
+            animation: badge-pop 0.3s ease;
+        }
+        @keyframes badge-pop { 0% { transform: scale(0); } 70% { transform: scale(1.25); } 100% { transform: scale(1); } }
+
+        /* ── Toasts (avisos emergentes) ── */
+        .toast-container-chichi {
+            position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+            z-index: 4000; display: flex; flex-direction: column; gap: 12px;
+            align-items: center; pointer-events: none; width: max-content; max-width: 92vw;
+        }
+        .toast-chichi {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 22px; border-radius: 16px;
+            font-family: 'DM Sans', sans-serif; font-size: 0.98rem; font-weight: 600; color: #fff;
+            background: linear-gradient(135deg, rgba(20,20,32,0.97), rgba(30,20,45,0.97));
+            border: 1px solid rgba(168,85,247,0.4);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+            backdrop-filter: blur(12px);
+            transform: translateY(30px); opacity: 0;
+            transition: transform 0.35s cubic-bezier(.18,.89,.32,1.28), opacity 0.35s ease;
+            pointer-events: auto; max-width: 90vw;
+        }
+        .toast-chichi.visible { transform: translateY(0); opacity: 1; }
+        .toast-chichi .toast-ic {
+            width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 1rem;
+        }
+        .toast-chichi.exito .toast-ic { background: rgba(16,185,129,0.18); color: #34d399; }
+        .toast-chichi.error .toast-ic { background: rgba(239,68,68,0.18); color: #f87171; }
+        .toast-chichi.exito { border-color: rgba(16,185,129,0.45); }
+        .toast-chichi.error { border-color: rgba(239,68,68,0.45); }
+        .toast-chichi .toast-txt small { display:block; font-weight:500; color: var(--text-muted, #8888aa); font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -318,8 +360,12 @@
     <a href="{% url 'ver_carrito' %}" class="carrito-btn">
         <i class="fa-solid fa-cart-shopping"></i>
         <span class="carrito-label">Carrito</span>
+        <span id="carrito-contador" class="carrito-contador" {% if not total_carrito %}style="display:none;"{% endif %}>{{ total_carrito }}</span>
     </a>
 </div>
+
+<!-- Contenedor de toasts (avisos emergentes) -->
+<div id="toast-container" class="toast-container-chichi"></div>
 
 
 <script>
@@ -554,6 +600,79 @@
     }, 0);
   }, false);
 })();
+</script>
+<script>
+/* ── Toast (aviso emergente) ── */
+function mostrarToast(mensaje, tipo) {
+    var cont = document.getElementById('toast-container');
+    if (!cont) return;
+    var esExito = (tipo !== 'error');
+    var t = document.createElement('div');
+    t.className = 'toast-chichi ' + (esExito ? 'exito' : 'error');
+    var icono = esExito ? 'fa-cart-plus' : 'fa-circle-exclamation';
+    var titulo = esExito ? 'Agregado al carrito' : 'Ups';
+    t.innerHTML =
+        '<span class="toast-ic"><i class="fa-solid ' + icono + '"></i></span>' +
+        '<span class="toast-txt">' + titulo + '<small>' + mensaje + '</small></span>';
+    cont.appendChild(t);
+    requestAnimationFrame(function(){ t.classList.add('visible'); });
+    setTimeout(function(){
+        t.classList.remove('visible');
+        setTimeout(function(){ t.remove(); }, 400);
+    }, 2800);
+}
+
+/* ── Actualiza el numerito del carrito flotante ── */
+function actualizarContadorCarrito(total) {
+    var b = document.getElementById('carrito-contador');
+    if (!b) return;
+    b.textContent = total;
+    b.style.display = total > 0 ? 'inline-flex' : 'none';
+    b.style.animation = 'none';
+    requestAnimationFrame(function(){ b.style.animation = 'badge-pop 0.3s ease'; });
+}
+
+/* ── "Al Carrito" sin recargar la página ── */
+document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.btn-add');
+    if (!btn) return;
+    e.preventDefault();
+    if (btn.disabled) return;
+    var form = btn.closest('form');
+    if (!form) return;
+
+    var cantInput = form.querySelector('input[name="cantidad"]');
+    var cantidad = cantInput ? cantInput.value : 1;
+    var csrf = form.querySelector('[name=csrfmiddlewaretoken]');
+    var datos = new FormData();
+    datos.append('cantidad', cantidad);
+    datos.append('accion', 'carrito');
+    if (csrf) datos.append('csrfmiddlewaretoken', csrf.value);
+
+    var original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Agregando...';
+
+    fetch(form.getAttribute('action'), {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: datos,
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+        if (data.ok) {
+            mostrarToast(data.mensaje, 'success');
+            actualizarContadorCarrito(data.total_items);
+        } else {
+            mostrarToast(data.error || 'No se pudo agregar.', 'error');
+        }
+    })
+    .catch(function(){ mostrarToast('Error de conexion. Intenta de nuevo.', 'error'); })
+    .finally(function(){
+        btn.disabled = false;
+        btn.innerHTML = original;
+    });
+});
 </script>
 </body>
 </html>

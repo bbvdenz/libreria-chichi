@@ -305,12 +305,15 @@ def catalogo_publico(request):
         'productos_por_seccion': productos_por_seccion,
         'categoria_filtro': categoria_filtro,
         'busqueda': busqueda,
+        'total_carrito': sum(request.session.get('carrito', {}).values()),
     })
 
 
 # ── 5. CARRITO ───────────────────────────────────────────────────────────────
 def agregar_al_carrito(request, producto_id):
     if request.method == 'POST':
+        from django.http import JsonResponse
+        es_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
         cantidad = int(request.POST.get('cantidad', 1))
         accion = request.POST.get('accion', 'carrito')
         producto = get_object_or_404(Producto, pk=producto_id)
@@ -319,7 +322,10 @@ def agregar_al_carrito(request, producto_id):
             stock_obj = Stock.objects.get(id_producto=producto)
             stock_disponible = stock_obj.cantidad_disponible
         except Stock.DoesNotExist:
-            messages.error(request, f"⚠️ {producto.nombre_producto} no tiene stock registrado.")
+            msg = f"⚠️ {producto.nombre_producto} no tiene stock registrado."
+            if es_ajax:
+                return JsonResponse({'ok': False, 'error': msg})
+            messages.error(request, msg)
             return redirect(request.META.get('HTTP_REFERER', '/'))
 
         id_str = str(producto_id)
@@ -340,7 +346,10 @@ def agregar_al_carrito(request, producto_id):
         nueva_cantidad = carrito.get(id_str, 0) + cantidad
 
         if nueva_cantidad > stock_disponible:
-            messages.error(request, f"❌ Solo quedan {stock_disponible} unidades disponibles.")
+            msg = f"❌ Solo quedan {stock_disponible} unidades disponibles."
+            if es_ajax:
+                return JsonResponse({'ok': False, 'error': msg})
+            messages.error(request, msg)
             return redirect(request.META.get('HTTP_REFERER', '/'))
 
         carrito[id_str] = nueva_cantidad
@@ -349,7 +358,15 @@ def agregar_al_carrito(request, producto_id):
         request.session['comprar_ahora'] = {}
         request.session.modified = True
 
-        messages.success(request, f"✅ {cantidad} x {producto.nombre_producto} agregado al carrito.")
+        total_items = sum(carrito.values())
+        msg = f"✅ {cantidad} x {producto.nombre_producto} agregado al carrito."
+        if es_ajax:
+            return JsonResponse({
+                'ok': True,
+                'mensaje': f"{cantidad} × {producto.nombre_producto}",
+                'total_items': total_items,
+            })
+        messages.success(request, msg)
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
     return redirect(request.META.get('HTTP_REFERER', '/'))

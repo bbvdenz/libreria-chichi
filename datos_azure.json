@@ -1,0 +1,2840 @@
+[
+{
+  "model": "auth.group",
+  "fields": {
+    "name": "Administrador",
+    "permissions": [
+      [
+        "add_pago",
+        "LibreriaChichi",
+        "pago"
+      ],
+      [
+        "change_pago",
+        "LibreriaChichi",
+        "pago"
+      ],
+      [
+        "view_pago",
+        "LibreriaChichi",
+        "pago"
+      ],
+      [
+        "change_pedido",
+        "LibreriaChichi",
+        "pedido"
+      ],
+      [
+        "view_pedido",
+        "LibreriaChichi",
+        "pedido"
+      ],
+      [
+        "add_producto",
+        "LibreriaChichi",
+        "producto"
+      ],
+      [
+        "change_producto",
+        "LibreriaChichi",
+        "producto"
+      ],
+      [
+        "view_producto",
+        "LibreriaChichi",
+        "producto"
+      ],
+      [
+        "add_stock",
+        "LibreriaChichi",
+        "stock"
+      ],
+      [
+        "change_stock",
+        "LibreriaChichi",
+        "stock"
+      ],
+      [
+        "view_stock",
+        "LibreriaChichi",
+        "stock"
+      ],
+      [
+        "add_transferencia",
+        "LibreriaChichi",
+        "transferencia"
+      ],
+      [
+        "change_transferencia",
+        "LibreriaChichi",
+        "transferencia"
+      ],
+      [
+        "validar_transferencia",
+        "LibreriaChichi",
+        "transferencia"
+      ],
+      [
+        "view_transferencia",
+        "LibreriaChichi",
+        "transferencia"
+      ]
+    ]
+  }
+},
+{
+  "model": "auth.group",
+  "fields": {
+    "name": "Cajero",
+    "permissions": [
+      [
+        "add_pago",
+        "LibreriaChichi",
+        "pago"
+      ],
+      [
+        "view_pago",
+        "LibreriaChichi",
+        "pago"
+      ],
+      [
+        "add_pedido",
+        "LibreriaChichi",
+        "pedido"
+      ],
+      [
+        "view_pedido",
+        "LibreriaChichi",
+        "pedido"
+      ],
+      [
+        "view_producto",
+        "LibreriaChichi",
+        "producto"
+      ],
+      [
+        "view_stock",
+        "LibreriaChichi",
+        "stock"
+      ],
+      [
+        "add_transferencia",
+        "LibreriaChichi",
+        "transferencia"
+      ],
+      [
+        "change_transferencia",
+        "LibreriaChichi",
+        "transferencia"
+      ],
+      [
+        "validar_transferencia",
+        "LibreriaChichi",
+        "transferencia"
+      ],
+      [
+        "view_transferencia",
+        "LibreriaChichi",
+        "transferencia"
+      ]
+    ]
+  }
+},
+{
+  "model": "auth.group",
+  "fields": {
+    "name": "Bodeguero",
+    "permissions": [
+      [
+        "add_producto",
+        "LibreriaChichi",
+        "producto"
+      ],
+      [
+        "view_producto",
+        "LibreriaChichi",
+        "producto"
+      ]
+    ]
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$MaDhgVVKZoFrAIBIzc9Bm2$ZOiTe64GqBwoJ2h2UojCLkJGFJn6soxdhm8RfXUy4P8=",
+    "last_login": "2026-06-17T01:42:47.064Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-05-21T19:42:33.914Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$oZkYlViNKOCb1QG0Qv1s8t$Woe+VhBqGSGN0QZmYoEuAhp2jWBT/6gEZUH2F0isjho=",
+    "last_login": "2026-05-27T20:47:48.931Z",
+    "is_superuser": false,
+    "username": "76133541-3",
+    "first_name": "benjamin",
+    "last_name": "benjamin",
+    "email": "lherrera@utem.cl",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-05-27T20:47:48.081Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$Q5HPfYjt6TKR4hv2LVn1nH$THOHBNhV6KgzzplKCez85ORcZqCmKaKOMgcchtKDZYE=",
+    "last_login": "2026-06-17T00:45:02.997Z",
+    "is_superuser": false,
+    "username": "isai",
+    "first_name": "",
+    "last_name": "",
+    "email": "isai@chichi.cl",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-06-12T03:33:26.789Z",
+    "groups": [
+      [
+        "Administrador"
+      ]
+    ],
+    "user_permissions": [
+      [
+        "add_producto",
+        "LibreriaChichi",
+        "producto"
+      ],
+      [
+        "change_producto",
+        "LibreriaChichi",
+        "producto"
+      ],
+      [
+        "delete_producto",
+        "LibreriaChichi",
+        "producto"
+      ],
+      [
+        "view_producto",
+        "LibreriaChichi",
+        "producto"
+      ],
+      [
+        "add_stock",
+        "LibreriaChichi",
+        "stock"
+      ],
+      [
+        "change_stock",
+        "LibreriaChichi",
+        "stock"
+      ],
+      [
+        "delete_stock",
+        "LibreriaChichi",
+        "stock"
+      ],
+      [
+        "view_stock",
+        "LibreriaChichi",
+        "stock"
+      ]
+    ]
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$IR3n5DndHKlAYsWMAFo4A0$oxr+yiQC+uFsP1qs6IOdFNYRpo5UzvBsWFvUMLOE9j4=",
+    "last_login": "2026-06-17T00:44:38.866Z",
+    "is_superuser": false,
+    "username": "kaibod",
+    "first_name": "",
+    "last_name": "",
+    "email": "kaibod@chichi.cl",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-06-12T03:34:03.163Z",
+    "groups": [
+      [
+        "Bodeguero"
+      ]
+    ],
+    "user_permissions": [
+      [
+        "add_producto",
+        "LibreriaChichi",
+        "producto"
+      ]
+    ]
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$E3WpZznyrBI0SGQqmHw28W$Bnr5uZCAeHtUK23wmWEAHV7+BFJjxlY0aPrssLOlmCI=",
+    "last_login": "2026-06-12T03:41:45.489Z",
+    "is_superuser": false,
+    "username": "21576362-5",
+    "first_name": "Benjamin",
+    "last_name": "Benavides",
+    "email": "benjitaquiroz45@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-12T03:41:44.687Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "LibreriaChichi.cliente",
+  "pk": 5,
+  "fields": {
+    "usuario": null,
+    "rut": null,
+    "direccion_facturacion": null,
+    "nombre": "Administrador",
+    "telefono": null,
+    "email": ""
+  }
+},
+{
+  "model": "LibreriaChichi.cliente",
+  "pk": 15,
+  "fields": {
+    "usuario": null,
+    "rut": "21060069-8",
+    "direccion_facturacion": "Arias Pardo #13201, El Bosque, Metropolitana",
+    "nombre": "isai lagos",
+    "telefono": "961879648",
+    "email": "ilagosf@utem.cl"
+  }
+},
+{
+  "model": "LibreriaChichi.cliente",
+  "pk": 16,
+  "fields": {
+    "usuario": null,
+    "rut": "21871732-2",
+    "direccion_facturacion": "Sofia Eastman de hunneus 10778, La Pintana, Metropolitana",
+    "nombre": "bryan umaña",
+    "telefono": "955878188",
+    "email": "bryaanumana@gmail.com"
+  }
+},
+{
+  "model": "LibreriaChichi.cliente",
+  "pk": 17,
+  "fields": {
+    "usuario": [
+      "76133541-3"
+    ],
+    "rut": "76133541-3",
+    "direccion_facturacion": "Macul 1030, Antártica, Magallanes",
+    "nombre": "benjamin benjamin",
+    "telefono": "955878188",
+    "email": "lherrera@utem.cl"
+  }
+},
+{
+  "model": "LibreriaChichi.cliente",
+  "pk": 18,
+  "fields": {
+    "usuario": [
+      "admin"
+    ],
+    "rut": null,
+    "direccion_facturacion": null,
+    "nombre": "admin",
+    "telefono": null,
+    "email": null
+  }
+},
+{
+  "model": "LibreriaChichi.cliente",
+  "pk": 19,
+  "fields": {
+    "usuario": [
+      "21576362-5"
+    ],
+    "rut": "21576362-5",
+    "direccion_facturacion": "avenida gabriela poniente 1948, Puente Alto, Metropolitana",
+    "nombre": "Benjamin Benavides",
+    "telefono": "+56931782338",
+    "email": "benjitaquiroz45@gmail.com"
+  }
+},
+{
+  "model": "LibreriaChichi.cliente",
+  "pk": 20,
+  "fields": {
+    "usuario": null,
+    "rut": null,
+    "direccion_facturacion": null,
+    "nombre": "Venta Presencial (Mostrador)",
+    "telefono": null,
+    "email": "mostrador@libreriachichi.local"
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 92,
+  "fields": {
+    "sku": "PIN-0092",
+    "nombre_producto": "Acrílicos 12 colores",
+    "precio": "3540.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022208/chichi/acr%C3%ADlicos_12_colores.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 93,
+  "fields": {
+    "sku": "PIN-0093",
+    "nombre_producto": "Acrílicos 36 colores",
+    "precio": "10990.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022209/chichi/acr%C3%ADlicos_36_colores.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 94,
+  "fields": {
+    "sku": "PIN-0094",
+    "nombre_producto": "Acrílicos 48 colores",
+    "precio": "11990.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022210/chichi/acr%C3%ADlicos_48_colores.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 95,
+  "fields": {
+    "sku": "PIN-0095",
+    "nombre_producto": "Acrílicos 60 colores",
+    "precio": "14990.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022211/chichi/acr%C3%ADlicos_60_colores.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 96,
+  "fields": {
+    "sku": "PIN-0096",
+    "nombre_producto": "Acrílicos 80 colores",
+    "precio": "19990.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022212/chichi/acr%C3%ADlicos_80_colores.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 97,
+  "fields": {
+    "sku": "PIN-0097",
+    "nombre_producto": "Acuarela en pastilla",
+    "precio": "2490.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022213/chichi/acuarela_en_pastilla.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 98,
+  "fields": {
+    "sku": "PIN-0098",
+    "nombre_producto": "Pintura acrília suelta",
+    "precio": "1290.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 99,
+  "fields": {
+    "sku": "PIN-0099",
+    "nombre_producto": "Témpera 12 colores",
+    "precio": "1690.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022214/chichi/t%C3%A9mpera_12_colores.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 100,
+  "fields": {
+    "sku": "PIN-0100",
+    "nombre_producto": "Témpera 250 ml",
+    "precio": "1990.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022215/chichi/t%C3%A9mpera_250_ml.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 101,
+  "fields": {
+    "sku": "PIN-0101",
+    "nombre_producto": "Témpera metálica 6 colores",
+    "precio": "2190.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022216/chichi/t%C3%A9mpera_met%C3%A1lica_6_colores.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 102,
+  "fields": {
+    "sku": "PIN-0102",
+    "nombre_producto": "Set témpera sólida 12 colores",
+    "precio": "4290.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022217/chichi/set_t%C3%A9mpera_s%C3%B3lida_12_colores.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 103,
+  "fields": {
+    "sku": "PIN-0103",
+    "nombre_producto": "Set témpera escolar",
+    "precio": "1490.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022217/chichi/set_t%C3%A9mpera_escolar.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 104,
+  "fields": {
+    "sku": "PIN-0104",
+    "nombre_producto": "Plastilina escolar",
+    "precio": "990.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782241492/chichi/plastilina_escolar.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 105,
+  "fields": {
+    "sku": "PIN-0105",
+    "nombre_producto": "Masa DAS 500g",
+    "precio": "3290.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022218/chichi/masa_das_500g.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 106,
+  "fields": {
+    "sku": "PIN-0106",
+    "nombre_producto": "Masita Gummy x12",
+    "precio": "1990.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022219/chichi/masita_gummy_x12.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 107,
+  "fields": {
+    "sku": "PIN-0107",
+    "nombre_producto": "Masita Gummy x24",
+    "precio": "3490.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022220/chichi/masita_gummy_x24.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 108,
+  "fields": {
+    "sku": "PIN-0108",
+    "nombre_producto": "Masita Gummy x36",
+    "precio": "4990.00",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022220/chichi/masita_gummy_x36.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 109,
+  "fields": {
+    "sku": "PAP-0109",
+    "nombre_producto": "Block Papel Entretenido",
+    "precio": "1490.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022221/chichi/block_papel_entretenido.jpg",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 110,
+  "fields": {
+    "sku": "PAP-0110",
+    "nombre_producto": "Block Cartulina",
+    "precio": "1290.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022222/chichi/block_cartulina.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 111,
+  "fields": {
+    "sku": "PAP-0111",
+    "nombre_producto": "Block Cartulina Escarchada",
+    "precio": "1990.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022222/chichi/block_cartulina_escarchada.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 112,
+  "fields": {
+    "sku": "PAP-0112",
+    "nombre_producto": "Block Cartulina Española",
+    "precio": "1690.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782241490/chichi/block_cartulina_espa%C3%B1ola.jpg",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 113,
+  "fields": {
+    "sku": "PAP-0113",
+    "nombre_producto": "Block de Cartulina Metálica",
+    "precio": "1890.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022223/chichi/block_de_cartulina_met%C3%A1lica.jpg",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 114,
+  "fields": {
+    "sku": "PAP-0114",
+    "nombre_producto": "Block Dibujo 99 1/8",
+    "precio": "1690.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022224/chichi/block_dibujo_99_1_8.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 115,
+  "fields": {
+    "sku": "PAP-0115",
+    "nombre_producto": "Block Paño Lenci",
+    "precio": "2490.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782241489/chichi/block_pa%C3%B1o_lenci.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 116,
+  "fields": {
+    "sku": "PAP-0116",
+    "nombre_producto": "Block Papel Lustre",
+    "precio": "890.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022224/chichi/block_papel_lustre.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 117,
+  "fields": {
+    "sku": "PAP-0117",
+    "nombre_producto": "Cartulina en pliego",
+    "precio": "350.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022225/chichi/cartulina_en_pliego.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 118,
+  "fields": {
+    "sku": "PAP-0118",
+    "nombre_producto": "Papel Celofán (pliego)",
+    "precio": "450.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022227/chichi/papel_celof%C3%A1n__pliego.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 119,
+  "fields": {
+    "sku": "PAP-0119",
+    "nombre_producto": "Papel Crepé",
+    "precio": "390.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022230/chichi/papel_crep%C3%A9.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 120,
+  "fields": {
+    "sku": "PAP-0120",
+    "nombre_producto": "Papel Lustre 10x10",
+    "precio": "490.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022231/chichi/papel_lustre_10x10.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 121,
+  "fields": {
+    "sku": "PAP-0121",
+    "nombre_producto": "Papel Lustre 16x16",
+    "precio": "790.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022231/chichi/papel_lustre_16x16.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 122,
+  "fields": {
+    "sku": "PAP-0122",
+    "nombre_producto": "Papel Volantín",
+    "precio": "250.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022232/chichi/papel_volant%C3%ADn.jpg",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 123,
+  "fields": {
+    "sku": "PAP-0123",
+    "nombre_producto": "Resma de Papel Carta 500 hjs",
+    "precio": "4990.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782241488/chichi/resma_de_papel_carta_500_hjs.jpg",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 124,
+  "fields": {
+    "sku": "PAP-0124",
+    "nombre_producto": "Croquera Acuarela",
+    "precio": "3990.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022233/chichi/croquera_acuarela.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 125,
+  "fields": {
+    "sku": "PAP-0125",
+    "nombre_producto": "Croquera Dibujo",
+    "precio": "2490.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022233/chichi/croquera_dibujo.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 126,
+  "fields": {
+    "sku": "PAP-0126",
+    "nombre_producto": "Papel Kraft (pliego)",
+    "precio": "400.00",
+    "categoria": "PAPEL Y CARTULINA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022234/chichi/papel_kraft__pliego.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 127,
+  "fields": {
+    "sku": "CUA-0127",
+    "nombre_producto": "Cuaderno Collage 5mm 100 hjs",
+    "precio": "1490.00",
+    "categoria": "CUADERNOS Y FORROS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022234/chichi/cuaderno_collage_5mm_100_hjs.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 128,
+  "fields": {
+    "sku": "CUA-0128",
+    "nombre_producto": "Cuaderno Collage 7mm 100 hjs",
+    "precio": "1490.00",
+    "categoria": "CUADERNOS Y FORROS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022235/chichi/cuaderno_collage_7mm_100_hjs.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 129,
+  "fields": {
+    "sku": "CUA-0129",
+    "nombre_producto": "Cuaderno Croquis",
+    "precio": "1690.00",
+    "categoria": "CUADERNOS Y FORROS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022235/chichi/cuaderno_croquis.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 130,
+  "fields": {
+    "sku": "CUA-0130",
+    "nombre_producto": "Cuaderno Universitario 7mm 100 hjs",
+    "precio": "1890.00",
+    "categoria": "CUADERNOS Y FORROS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022236/chichi/cuaderno_universitario_7mm_100_hjs.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 131,
+  "fields": {
+    "sku": "CUA-0131",
+    "nombre_producto": "Forros Collage (unidad)",
+    "precio": "250.00",
+    "categoria": "CUADERNOS Y FORROS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022237/chichi/forros_collage__unidad.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 132,
+  "fields": {
+    "sku": "CUA-0132",
+    "nombre_producto": "Forros Universitarios (unidad)",
+    "precio": "300.00",
+    "categoria": "CUADERNOS Y FORROS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022237/chichi/forros_universitarios__unidad.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 133,
+  "fields": {
+    "sku": "LAP-0133",
+    "nombre_producto": "Lápices Bicolor (pack)",
+    "precio": "990.00",
+    "categoria": "LAPICES Y ESCRITURA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022238/chichi/l%C3%A1pices_bicolor__pack.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 134,
+  "fields": {
+    "sku": "LAP-0134",
+    "nombre_producto": "Lápices de Colores x12",
+    "precio": "1990.00",
+    "categoria": "LAPICES Y ESCRITURA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022239/chichi/l%C3%A1pices_de_colores_x12.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 135,
+  "fields": {
+    "sku": "LAP-0135",
+    "nombre_producto": "Lápices Grafito (pack 4)",
+    "precio": "1290.00",
+    "categoria": "LAPICES Y ESCRITURA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022240/chichi/l%C3%A1pices_grafito__pack_4.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 136,
+  "fields": {
+    "sku": "LAP-0136",
+    "nombre_producto": "Lápiz Mina 0.5",
+    "precio": "890.00",
+    "categoria": "LAPICES Y ESCRITURA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022240/chichi/l%C3%A1piz_mina_0_5.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 137,
+  "fields": {
+    "sku": "LAP-0137",
+    "nombre_producto": "Lápiz Mina 0.3",
+    "precio": "990.00",
+    "categoria": "LAPICES Y ESCRITURA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022241/chichi/l%C3%A1piz_mina_0_3.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 138,
+  "fields": {
+    "sku": "LAP-0138",
+    "nombre_producto": "Lápiz Pasta (Bic/Torre)",
+    "precio": "350.00",
+    "categoria": "LAPICES Y ESCRITURA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022241/chichi/l%C3%A1piz_pasta__bic_torre.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 139,
+  "fields": {
+    "sku": "LAP-0139",
+    "nombre_producto": "Lápices Scripto x12",
+    "precio": "1890.00",
+    "categoria": "LAPICES Y ESCRITURA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022242/chichi/l%C3%A1pices_scripto_x12.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 140,
+  "fields": {
+    "sku": "LAP-0140",
+    "nombre_producto": "Lápices Scripto Glitter",
+    "precio": "2990.00",
+    "categoria": "LAPICES Y ESCRITURA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022243/chichi/l%C3%A1pices_scripto_glitter.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 141,
+  "fields": {
+    "sku": "LAP-0141",
+    "nombre_producto": "Lápiz Grafito suelto",
+    "precio": "250.00",
+    "categoria": "LAPICES Y ESCRITURA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022244/chichi/l%C3%A1piz_grafito_suelto.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 142,
+  "fields": {
+    "sku": "LAP-0142",
+    "nombre_producto": "Minas 0.5",
+    "precio": "450.00",
+    "categoria": "LAPICES Y ESCRITURA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022244/chichi/minas_0_5.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 143,
+  "fields": {
+    "sku": "LAP-0143",
+    "nombre_producto": "Minas 0.7",
+    "precio": "450.00",
+    "categoria": "LAPICES Y ESCRITURA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022245/chichi/minas_0_7.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 144,
+  "fields": {
+    "sku": "LAP-0144",
+    "nombre_producto": "Goma de borrar",
+    "precio": "300.00",
+    "categoria": "LAPICES Y ESCRITURA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022245/chichi/goma_de_borrar.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 145,
+  "fields": {
+    "sku": "LAP-0145",
+    "nombre_producto": "Destacadores (unidad)",
+    "precio": "690.00",
+    "categoria": "LAPICES Y ESCRITURA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022246/chichi/destacadores__unidad.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 146,
+  "fields": {
+    "sku": "LAP-0146",
+    "nombre_producto": "Corrector en cinta / líquido",
+    "precio": "990.00",
+    "categoria": "LAPICES Y ESCRITURA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022248/chichi/corrector_en_cinta___l%C3%ADquido.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 147,
+  "fields": {
+    "sku": "LAP-0147",
+    "nombre_producto": "Sacapuntas con depósito",
+    "precio": "590.00",
+    "categoria": "LAPICES Y ESCRITURA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022249/chichi/sacapuntas_con_dep%C3%B3sito.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 148,
+  "fields": {
+    "sku": "GEO-0148",
+    "nombre_producto": "Regla 20cm",
+    "precio": "400.00",
+    "categoria": "GEOMETRIA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782241484/chichi/regla_20cm.jpg",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 149,
+  "fields": {
+    "sku": "GEO-0149",
+    "nombre_producto": "Regla 30cm",
+    "precio": "600.00",
+    "categoria": "GEOMETRIA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782241485/chichi/regla_30cm.jpg",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 150,
+  "fields": {
+    "sku": "GEO-0150",
+    "nombre_producto": "Compás escolar",
+    "precio": "1490.00",
+    "categoria": "GEOMETRIA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782241483/chichi/comp%C3%A1s_escolar.jpg",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 151,
+  "fields": {
+    "sku": "GEO-0151",
+    "nombre_producto": "Transportador 180°",
+    "precio": "350.00",
+    "categoria": "GEOMETRIA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782241482/chichi/transportador_180.jpg",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 152,
+  "fields": {
+    "sku": "ADH-0152",
+    "nombre_producto": "Cinta doble faz",
+    "precio": "1290.00",
+    "categoria": "ADHESIVOS Y PEGAMENTOS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022249/chichi/cinta_doble_faz.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 153,
+  "fields": {
+    "sku": "ADH-0153",
+    "nombre_producto": "Cinta Embalaje",
+    "precio": "1490.00",
+    "categoria": "ADHESIVOS Y PEGAMENTOS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022250/chichi/cinta_embalaje.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 154,
+  "fields": {
+    "sku": "ADH-0154",
+    "nombre_producto": "Cinta Papel Grueso (masking)",
+    "precio": "1390.00",
+    "categoria": "ADHESIVOS Y PEGAMENTOS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022251/chichi/cinta_papel_grueso__masking.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 155,
+  "fields": {
+    "sku": "ADH-0155",
+    "nombre_producto": "Cola fría 500 grs",
+    "precio": "2990.00",
+    "categoria": "ADHESIVOS Y PEGAMENTOS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022252/chichi/cola_fr%C3%ADa_500_grs.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 156,
+  "fields": {
+    "sku": "ADH-0156",
+    "nombre_producto": "Silicona Líquida 250ml",
+    "precio": "2190.00",
+    "categoria": "ADHESIVOS Y PEGAMENTOS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022253/chichi/silicona_l%C3%ADquida_250ml.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 157,
+  "fields": {
+    "sku": "ADH-0157",
+    "nombre_producto": "Pegamento en barra 115g",
+    "precio": "2490.00",
+    "categoria": "ADHESIVOS Y PEGAMENTOS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022253/chichi/pegamento_en_barra_115g.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 158,
+  "fields": {
+    "sku": "ADH-0158",
+    "nombre_producto": "Pegamento en barra 21g",
+    "precio": "990.00",
+    "categoria": "ADHESIVOS Y PEGAMENTOS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022254/chichi/pegamento_en_barra_21g.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 159,
+  "fields": {
+    "sku": "ADH-0159",
+    "nombre_producto": "Pegamento en barra 36g",
+    "precio": "1490.00",
+    "categoria": "ADHESIVOS Y PEGAMENTOS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022255/chichi/pegamento_en_barra_36g.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 160,
+  "fields": {
+    "sku": "MAN-0160",
+    "nombre_producto": "Goma Eva con Glitter (pliego chico)",
+    "precio": "550.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022255/chichi/goma_eva_con_glitter__pliego_chico.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 161,
+  "fields": {
+    "sku": "MAN-0161",
+    "nombre_producto": "Goma Eva en pliego grande Glitter",
+    "precio": "1390.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022256/chichi/goma_eva_en_pliego_grande_glitter.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 162,
+  "fields": {
+    "sku": "MAN-0162",
+    "nombre_producto": "Goma Eva en pliego grande normal",
+    "precio": "990.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022257/chichi/goma_eva_en_pliego_grande_normal.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 163,
+  "fields": {
+    "sku": "MAN-0163",
+    "nombre_producto": "Goma Eva sin Glitter (chica)",
+    "precio": "300.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022257/chichi/goma_eva_sin_glitter__chica.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 164,
+  "fields": {
+    "sku": "MAN-0164",
+    "nombre_producto": "Barras de Silicona (unidad)",
+    "precio": "150.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022258/chichi/barras_de_silicona__unidad.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 165,
+  "fields": {
+    "sku": "MAN-0165",
+    "nombre_producto": "Bastidor para pintar",
+    "precio": "2490.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782241487/chichi/bastidor_para_pintar.jpg",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 166,
+  "fields": {
+    "sku": "MAN-0166",
+    "nombre_producto": "Palos de helado colores (pack)",
+    "precio": "990.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022259/chichi/palos_de_helado_colores__pack.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 167,
+  "fields": {
+    "sku": "MAN-0167",
+    "nombre_producto": "Palos de helado grueso (pack)",
+    "precio": "1190.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022259/chichi/palos_de_helado_grueso__pack.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 168,
+  "fields": {
+    "sku": "MAN-0168",
+    "nombre_producto": "Palos de helado natural (pack)",
+    "precio": "790.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022260/chichi/palos_de_helado_natural__pack.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 169,
+  "fields": {
+    "sku": "MAN-0169",
+    "nombre_producto": "Set Escarcha / Brillantina",
+    "precio": "1290.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022261/chichi/set_escarcha___brillantina.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 170,
+  "fields": {
+    "sku": "MAN-0170",
+    "nombre_producto": "Set Brochas de espuma",
+    "precio": "1990.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022261/chichi/set_brochas_de_espuma.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 171,
+  "fields": {
+    "sku": "MAN-0171",
+    "nombre_producto": "Set Pinceles económicos",
+    "precio": "2490.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022262/chichi/set_pinceles_econ%C3%B3micos.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 172,
+  "fields": {
+    "sku": "MAN-0172",
+    "nombre_producto": "Set Limpiapipas / Limpieza",
+    "precio": "1190.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782241486/chichi/set_limpiapipas___limpieza.jpg",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 173,
+  "fields": {
+    "sku": "MAN-0173",
+    "nombre_producto": "Mezclador de pintura",
+    "precio": "490.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022262/chichi/mezclador_de_pintura.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 174,
+  "fields": {
+    "sku": "MAN-0174",
+    "nombre_producto": "Tijeras punta roma escolar",
+    "precio": "890.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022263/chichi/tijeras_punta_roma_escolar.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 175,
+  "fields": {
+    "sku": "MAN-0175",
+    "nombre_producto": "Tijeras grandes punta fina",
+    "precio": "1890.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022264/chichi/tijeras_grandes_punta_fina.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 176,
+  "fields": {
+    "sku": "MAN-0176",
+    "nombre_producto": "Tijeras grandes punta normal",
+    "precio": "1690.00",
+    "categoria": "MANUALIDADES",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022264/chichi/tijeras_grandes_punta_normal.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 177,
+  "fields": {
+    "sku": "CAR-0177",
+    "nombre_producto": "Carpeta Acolchada",
+    "precio": "2190.00",
+    "categoria": "CARPETERIA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022265/chichi/carpeta_acolchada.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 178,
+  "fields": {
+    "sku": "CAR-0178",
+    "nombre_producto": "Carpeta Estuche con cierre",
+    "precio": "1590.00",
+    "categoria": "CARPETERIA",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022265/chichi/carpeta_estuche_con_cierre.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 179,
+  "fields": {
+    "sku": "OTR-0179",
+    "nombre_producto": "Calculadora Normal de escritorio",
+    "precio": "3990.00",
+    "categoria": "OTROS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022266/chichi/calculadora_normal_de_escritorio.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 180,
+  "fields": {
+    "sku": "OTR-0180",
+    "nombre_producto": "Calculadora Científica estándar",
+    "precio": "9990.00",
+    "categoria": "OTROS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022267/chichi/calculadora_cient%C3%ADfica_est%C3%A1ndar.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 181,
+  "fields": {
+    "sku": "OTR-0181",
+    "nombre_producto": "Plumón Permanente (Negro/Azul/Rojo)",
+    "precio": "790.00",
+    "categoria": "OTROS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022268/chichi/plum%C3%B3n_permanente__negro_azul_rojo.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 182,
+  "fields": {
+    "sku": "OTR-0182",
+    "nombre_producto": "Plumón Pizarra",
+    "precio": "890.00",
+    "categoria": "OTROS",
+    "imagen": "https://res.cloudinary.com/dof5bbre5/image/upload/v1782022267/chichi/plum%C3%B3n_pizarra.png",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 184,
+  "fields": {
+    "sku": "LAP-0184",
+    "nombre_producto": "tiza blanca",
+    "precio": "1000.00",
+    "categoria": "LAPICES Y ESCRITURA",
+    "imagen": "",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.producto",
+  "pk": 186,
+  "fields": {
+    "sku": "PIN-109",
+    "nombre_producto": "temperaa roja",
+    "precio": "6217.27",
+    "categoria": "PINTURA Y COLOR",
+    "imagen": "",
+    "activo": true
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 1,
+  "fields": {
+    "cantidad_disponible": 18,
+    "fecha_actualizacion": "2026-06-17T01:59:04.757Z",
+    "id_producto": 92
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 2,
+  "fields": {
+    "cantidad_disponible": 22,
+    "fecha_actualizacion": "2026-06-17T01:41:45.875Z",
+    "id_producto": 93
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 3,
+  "fields": {
+    "cantidad_disponible": 10,
+    "fecha_actualizacion": "2026-06-17T02:14:35.898Z",
+    "id_producto": 94
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 4,
+  "fields": {
+    "cantidad_disponible": 10,
+    "fecha_actualizacion": "2026-05-27T19:59:24.554Z",
+    "id_producto": 95
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 5,
+  "fields": {
+    "cantidad_disponible": 1,
+    "fecha_actualizacion": "2026-05-27T21:58:53.253Z",
+    "id_producto": 96
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 6,
+  "fields": {
+    "cantidad_disponible": 0,
+    "fecha_actualizacion": "2026-05-27T03:57:33.357Z",
+    "id_producto": 97
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 7,
+  "fields": {
+    "cantidad_disponible": 2,
+    "fecha_actualizacion": "2026-05-27T19:38:47.298Z",
+    "id_producto": 98
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 8,
+  "fields": {
+    "cantidad_disponible": 4,
+    "fecha_actualizacion": "2026-05-25T15:01:49.575Z",
+    "id_producto": 99
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 9,
+  "fields": {
+    "cantidad_disponible": 10,
+    "fecha_actualizacion": "2026-05-25T15:01:49.579Z",
+    "id_producto": 100
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 10,
+  "fields": {
+    "cantidad_disponible": 2,
+    "fecha_actualizacion": "2026-05-25T15:01:49.579Z",
+    "id_producto": 101
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 11,
+  "fields": {
+    "cantidad_disponible": 4,
+    "fecha_actualizacion": "2026-05-27T19:34:20.618Z",
+    "id_producto": 102
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 12,
+  "fields": {
+    "cantidad_disponible": 4,
+    "fecha_actualizacion": "2026-05-25T15:01:49.579Z",
+    "id_producto": 103
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 13,
+  "fields": {
+    "cantidad_disponible": 12,
+    "fecha_actualizacion": "2026-05-25T15:01:49.579Z",
+    "id_producto": 104
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 14,
+  "fields": {
+    "cantidad_disponible": 2,
+    "fecha_actualizacion": "2026-05-25T15:01:49.586Z",
+    "id_producto": 105
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 15,
+  "fields": {
+    "cantidad_disponible": 14,
+    "fecha_actualizacion": "2026-05-25T15:01:49.587Z",
+    "id_producto": 106
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 16,
+  "fields": {
+    "cantidad_disponible": 13,
+    "fecha_actualizacion": "2026-05-25T15:01:49.590Z",
+    "id_producto": 107
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 17,
+  "fields": {
+    "cantidad_disponible": 6,
+    "fecha_actualizacion": "2026-05-25T15:01:49.593Z",
+    "id_producto": 108
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 18,
+  "fields": {
+    "cantidad_disponible": 1,
+    "fecha_actualizacion": "2026-05-25T15:01:49.595Z",
+    "id_producto": 109
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 19,
+  "fields": {
+    "cantidad_disponible": 10,
+    "fecha_actualizacion": "2026-05-25T15:01:49.595Z",
+    "id_producto": 110
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 20,
+  "fields": {
+    "cantidad_disponible": 6,
+    "fecha_actualizacion": "2026-05-25T15:01:49.595Z",
+    "id_producto": 111
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 21,
+  "fields": {
+    "cantidad_disponible": 11,
+    "fecha_actualizacion": "2026-05-25T15:01:49.595Z",
+    "id_producto": 112
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 22,
+  "fields": {
+    "cantidad_disponible": 2,
+    "fecha_actualizacion": "2026-05-25T15:01:49.601Z",
+    "id_producto": 113
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 23,
+  "fields": {
+    "cantidad_disponible": 9,
+    "fecha_actualizacion": "2026-05-25T15:01:49.602Z",
+    "id_producto": 114
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 24,
+  "fields": {
+    "cantidad_disponible": 13,
+    "fecha_actualizacion": "2026-06-12T04:05:46.459Z",
+    "id_producto": 115
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 25,
+  "fields": {
+    "cantidad_disponible": 1,
+    "fecha_actualizacion": "2026-06-12T04:05:46.459Z",
+    "id_producto": 116
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 26,
+  "fields": {
+    "cantidad_disponible": 14,
+    "fecha_actualizacion": "2026-05-25T15:01:49.607Z",
+    "id_producto": 117
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 27,
+  "fields": {
+    "cantidad_disponible": 9,
+    "fecha_actualizacion": "2026-05-25T15:01:49.610Z",
+    "id_producto": 118
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 28,
+  "fields": {
+    "cantidad_disponible": 12,
+    "fecha_actualizacion": "2026-05-25T15:01:49.612Z",
+    "id_producto": 119
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 29,
+  "fields": {
+    "cantidad_disponible": 9,
+    "fecha_actualizacion": "2026-05-25T15:01:49.612Z",
+    "id_producto": 120
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 30,
+  "fields": {
+    "cantidad_disponible": 4,
+    "fecha_actualizacion": "2026-05-25T15:01:49.612Z",
+    "id_producto": 121
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 31,
+  "fields": {
+    "cantidad_disponible": 10,
+    "fecha_actualizacion": "2026-05-25T15:01:49.617Z",
+    "id_producto": 122
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 32,
+  "fields": {
+    "cantidad_disponible": 12,
+    "fecha_actualizacion": "2026-05-25T15:01:49.618Z",
+    "id_producto": 123
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 33,
+  "fields": {
+    "cantidad_disponible": 8,
+    "fecha_actualizacion": "2026-05-25T15:01:49.621Z",
+    "id_producto": 124
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 34,
+  "fields": {
+    "cantidad_disponible": 1,
+    "fecha_actualizacion": "2026-05-25T15:01:49.621Z",
+    "id_producto": 125
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 35,
+  "fields": {
+    "cantidad_disponible": 5,
+    "fecha_actualizacion": "2026-05-25T15:01:49.626Z",
+    "id_producto": 126
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 36,
+  "fields": {
+    "cantidad_disponible": 8,
+    "fecha_actualizacion": "2026-05-25T15:01:49.626Z",
+    "id_producto": 127
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 37,
+  "fields": {
+    "cantidad_disponible": 2,
+    "fecha_actualizacion": "2026-06-12T03:42:32.824Z",
+    "id_producto": 128
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 38,
+  "fields": {
+    "cantidad_disponible": 0,
+    "fecha_actualizacion": "2026-05-27T19:30:43.324Z",
+    "id_producto": 129
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 39,
+  "fields": {
+    "cantidad_disponible": 6,
+    "fecha_actualizacion": "2026-05-25T15:01:49.632Z",
+    "id_producto": 130
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 40,
+  "fields": {
+    "cantidad_disponible": 6,
+    "fecha_actualizacion": "2026-06-12T04:05:46.459Z",
+    "id_producto": 131
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 41,
+  "fields": {
+    "cantidad_disponible": 6,
+    "fecha_actualizacion": "2026-05-25T15:01:49.632Z",
+    "id_producto": 132
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 42,
+  "fields": {
+    "cantidad_disponible": 2,
+    "fecha_actualizacion": "2026-05-27T19:30:43.324Z",
+    "id_producto": 133
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 43,
+  "fields": {
+    "cantidad_disponible": 4,
+    "fecha_actualizacion": "2026-05-25T15:01:49.637Z",
+    "id_producto": 134
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 44,
+  "fields": {
+    "cantidad_disponible": 14,
+    "fecha_actualizacion": "2026-05-25T15:01:49.640Z",
+    "id_producto": 135
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 45,
+  "fields": {
+    "cantidad_disponible": 4,
+    "fecha_actualizacion": "2026-05-25T15:01:49.640Z",
+    "id_producto": 136
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 46,
+  "fields": {
+    "cantidad_disponible": 8,
+    "fecha_actualizacion": "2026-05-25T15:01:49.640Z",
+    "id_producto": 137
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 47,
+  "fields": {
+    "cantidad_disponible": 6,
+    "fecha_actualizacion": "2026-05-25T15:01:49.646Z",
+    "id_producto": 138
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 48,
+  "fields": {
+    "cantidad_disponible": 1,
+    "fecha_actualizacion": "2026-05-25T15:01:49.647Z",
+    "id_producto": 139
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 49,
+  "fields": {
+    "cantidad_disponible": 4,
+    "fecha_actualizacion": "2026-05-25T15:01:49.647Z",
+    "id_producto": 140
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 50,
+  "fields": {
+    "cantidad_disponible": 2,
+    "fecha_actualizacion": "2026-05-25T15:01:49.647Z",
+    "id_producto": 141
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 51,
+  "fields": {
+    "cantidad_disponible": 5,
+    "fecha_actualizacion": "2026-05-25T15:01:49.647Z",
+    "id_producto": 142
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 52,
+  "fields": {
+    "cantidad_disponible": 10,
+    "fecha_actualizacion": "2026-05-25T15:01:49.653Z",
+    "id_producto": 143
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 53,
+  "fields": {
+    "cantidad_disponible": 11,
+    "fecha_actualizacion": "2026-05-25T15:01:49.654Z",
+    "id_producto": 144
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 54,
+  "fields": {
+    "cantidad_disponible": 4,
+    "fecha_actualizacion": "2026-05-25T15:01:49.658Z",
+    "id_producto": 145
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 55,
+  "fields": {
+    "cantidad_disponible": 12,
+    "fecha_actualizacion": "2026-05-25T15:01:49.661Z",
+    "id_producto": 146
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 56,
+  "fields": {
+    "cantidad_disponible": 4,
+    "fecha_actualizacion": "2026-05-25T15:01:49.661Z",
+    "id_producto": 147
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 57,
+  "fields": {
+    "cantidad_disponible": 9,
+    "fecha_actualizacion": "2026-05-25T15:01:49.661Z",
+    "id_producto": 148
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 58,
+  "fields": {
+    "cantidad_disponible": 9,
+    "fecha_actualizacion": "2026-05-25T15:01:49.661Z",
+    "id_producto": 149
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 59,
+  "fields": {
+    "cantidad_disponible": 13,
+    "fecha_actualizacion": "2026-05-25T15:01:49.667Z",
+    "id_producto": 150
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 60,
+  "fields": {
+    "cantidad_disponible": 13,
+    "fecha_actualizacion": "2026-05-25T15:01:49.668Z",
+    "id_producto": 151
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 61,
+  "fields": {
+    "cantidad_disponible": 9,
+    "fecha_actualizacion": "2026-05-25T15:01:49.670Z",
+    "id_producto": 152
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 62,
+  "fields": {
+    "cantidad_disponible": 4,
+    "fecha_actualizacion": "2026-05-25T15:01:49.673Z",
+    "id_producto": 153
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 63,
+  "fields": {
+    "cantidad_disponible": 8,
+    "fecha_actualizacion": "2026-05-25T15:01:49.676Z",
+    "id_producto": 154
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 64,
+  "fields": {
+    "cantidad_disponible": 4,
+    "fecha_actualizacion": "2026-05-25T15:01:49.678Z",
+    "id_producto": 155
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 65,
+  "fields": {
+    "cantidad_disponible": 6,
+    "fecha_actualizacion": "2026-05-25T15:01:49.678Z",
+    "id_producto": 156
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 66,
+  "fields": {
+    "cantidad_disponible": 5,
+    "fecha_actualizacion": "2026-05-25T15:01:49.678Z",
+    "id_producto": 157
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 67,
+  "fields": {
+    "cantidad_disponible": 8,
+    "fecha_actualizacion": "2026-05-25T15:01:49.682Z",
+    "id_producto": 158
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 68,
+  "fields": {
+    "cantidad_disponible": 6,
+    "fecha_actualizacion": "2026-05-25T15:01:49.683Z",
+    "id_producto": 159
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 69,
+  "fields": {
+    "cantidad_disponible": 5,
+    "fecha_actualizacion": "2026-05-25T15:01:49.683Z",
+    "id_producto": 160
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 70,
+  "fields": {
+    "cantidad_disponible": 5,
+    "fecha_actualizacion": "2026-05-25T15:01:49.686Z",
+    "id_producto": 161
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 71,
+  "fields": {
+    "cantidad_disponible": 9,
+    "fecha_actualizacion": "2026-05-25T15:01:49.686Z",
+    "id_producto": 162
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 72,
+  "fields": {
+    "cantidad_disponible": 2,
+    "fecha_actualizacion": "2026-05-25T15:01:49.691Z",
+    "id_producto": 163
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 73,
+  "fields": {
+    "cantidad_disponible": 9,
+    "fecha_actualizacion": "2026-05-25T15:01:49.691Z",
+    "id_producto": 164
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 74,
+  "fields": {
+    "cantidad_disponible": 2,
+    "fecha_actualizacion": "2026-05-25T15:01:49.694Z",
+    "id_producto": 165
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 75,
+  "fields": {
+    "cantidad_disponible": 12,
+    "fecha_actualizacion": "2026-05-25T15:01:49.697Z",
+    "id_producto": 166
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 76,
+  "fields": {
+    "cantidad_disponible": 13,
+    "fecha_actualizacion": "2026-05-25T15:01:49.698Z",
+    "id_producto": 167
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 77,
+  "fields": {
+    "cantidad_disponible": 10,
+    "fecha_actualizacion": "2026-05-25T15:01:49.698Z",
+    "id_producto": 168
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 78,
+  "fields": {
+    "cantidad_disponible": 12,
+    "fecha_actualizacion": "2026-05-25T15:01:49.702Z",
+    "id_producto": 169
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 79,
+  "fields": {
+    "cantidad_disponible": 10,
+    "fecha_actualizacion": "2026-05-25T15:01:49.704Z",
+    "id_producto": 170
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 80,
+  "fields": {
+    "cantidad_disponible": 10,
+    "fecha_actualizacion": "2026-05-25T15:01:49.704Z",
+    "id_producto": 171
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 81,
+  "fields": {
+    "cantidad_disponible": 4,
+    "fecha_actualizacion": "2026-05-25T15:01:49.707Z",
+    "id_producto": 172
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 82,
+  "fields": {
+    "cantidad_disponible": 14,
+    "fecha_actualizacion": "2026-05-25T15:01:49.711Z",
+    "id_producto": 173
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 83,
+  "fields": {
+    "cantidad_disponible": 14,
+    "fecha_actualizacion": "2026-05-25T15:01:49.711Z",
+    "id_producto": 174
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 84,
+  "fields": {
+    "cantidad_disponible": 2,
+    "fecha_actualizacion": "2026-05-25T15:01:49.711Z",
+    "id_producto": 175
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 85,
+  "fields": {
+    "cantidad_disponible": 1,
+    "fecha_actualizacion": "2026-05-25T15:01:49.711Z",
+    "id_producto": 176
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 86,
+  "fields": {
+    "cantidad_disponible": 9,
+    "fecha_actualizacion": "2026-05-25T15:01:49.717Z",
+    "id_producto": 177
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 87,
+  "fields": {
+    "cantidad_disponible": 5,
+    "fecha_actualizacion": "2026-05-25T15:01:49.719Z",
+    "id_producto": 178
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 88,
+  "fields": {
+    "cantidad_disponible": 14,
+    "fecha_actualizacion": "2026-05-25T15:01:49.719Z",
+    "id_producto": 179
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 89,
+  "fields": {
+    "cantidad_disponible": 0,
+    "fecha_actualizacion": "2026-06-12T03:52:01.234Z",
+    "id_producto": 180
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 90,
+  "fields": {
+    "cantidad_disponible": 1,
+    "fecha_actualizacion": "2026-05-25T15:01:49.726Z",
+    "id_producto": 181
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 91,
+  "fields": {
+    "cantidad_disponible": 12,
+    "fecha_actualizacion": "2026-05-25T15:30:48.884Z",
+    "id_producto": 182
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 93,
+  "fields": {
+    "cantidad_disponible": 3,
+    "fecha_actualizacion": "2026-05-27T20:52:38.468Z",
+    "id_producto": 184
+  }
+},
+{
+  "model": "LibreriaChichi.stock",
+  "pk": 95,
+  "fields": {
+    "cantidad_disponible": 44,
+    "fecha_actualizacion": "2026-06-05T03:02:31.628Z",
+    "id_producto": 186
+  }
+},
+{
+  "model": "LibreriaChichi.pedido",
+  "pk": 17,
+  "fields": {
+    "fecha_pedido": "2026-05-27",
+    "estado_pedido": "entregado",
+    "fecha_entrega_acordada": null,
+    "tipo_pedido": "online",
+    "id_cliente": 17
+  }
+},
+{
+  "model": "LibreriaChichi.pedido",
+  "pk": 18,
+  "fields": {
+    "fecha_pedido": "2026-06-04",
+    "estado_pedido": "cancelado",
+    "fecha_entrega_acordada": null,
+    "tipo_pedido": "online",
+    "id_cliente": 18
+  }
+},
+{
+  "model": "LibreriaChichi.pedido",
+  "pk": 19,
+  "fields": {
+    "fecha_pedido": "2026-06-11",
+    "estado_pedido": "entregado",
+    "fecha_entrega_acordada": null,
+    "tipo_pedido": "online",
+    "id_cliente": 19
+  }
+},
+{
+  "model": "LibreriaChichi.pedido",
+  "pk": 20,
+  "fields": {
+    "fecha_pedido": "2026-06-11",
+    "estado_pedido": "entregado",
+    "fecha_entrega_acordada": null,
+    "tipo_pedido": "online",
+    "id_cliente": 19
+  }
+},
+{
+  "model": "LibreriaChichi.pedido",
+  "pk": 21,
+  "fields": {
+    "fecha_pedido": "2026-06-11",
+    "estado_pedido": "entregado",
+    "fecha_entrega_acordada": null,
+    "tipo_pedido": "presencial",
+    "id_cliente": 20
+  }
+},
+{
+  "model": "LibreriaChichi.pedido",
+  "pk": 22,
+  "fields": {
+    "fecha_pedido": "2026-06-16",
+    "estado_pedido": "entregado",
+    "fecha_entrega_acordada": null,
+    "tipo_pedido": "online",
+    "id_cliente": 18
+  }
+},
+{
+  "model": "LibreriaChichi.pedido",
+  "pk": 23,
+  "fields": {
+    "fecha_pedido": "2026-06-16",
+    "estado_pedido": "entregado",
+    "fecha_entrega_acordada": null,
+    "tipo_pedido": "online",
+    "id_cliente": 18
+  }
+},
+{
+  "model": "LibreriaChichi.pedido",
+  "pk": 24,
+  "fields": {
+    "fecha_pedido": "2026-06-16",
+    "estado_pedido": "confirmado",
+    "fecha_entrega_acordada": null,
+    "tipo_pedido": "online",
+    "id_cliente": 18
+  }
+},
+{
+  "model": "LibreriaChichi.pedido",
+  "pk": 25,
+  "fields": {
+    "fecha_pedido": "2026-06-16",
+    "estado_pedido": "entregado",
+    "fecha_entrega_acordada": null,
+    "tipo_pedido": "online",
+    "id_cliente": 18
+  }
+},
+{
+  "model": "LibreriaChichi.detallepedido",
+  "pk": 23,
+  "fields": {
+    "cantidad": 8,
+    "precio_unitario": "7990.00",
+    "id_pedido": 17,
+    "id_producto": 93
+  }
+},
+{
+  "model": "LibreriaChichi.detallepedido",
+  "pk": 24,
+  "fields": {
+    "cantidad": 1,
+    "precio_unitario": "3540.00",
+    "id_pedido": 18,
+    "id_producto": 92
+  }
+},
+{
+  "model": "LibreriaChichi.detallepedido",
+  "pk": 25,
+  "fields": {
+    "cantidad": 1,
+    "precio_unitario": "1490.00",
+    "id_pedido": 19,
+    "id_producto": 128
+  }
+},
+{
+  "model": "LibreriaChichi.detallepedido",
+  "pk": 26,
+  "fields": {
+    "cantidad": 1,
+    "precio_unitario": "9990.00",
+    "id_pedido": 20,
+    "id_producto": 180
+  }
+},
+{
+  "model": "LibreriaChichi.detallepedido",
+  "pk": 27,
+  "fields": {
+    "cantidad": 1,
+    "precio_unitario": "2490.00",
+    "id_pedido": 21,
+    "id_producto": 115
+  }
+},
+{
+  "model": "LibreriaChichi.detallepedido",
+  "pk": 28,
+  "fields": {
+    "cantidad": 3,
+    "precio_unitario": "890.00",
+    "id_pedido": 21,
+    "id_producto": 116
+  }
+},
+{
+  "model": "LibreriaChichi.detallepedido",
+  "pk": 29,
+  "fields": {
+    "cantidad": 6,
+    "precio_unitario": "250.00",
+    "id_pedido": 21,
+    "id_producto": 131
+  }
+},
+{
+  "model": "LibreriaChichi.detallepedido",
+  "pk": 30,
+  "fields": {
+    "cantidad": 2,
+    "precio_unitario": "10990.00",
+    "id_pedido": 22,
+    "id_producto": 93
+  }
+},
+{
+  "model": "LibreriaChichi.detallepedido",
+  "pk": 31,
+  "fields": {
+    "cantidad": 1,
+    "precio_unitario": "3540.00",
+    "id_pedido": 23,
+    "id_producto": 92
+  }
+},
+{
+  "model": "LibreriaChichi.detallepedido",
+  "pk": 32,
+  "fields": {
+    "cantidad": 1,
+    "precio_unitario": "3540.00",
+    "id_pedido": 24,
+    "id_producto": 92
+  }
+},
+{
+  "model": "LibreriaChichi.detallepedido",
+  "pk": 33,
+  "fields": {
+    "cantidad": 1,
+    "precio_unitario": "11990.00",
+    "id_pedido": 24,
+    "id_producto": 94
+  }
+},
+{
+  "model": "LibreriaChichi.detallepedido",
+  "pk": 34,
+  "fields": {
+    "cantidad": 1,
+    "precio_unitario": "11990.00",
+    "id_pedido": 25,
+    "id_producto": 94
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 1,
+  "fields": {
+    "fecha_pago": "2026-05-25",
+    "monto": "6980.00",
+    "metodo_pago": "Transbank / Débito",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 2,
+  "fields": {
+    "fecha_pago": "2026-05-25",
+    "monto": "7990.00",
+    "metodo_pago": "Webpay/Online",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 3,
+  "fields": {
+    "fecha_pago": "2026-05-26",
+    "monto": "2490.00",
+    "metodo_pago": "Webpay/Online",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 4,
+  "fields": {
+    "fecha_pago": "2026-05-26",
+    "monto": "12450.00",
+    "metodo_pago": "Webpay/Online",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 5,
+  "fields": {
+    "fecha_pago": "2026-05-27",
+    "monto": "7990.00",
+    "metodo_pago": "Webpay/Online",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 6,
+  "fields": {
+    "fecha_pago": "2026-05-27",
+    "monto": "23970.00",
+    "metodo_pago": "Webpay/Online",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 7,
+  "fields": {
+    "fecha_pago": "2026-05-27",
+    "monto": "20350.00",
+    "metodo_pago": "Webpay/Online",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 8,
+  "fields": {
+    "fecha_pago": "2026-05-27",
+    "monto": "8580.00",
+    "metodo_pago": "Webpay/Online",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 9,
+  "fields": {
+    "fecha_pago": "2026-05-27",
+    "monto": "2580.00",
+    "metodo_pago": "Webpay/Online",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 10,
+  "fields": {
+    "fecha_pago": "2026-05-27",
+    "monto": "14990.00",
+    "metodo_pago": "Webpay/Online",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 11,
+  "fields": {
+    "fecha_pago": "2026-05-27",
+    "monto": "63920.00",
+    "metodo_pago": "Webpay/Online",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 12,
+  "fields": {
+    "fecha_pago": "2026-06-04",
+    "monto": "3540.00",
+    "metodo_pago": "Webpay/Online",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 13,
+  "fields": {
+    "fecha_pago": "2026-06-11",
+    "monto": "1490.00",
+    "metodo_pago": "Webpay/Online",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 14,
+  "fields": {
+    "fecha_pago": "2026-06-11",
+    "monto": "9990.00",
+    "metodo_pago": "Webpay/Online",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 15,
+  "fields": {
+    "fecha_pago": "2026-06-11",
+    "monto": "6660.00",
+    "metodo_pago": "Transferencia",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 16,
+  "fields": {
+    "fecha_pago": "2026-06-16",
+    "monto": "21980.00",
+    "metodo_pago": "Webpay/Online",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 17,
+  "fields": {
+    "fecha_pago": "2026-06-16",
+    "monto": "3540.00",
+    "metodo_pago": "Webpay/Online",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 18,
+  "fields": {
+    "fecha_pago": "2026-06-16",
+    "monto": "15530.00",
+    "metodo_pago": "Transferencia",
+    "estado_pago": "Pendiente",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 19,
+  "fields": {
+    "fecha_pago": "2026-06-16",
+    "monto": "15530.00",
+    "metodo_pago": "Transferencia",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 20,
+  "fields": {
+    "fecha_pago": "2026-06-16",
+    "monto": "11990.00",
+    "metodo_pago": "Transferencia",
+    "estado_pago": "Pendiente",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.pago",
+  "pk": 21,
+  "fields": {
+    "fecha_pago": "2026-06-16",
+    "monto": "11990.00",
+    "metodo_pago": "Transferencia",
+    "estado_pago": "Aprobado",
+    "id_entrega": null
+  }
+},
+{
+  "model": "LibreriaChichi.transferencia",
+  "pk": 1,
+  "fields": {
+    "id_pedido": 24,
+    "id_pago": 19,
+    "banco": "Por informar",
+    "numero_operacion": "WEB-24",
+    "rut_pagador": "",
+    "monto": "15530.00",
+    "fecha_transferencia": "2026-06-17",
+    "email_contacto": null,
+    "comprobante": "",
+    "estado": "validada",
+    "coincide_monto": true,
+    "motivo_rechazo": null,
+    "validado_por": [
+      "admin"
+    ],
+    "validado_en": "2026-06-17T01:59:27.279Z",
+    "creado": "2026-06-17T01:59:04.757Z"
+  }
+},
+{
+  "model": "LibreriaChichi.transferencia",
+  "pk": 2,
+  "fields": {
+    "id_pedido": 25,
+    "id_pago": 21,
+    "banco": "Por informar",
+    "numero_operacion": "WEB-25",
+    "rut_pagador": "",
+    "monto": "11990.00",
+    "fecha_transferencia": "2026-06-17",
+    "email_contacto": null,
+    "comprobante": "",
+    "estado": "validada",
+    "coincide_monto": true,
+    "motivo_rechazo": null,
+    "validado_por": [
+      "admin"
+    ],
+    "validado_en": "2026-06-17T02:14:47.510Z",
+    "creado": "2026-06-17T02:14:35.898Z"
+  }
+}
+]
