@@ -118,7 +118,10 @@ def inicio_base(request):
             'imagen': p.imagen if p.imagen else None,
             'emoji': '📚',
         })
-    return render(request, 'base.html', {'destacados': destacados})
+    return render(request, 'base.html', {
+        'destacados': destacados,
+        'total_carrito': sum(request.session.get('carrito', {}).values()),
+    })
 
 
 # ── 1. REGISTRO ──────────────────────────────────────────────────────────────
